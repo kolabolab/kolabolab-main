@@ -76,8 +76,7 @@ const HomePage: React.FC = () => {
               <Heading
                 size="2xl"
                 fontWeight="bold"
-                bgGradient="linear(to-r, brand.500, startup.500)"
-                bgClip="text"
+                color="gray.800"
                 maxW="4xl"
               >
                 Connect, Collaborate, and Create the Future
@@ -94,6 +93,7 @@ const HomePage: React.FC = () => {
                   to="/register"
                   size="lg"
                   colorScheme="brand"
+                  variant="solid"
                   rightIcon={<Icon as={FiUsers} />}
                 >
                   Join Community
@@ -102,6 +102,7 @@ const HomePage: React.FC = () => {
                   as={RouterLink}
                   to="/startups"
                   size="lg"
+                  colorScheme="brand"
                   variant="outline"
                   rightIcon={<Icon as={FiSearch} />}
                 >
@@ -169,9 +170,7 @@ const HomePage: React.FC = () => {
                   as={RouterLink}
                   to="/register"
                   size="lg"
-                  bg="white"
-                  color="brand.500"
-                  _hover={{ bg: 'gray.100' }}
+                  variant="cta-primary"
                 >
                   Get Started Free
                 </Button>
@@ -179,10 +178,7 @@ const HomePage: React.FC = () => {
                   as={RouterLink}
                   to="/startups"
                   size="lg"
-                  variant="outline"
-                  borderColor="white"
-                  color="white"
-                  _hover={{ bg: 'whiteAlpha.200' }}
+                  variant="cta-secondary"
                 >
                   Browse Projects
                 </Button>

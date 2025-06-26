@@ -122,6 +122,29 @@ const components = {
           bg: mode('brand.50', 'whiteAlpha.200')(props),
         },
       }),
+      // Custom variant for CTA sections with dark backgrounds
+      'cta-primary': {
+        bg: 'white',
+        color: 'brand.500',
+        _hover: {
+          bg: 'gray.100',
+        },
+        _focus: {
+          boxShadow: '0 0 0 3px rgba(255, 255, 255, 0.3)',
+        },
+      },
+      'cta-secondary': {
+        border: '2px solid white',
+        borderColor: 'white',
+        color: 'white',
+        bg: 'transparent',
+        _hover: {
+          bg: 'whiteAlpha.200',
+        },
+        _focus: {
+          boxShadow: '0 0 0 3px rgba(255, 255, 255, 0.3)',
+        },
+      },
     },
     sizes: {
       sm: {
