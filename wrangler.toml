@@ -1,0 +1,77 @@
+# Cloudflare Workers configuration for KolaboLab
+name = "kolabolab-api"
+main = "backend/dist/main.js"
+compatibility_date = "2024-01-01"
+node_compat = true
+
+[env.production]
+name = "kolabolab-api"
+routes = [
+  { pattern = "api.kolabolab.com/*", zone_name = "kolabolab.com" }
+]
+
+[env.staging]
+name = "kolabolab-api-staging"
+routes = [
+  { pattern = "staging-api.kolabolab.com/*", zone_name = "kolabolab.com" }
+]
+
+# Database connections (use Cloudflare D1 or external PostgreSQL)
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "kolabolab-production"
+database_id = "your-d1-database-id"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "kolabolab-staging"
+database_id = "your-d1-staging-database-id"
+
+# KV storage for sessions and cache
+[[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-namespace-id"
+
+[[env.staging.kv_namespaces]]
+binding = "CACHE"
+id = "your-kv-staging-namespace-id"
+
+# R2 bucket for file uploads
+[[env.production.r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "kolabolab-uploads"
+
+[[env.staging.r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "kolabolab-uploads-staging"
+
+# Environment variables (set via Cloudflare dashboard or CLI)
+[env.production.vars]
+NODE_ENV = "production"
+FRONTEND_URL = "https://kolabolab.com"
+
+[env.staging.vars]
+NODE_ENV = "staging"
+FRONTEND_URL = "https://staging.kolabolab.com"
+
+# Secrets (set via wrangler secret put)
+# wrangler secret put JWT_SECRET
+# wrangler secret put JWT_REFRESH_SECRET
+# wrangler secret put DB_PASSWORD
+# wrangler secret put GOOGLE_CLIENT_SECRET
+# wrangler secret put LINKEDIN_CLIENT_SECRET
+# wrangler secret put GITHUB_CLIENT_SECRET
+# wrangler secret put SMTP_PASSWORD
+# wrangler secret put CLOUDINARY_API_SECRET
+
+# Worker limits
+[limits]
+cpu_ms = 50
+
+# Build configuration
+[build]
+command = "npm run build"
+cwd = "backend"
+
+[build.upload]
+format = "service-worker"
