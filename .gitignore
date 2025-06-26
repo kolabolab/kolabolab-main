@@ -104,6 +104,14 @@ uploads/
 # Test files
 playwright-report/
 test-results/
+screenshots/
+*.png
+*.jpg
+*.jpeg
+coverage/
+.nyc_output/
+junit.xml
+test-output/
 
 # Temporary files
 *.tmp
