@@ -1,0 +1,63 @@
+{
+  "version": 2,
+  "name": "kolabolab",
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "backend/src/main.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "backend/dist/**",
+          "backend/package.json"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/src/main.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/dist/$1"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "JWT_SECRET": "@jwt-secret",
+    "JWT_REFRESH_SECRET": "@jwt-refresh-secret",
+    "DB_HOST": "@postgres-host",
+    "DB_PORT": "@postgres-port",
+    "DB_USERNAME": "@postgres-username",
+    "DB_PASSWORD": "@postgres-password",
+    "DB_NAME": "@postgres-database",
+    "REDIS_URL": "@redis-url",
+    "GOOGLE_CLIENT_ID": "@google-client-id",
+    "GOOGLE_CLIENT_SECRET": "@google-client-secret",
+    "LINKEDIN_CLIENT_ID": "@linkedin-client-id",
+    "LINKEDIN_CLIENT_SECRET": "@linkedin-client-secret",
+    "GITHUB_CLIENT_ID": "@github-client-id",
+    "GITHUB_CLIENT_SECRET": "@github-client-secret",
+    "SMTP_HOST": "@smtp-host",
+    "SMTP_USER": "@smtp-user",
+    "SMTP_PASSWORD": "@smtp-password",
+    "CLOUDINARY_CLOUD_NAME": "@cloudinary-cloud-name",
+    "CLOUDINARY_API_KEY": "@cloudinary-api-key",
+    "CLOUDINARY_API_SECRET": "@cloudinary-api-secret"
+  },
+  "functions": {
+    "backend/src/main.ts": {
+      "maxDuration": 30
+    }
+  },
+  "regions": ["iad1"],
+  "framework": "vite"
+}
