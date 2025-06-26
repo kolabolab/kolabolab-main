@@ -1,0 +1,107 @@
+services:
+  # Frontend - Vite React TypeScript
+  frontend:
+    build: 
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3001/api
+      - VITE_WS_URL=ws://localhost:3001
+    volumes:
+      - ./frontend/src:/app/src
+      - /app/node_modules
+    networks:
+      - kolabolab-network
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=kolabolab
+      - POSTGRES_USER=kolabolab
+      - POSTGRES_PASSWORD=kolabolab123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - kolabolab-network
+
+  # Backend - NestJS with PostgreSQL
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=kolabolab
+      - DB_PASSWORD=kolabolab123
+      - DB_NAME=kolabolab
+      - JWT_SECRET=kolabolab-jwt-secret-dev-2024
+      - CORS_ORIGIN=http://localhost:3000
+    volumes:
+      - ./backend/src:/app/src
+      - /app/node_modules
+    depends_on:
+      - postgres
+    networks:
+      - kolabolab-network
+
+  # Redis for caching and sessions (development)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - kolabolab-network
+
+  # Elasticsearch for search (development)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - kolabolab-network
+
+  # Nginx reverse proxy (production-ready)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - kolabolab-network
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+  elasticsearch-data:
+    driver: local
+
+networks:
+  kolabolab-network:
+    driver: bridge

@@ -1,0 +1,57 @@
+<svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="primaryGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#7C3AED;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#EC4899;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle for context -->
+  <circle cx="60" cy="40" r="32" fill="url(#primaryGradient)" opacity="0.08"/>
+  
+  <!-- Handshake illustration -->
+  <g transform="translate(60,40)">
+    <!-- Left hand/arm -->
+    <path d="M-22,-5 Q-20,-9 -17,-7 L-9,-2 Q-6,0 -3,3 L0,6" 
+          fill="none" stroke="url(#primaryGradient)" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Right hand/arm -->
+    <path d="M22,-5 Q20,-9 17,-7 L9,-2 Q6,0 3,3 L0,6" 
+          fill="none" stroke="url(#accentGradient)" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Left hand -->
+    <ellipse cx="-14" cy="-4" rx="5" ry="8" fill="url(#primaryGradient)" opacity="0.9" transform="rotate(-20)"/>
+    
+    <!-- Right hand -->
+    <ellipse cx="14" cy="-4" rx="5" ry="8" fill="url(#accentGradient)" opacity="0.9" transform="rotate(20)"/>
+    
+    <!-- Connection point (handshake) -->
+    <circle cx="0" cy="3" r="4" fill="url(#primaryGradient)" opacity="0.6"/>
+    
+    <!-- Collaboration sparkles -->
+    <circle cx="-12" cy="-18" r="2" fill="url(#accentGradient)" opacity="0.7"/>
+    <circle cx="12" cy="-18" r="2" fill="url(#primaryGradient)" opacity="0.7"/>
+    <circle cx="0" cy="-22" r="1.5" fill="url(#accentGradient)" opacity="0.8"/>
+  </g>
+  
+  <!-- Brand name -->
+  <text x="60" y="95" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="20" font-weight="700" fill="url(#primaryGradient)" text-anchor="middle">
+    Kolabo
+  </text>
+  <text x="60" y="112" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="14" font-weight="400" fill="#64748B" letter-spacing="1px" text-anchor="middle">
+    LAB
+  </text>
+  
+  <!-- Tagline -->
+  <text x="60" y="125" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="9" font-weight="300" fill="#94A3B8" letter-spacing="0.3px" text-anchor="middle">
+    Tech for Good
+  </text>
+  <text x="60" y="135" font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" font-size="9" font-weight="300" fill="#94A3B8" letter-spacing="0.3px" text-anchor="middle">
+    Collaboration Platform
+  </text>
+</svg>
