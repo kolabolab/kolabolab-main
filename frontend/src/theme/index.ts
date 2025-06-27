@@ -132,7 +132,7 @@ const components = {
           boxShadow: mode(shadows.lg, shadows['lg-dark'])(props),
         },
       }),
-      secondary: (props: any) => ({
+      secondary: () => ({
         bg: 'gray.500',
         color: 'white',
         boxShadow: '0 4px 20px rgba(107, 114, 128, 0.2)',
@@ -141,7 +141,7 @@ const components = {
           boxShadow: '0 8px 25px rgba(107, 114, 128, 0.3)',
         },
       }),
-      success: (props: any) => ({
+      success: () => ({
         bg: 'green.500',
         color: 'white',
         boxShadow: '0 4px 20px rgba(16, 185, 129, 0.25)',
@@ -178,7 +178,7 @@ const components = {
           bg: `${props.colorScheme}.50`,
         },
       }),
-      'outline-secondary': (props: any) => ({
+      'outline-secondary': () => ({
         bg: 'transparent',
         border: '2px solid',
         borderColor: 'gray.500',

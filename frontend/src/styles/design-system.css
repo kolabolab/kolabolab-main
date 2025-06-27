@@ -221,8 +221,8 @@ p {
 
 .btn-outline {
   background: transparent;
-  border: 2px solid var(--primary-blue);
-  color: var(--primary-blue);
+  border: 2px solid var(--primary-green);
+  color: var(--primary-green);
   box-shadow: none;
 }
 
@@ -230,6 +230,13 @@ p {
   background: transparent;
   border: 2px solid var(--accent-gray);
   color: var(--accent-gray);
+  box-shadow: none;
+}
+
+.btn-outline-support {
+  background: transparent;
+  border: 2px solid var(--support-blue);
+  color: var(--support-blue);
   box-shadow: none;
 }
 

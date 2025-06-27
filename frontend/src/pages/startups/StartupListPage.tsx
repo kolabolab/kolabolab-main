@@ -17,7 +17,6 @@ import {
   InputLeftElement,
   Icon,
   Flex,
-  Spacer,
   Tag,
   TagLabel,
   Image,
