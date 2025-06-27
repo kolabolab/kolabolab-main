@@ -1,12 +1,12 @@
 {
   "version": 2,
   "name": "kolabolab",
-  "buildCommand": "cd frontend && npm run build",
+  "buildCommand": "npm run install:all && npm run build:frontend",
   "outputDirectory": "frontend/dist",
-  "installCommand": "npm install --prefix frontend",
+  "installCommand": "npm install",
   "env": {
     "NODE_ENV": "production",
-    "VITE_API_URL": "https://kolabolab-backend.vercel.app/api"
+    "VITE_API_URL": "https://kolabolab-backend.railway.app/api"
   },
   "rewrites": [
     {

@@ -49,7 +49,7 @@ export class ErrorBoundary extends Component<Props, State> {
               We're sorry for the inconvenience. Please try refreshing the page or contact support if the problem persists.
             </Text>
             
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {import.meta.env.DEV && this.state.error && (
               <Box 
                 p={4} 
                 bg="red.50" 
