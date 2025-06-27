@@ -1,131 +1,79 @@
 # KolaboLab Deployment Guide
 
-## 🚀 Backend Deployment to Railway
+## 🚨 IMMEDIATE ACTION REQUIRED
 
-### Step 1: Deploy Backend to Railway
+**You've exposed your Resend API key: `re_LDsLDNHv_6GH4Zq7iPsh59o5sUJYmjFkk`**
 
-1. **Create Railway Account**: Go to [railway.app](https://railway.app) and sign up
-2. **Connect GitHub Repository**: Link your GitHub account and select this repository
-3. **Create New Project**: 
-   ```bash
-   # Railway will automatically detect the nixpacks.toml configuration
-   # and build using: npm run install:all && npm run build:backend
-   ```
+### Step 1: Revoke Exposed Key (DO THIS NOW)
+1. Go to https://resend.com/api-keys
+2. Find and delete the exposed key
+3. Generate a new API key
+4. Copy the new key for deployment
 
-4. **Add Environment Variables** in Railway dashboard:
-   ```env
-   NODE_ENV=production
-   PORT=3001
-   
-   # Database (Railway provides PostgreSQL)
-   DATABASE_URL=postgresql://user:pass@host:5432/db
-   
-   # Optional - Railway provides Redis
-   REDIS_URL=redis://host:6379
-   
-   # JWT Secrets
-   JWT_SECRET=your-secret-key-here
-   JWT_REFRESH_SECRET=your-refresh-secret-here
-   
-   # Elasticsearch (optional - can use external service)
-   ELASTICSEARCH_HOST=your-elasticsearch-host
-   ELASTICSEARCH_PORT=9200
-   ```
-
-5. **Deploy**: Railway will automatically deploy on git push
-
-### Step 2: Get Your Backend URL
-
-After Railway deployment completes, you'll get a URL like:
-```
-https://your-app-name.up.railway.app
-```
-
-Your API will be available at:
-```
-https://your-app-name.up.railway.app/api
-```
-
-### Step 3: Update Frontend Configuration
-
-Update the Vercel configuration with your real Railway URL:
-
-\`\`\`json
-{
-  "env": {
-    "VITE_API_URL": "https://YOUR-REAL-RAILWAY-URL.up.railway.app/api"
-  }
-}
-\`\`\`
-
-## 🌐 Frontend Deployment to Vercel
-
-The frontend is already configured to deploy automatically to Vercel on git push with the unified build system.
-
-## 🔄 Alternative Deployment Options
-
-### Option A: Railway (Recommended for MVP)
-- ✅ Full-stack: Backend + PostgreSQL + Redis
-- ✅ Auto-deployments from Git
-- ✅ Free tier available
-- 💰 $5-20/month
-
-### Option B: Render
-- ✅ Free PostgreSQL tier
-- ✅ Background workers for search indexing
-- ✅ Auto-SSL and CDN
-- 💰 Free-$25/month
-
-### Option C: Heroku
-- ✅ Add-ons for PostgreSQL, Redis, Elasticsearch
-- ✅ Traditional PaaS approach
-- 💰 $7-50/month
-
-### Option D: AWS/GCP (Production Scale)
-- ✅ Full container orchestration
-- ✅ Managed databases and services
-- ✅ Enterprise security and scaling
-- 💰 $50-200/month
-
-## 📋 Post-Deployment Checklist
-
-- [ ] Backend deployed and responding at `/api/health`
-- [ ] Database connected and migrations applied
-- [ ] Frontend deployed and loading
-- [ ] API endpoints working from frontend
-- [ ] Search functionality operational (if Elasticsearch configured)
-- [ ] Real-time features working (Socket.IO)
-- [ ] SSL certificates active
-- [ ] Environment variables properly set
-
-## 🔧 Quick Commands
-
+### Step 2: Quick Deployment Fix
 ```bash
-# Test local unified build
-npm run install:all
-npm run build
-npm run dev
+# Install Vercel CLI if needed
+npm i -g vercel
 
-# Deploy backend to Railway
-git push origin main  # Triggers automatic deployment
+# Set new API key
+cd backend
+vercel env add RESEND_API_KEY production
+# Paste your NEW API key when prompted
 
-# Deploy frontend to Vercel  
-git push origin main  # Triggers automatic deployment
+# Redeploy
+vercel --prod
 ```
 
-## 🆘 Troubleshooting
+### Step 3: Verify Security
+- Check Resend usage logs for unauthorized activity
+- Monitor billing for unexpected charges
+- Test email functionality with new key
 
-**Backend not starting?**
-- Check Railway logs for build errors
-- Verify all environment variables are set
-- Ensure PORT is set to Railway's provided port
+## Complete Setup Guide
 
-**Frontend can't connect to API?**
-- Update VITE_API_URL in vercel.json
-- Check CORS settings in backend
-- Verify API URL is accessible
+### Environment Variables (Production)
+```bash
+# Email (NEW KEY REQUIRED)
+RESEND_API_KEY=re_your_NEW_secure_api_key
+FROM_EMAIL=noreply@kolabolab.com
+FROM_NAME=KolaboLab Team
 
-**Database connection issues?**
-- Use Railway's provided DATABASE_URL
-- Check network connectivity
-- Verify PostgreSQL version compatibility
+# Application
+NODE_ENV=production
+FRONTEND_URL=https://kolabolab.com
+
+# Database
+DB_HOST=your_postgres_host
+DB_USERNAME=your_db_user
+DB_PASSWORD=your_secure_password
+DB_NAME=kolabolab
+
+# JWT (Generate with: openssl rand -hex 64)
+JWT_SECRET=your_64_char_secret
+JWT_REFRESH_SECRET=your_64_char_refresh_secret
+```
+
+### Deployment Commands
+```bash
+# Backend deployment
+cd backend
+vercel --prod
+
+# Frontend deployment  
+cd frontend
+vercel --prod
+```
+
+## Security Best Practices
+- Never commit API keys to code
+- Use different keys for dev/prod
+- Rotate keys every 3-6 months
+- Monitor usage regularly
+
+## Health Check
+After deployment, verify:
+- Email service works: Test registration/password reset
+- API endpoints respond correctly
+- Frontend connects to backend
+
+For security issues, see `backend/SECURITY.md`
