@@ -5,40 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import * as compression from 'compression';
 import { AppModule } from './app.module';
-import { WinstonModule } from 'nest-winston';
-import * as winston from 'winston';
-
 async function bootstrap() {
-  const logger = WinstonModule.createLogger({
-    transports: [
-      new winston.transports.Console({
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.colorize(),
-          winston.format.simple(),
-        ),
-      }),
-      new winston.transports.File({
-        filename: 'logs/error.log',
-        level: 'error',
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.json(),
-        ),
-      }),
-      new winston.transports.File({
-        filename: 'logs/combined.log',
-        format: winston.format.combine(
-          winston.format.timestamp(),
-          winston.format.json(),
-        ),
-      }),
-    ],
-  });
-
-  const app = await NestFactory.create(AppModule, {
-    logger,
-  });
+  const app = await NestFactory.create(AppModule);
 
   const configService = app.get(ConfigService);
 
@@ -119,8 +87,8 @@ async function bootstrap() {
   const port = configService.get('PORT', 3001);
   await app.listen(port, '0.0.0.0');
 
-  logger.log(`🚀 KolaboLab API is running on: http://localhost:${port}/api`);
-  logger.log(`📚 Swagger documentation: http://localhost:${port}/api/docs`);
+  console.log(`🚀 KolaboLab API is running on: http://localhost:${port}/api`);
+  console.log(`📚 Swagger documentation: http://localhost:${port}/api/docs`);
 }
 
 bootstrap();

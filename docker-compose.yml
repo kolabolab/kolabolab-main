@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
@@ -41,6 +39,42 @@ services:
       timeout: 5s
       retries: 5
 
+  # Elasticsearch Search Engine
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: kolabolab_elasticsearch
+    restart: unless-stopped
+    environment:
+      - node.name=kolabolab-es-node
+      - cluster.name=kolabolab-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - action.destructive_requires_name=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - kolabolab_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
   # Backend API
   backend:
     build:
@@ -58,6 +92,9 @@ services:
       - DB_NAME=kolabolab
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_PROTOCOL=http
       - JWT_SECRET=0762c970dd97ca42fcd60774ba5322444e78f37a6c748d9f413da762a14da5f67433317eab0226f969015e96a331df5e33e889e075b11cdd367db4e4acec1a1d
       - JWT_REFRESH_SECRET=8a4b0acd7882e44074ef780a48b99210d39327b460714034e8360c0632238c2f
       - FRONTEND_URL=http://localhost:3000
@@ -71,6 +108,8 @@ services:
       postgres:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      elasticsearch:
         condition: service_healthy
     networks:
       - kolabolab_network
@@ -128,6 +167,8 @@ volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  elasticsearch_data:
     driver: local
 
 networks:

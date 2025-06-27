@@ -1,0 +1,26 @@
+/* Legacy fixes - cleaned up for new design system */
+
+/* Only keep essential fixes that don't conflict with new design system */
+
+/* Fix external link icons alignment - still needed */
+.chakra-link svg {
+  vertical-align: middle;
+  margin-left: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fix link hover states - enhanced for new design */
+.chakra-link:hover .chakra-icon {
+  transform: translateX(2px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Mobile responsive container padding - compatibility */
+@media (max-width: 48em) {
+  .chakra-container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}

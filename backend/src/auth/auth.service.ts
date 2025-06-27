@@ -81,8 +81,7 @@ export class AuthService {
     try {
       await this.emailService.sendVerificationEmail(
         user.email,
-        user.emailVerificationToken,
-        user.firstName,
+        user.emailVerificationToken
       );
     } catch (error) {
       this.logger.error(`Failed to send verification email to ${user.email}`, error);
@@ -225,8 +224,7 @@ export class AuthService {
     try {
       await this.emailService.sendPasswordResetEmail(
         user.email,
-        resetToken,
-        user.firstName,
+        resetToken
       );
     } catch (error) {
       this.logger.error(`Failed to send password reset email to ${user.email}`, error);
@@ -302,8 +300,7 @@ export class AuthService {
     try {
       await this.emailService.sendVerificationEmail(
         user.email,
-        user.emailVerificationToken,
-        user.firstName,
+        user.emailVerificationToken
       );
     } catch (error) {
       this.logger.error(`Failed to resend verification email to ${user.email}`, error);

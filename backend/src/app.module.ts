@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 // Modules
 import { AuthModule } from './auth/auth.module';
@@ -18,6 +19,10 @@ import { ChatModule } from './chat/chat.module';
 import { DatabaseConfig } from './config/database.config';
 import { JwtConfig } from './config/jwt.config';
 import { RedisConfig } from './config/redis.config';
+import { ElasticsearchConfig } from './config/elasticsearch.config';
+
+// Controllers
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -25,7 +30,7 @@ import { RedisConfig } from './config/redis.config';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.local', '.env'],
-      load: [DatabaseConfig, JwtConfig, RedisConfig],
+      load: [DatabaseConfig, JwtConfig, RedisConfig, ElasticsearchConfig],
     }),
 
     // Database
@@ -57,6 +62,17 @@ import { RedisConfig } from './config/redis.config';
     // Scheduling
     ScheduleModule.forRoot(),
 
+    // Event Emitter
+    EventEmitterModule.forRoot({
+      wildcard: false,
+      delimiter: '.',
+      newListener: false,
+      removeListener: false,
+      maxListeners: 20,
+      verboseMemoryLeak: false,
+      ignoreErrors: false,
+    }),
+
     // Feature modules
     AuthModule,
     UsersModule,
@@ -67,5 +83,6 @@ import { RedisConfig } from './config/redis.config';
     NotificationsModule,
     ChatModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}

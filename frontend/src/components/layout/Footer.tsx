@@ -40,13 +40,40 @@ export const Footer: React.FC = () => {
             {/* Platform links */}
             <VStack align="start" spacing={3} flex={1}>
               <Text fontWeight="bold">Platform</Text>
-              <Link as={RouterLink} to="/startups" fontSize="sm">
+              <Link 
+                as={RouterLink} 
+                to="/startups" 
+                fontSize="sm" 
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Browse Startups
               </Link>
-              <Link as={RouterLink} to="/search" fontSize="sm">
+              <Link 
+                as={RouterLink} 
+                to="/search" 
+                fontSize="sm"
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Search Projects
               </Link>
-              <Link as={RouterLink} to="/register" fontSize="sm">
+              <Link 
+                as={RouterLink} 
+                to="/register" 
+                fontSize="sm"
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Join Community
               </Link>
             </VStack>
@@ -54,13 +81,40 @@ export const Footer: React.FC = () => {
             {/* Resources links */}
             <VStack align="start" spacing={3} flex={1}>
               <Text fontWeight="bold">Resources</Text>
-              <Link href="/docs" fontSize="sm" isExternal>
+              <Link 
+                href="/docs" 
+                fontSize="sm" 
+                isExternal
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Documentation <Icon as={ExternalLinkIcon} mx="2px" />
               </Link>
-              <Link href="/blog" fontSize="sm" isExternal>
+              <Link 
+                href="/blog" 
+                fontSize="sm" 
+                isExternal
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Blog <Icon as={ExternalLinkIcon} mx="2px" />
               </Link>
-              <Link href="/api" fontSize="sm" isExternal>
+              <Link 
+                href="/api" 
+                fontSize="sm" 
+                isExternal
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 API Reference <Icon as={ExternalLinkIcon} mx="2px" />
               </Link>
             </VStack>
@@ -68,13 +122,40 @@ export const Footer: React.FC = () => {
             {/* Support links */}
             <VStack align="start" spacing={3} flex={1}>
               <Text fontWeight="bold">Support</Text>
-              <Link href="/help" fontSize="sm" isExternal>
+              <Link 
+                href="/help" 
+                fontSize="sm" 
+                isExternal
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Help Center <Icon as={ExternalLinkIcon} mx="2px" />
               </Link>
-              <Link href="/contact" fontSize="sm" isExternal>
+              <Link 
+                href="/contact" 
+                fontSize="sm" 
+                isExternal
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Contact Us <Icon as={ExternalLinkIcon} mx="2px" />
               </Link>
-              <Link href="/community" fontSize="sm" isExternal>
+              <Link 
+                href="/community" 
+                fontSize="sm" 
+                isExternal
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Community <Icon as={ExternalLinkIcon} mx="2px" />
               </Link>
             </VStack>
@@ -93,13 +174,40 @@ export const Footer: React.FC = () => {
             </Text>
             
             <HStack spacing={6}>
-              <Link href="/privacy" fontSize="sm" isExternal>
+              <Link 
+                href="/privacy" 
+                fontSize="sm" 
+                isExternal
+                className="footer-link"
+                display="flex"
+                alignItems="center" 
+                minH="44px"
+                px={2}
+              >
                 Privacy Policy
               </Link>
-              <Link href="/terms" fontSize="sm" isExternal>
+              <Link 
+                href="/terms" 
+                fontSize="sm" 
+                isExternal
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Terms of Service
               </Link>
-              <Link href="/cookies" fontSize="sm" isExternal>
+              <Link 
+                href="/cookies" 
+                fontSize="sm" 
+                isExternal
+                className="footer-link"
+                display="flex"
+                alignItems="center"
+                minH="44px"
+                px={2}
+              >
                 Cookie Policy
               </Link>
             </HStack>

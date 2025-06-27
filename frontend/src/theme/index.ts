@@ -1,51 +1,45 @@
-import { extendTheme, type ThemeConfig } from '@chakra-ui/react'
-import { mode } from '@chakra-ui/theme-tools'
+import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
+import { mode } from '@chakra-ui/theme-tools';
 
-// Color palette optimized for WCAG 2.2 AA compliance
 const colors = {
   brand: {
-    50: '#E6F3FF',
-    100: '#B3DAFF',
-    200: '#80C1FF',
-    300: '#4DA8FF',
-    400: '#1A8FFF',
-    500: '#1890FF', // Primary brand color
-    600: '#0066CC',
-    700: '#004C99',
-    800: '#003366',
-    900: '#001933',
+    50: '#E6F4FF',
+    100: '#B3D8FF', 
+    200: '#80BCFF',
+    300: '#4DA0FF',
+    400: '#1A84FF',
+    500: '#1890FF', // Primary Blue - matches design system
+    600: '#0050B3',
+    700: '#003A80',
+    800: '#00244D',
+    900: '#000E1A',
   },
   startup: {
-    50: '#FFF5E6',
-    100: '#FFE6B3',
+    50: '#FFF7E6',
+    100: '#FFE7B3',
     200: '#FFD780',
-    300: '#FFC84D',
-    400: '#FFB91A',
-    500: '#FF9500', // Startup orange
+    300: '#FFC74D',
+    400: '#FFB71A',
+    500: '#FF9500', // Startup Orange
     600: '#CC7700',
     700: '#995900',
     800: '#663B00',
     900: '#331D00',
   },
-  invest: {
-    50: '#E6F7F0',
-    100: '#B3E6D1',
-    200: '#80D5B2',
-    300: '#4DC493',
-    400: '#1AB374',
-    500: '#52C41A', // Investment green
-    600: '#419E15',
-    700: '#317710',
-    800: '#20500A',
-    900: '#102905',
+  investor: {
+    50: '#F0FFF4',
+    100: '#C6F7D0',
+    200: '#9CEFAB',
+    300: '#72E787',
+    400: '#48DF62',
+    500: '#52C41A', // Investment Green
+    600: '#237804',
+    700: '#1A5A03',
+    800: '#103C02',
+    900: '#071E01',
   },
-  semantic: {
-    error: '#FF4D4F',
-    warning: '#FAAD14',
-    success: '#52C41A',
-    info: '#1890FF',
-  },
-  gray: {
+  neutral: {
+    0: '#FFFFFF',
     50: '#FAFAFA',
     100: '#F5F5F5',
     200: '#E8E8E8',
@@ -55,307 +49,341 @@ const colors = {
     600: '#595959',
     700: '#434343',
     800: '#262626',
-    900: '#141414',
+    900: '#1F1F1F',
+    950: '#141414',
   },
-}
+  bg: {
+    base: {
+      light: '#F8FAFF',
+      dark: '#0A0A0B',
+    },
+    surface: {
+      light: 'rgba(255, 255, 255, 0.8)',
+      dark: 'rgba(18, 18, 19, 0.8)',
+    },
+    elevated: {
+      light: 'rgba(255, 255, 255, 0.95)',
+      dark: 'rgba(26, 26, 28, 0.95)',
+    },
+    glass: {
+      light: 'rgba(255, 255, 255, 0.7)',
+      dark: 'rgba(18, 18, 19, 0.7)',
+    },
+  },
+  text: {
+    primary: {
+      light: 'rgba(0, 0, 0, 0.92)',
+      dark: 'rgba(255, 255, 255, 0.92)',
+    },
+    secondary: {
+      light: 'rgba(0, 0, 0, 0.64)',
+      dark: 'rgba(255, 255, 255, 0.64)',
+    },
+    tertiary: {
+      light: 'rgba(0, 0, 0, 0.38)',
+      dark: 'rgba(255, 255, 255, 0.38)',
+    },
+  },
+};
 
-// Typography system with accessibility focus
 const fonts = {
-  heading: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
-  body: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif',
-  mono: '"JetBrains Mono", "Fira Code", "Consolas", monospace',
-}
+  heading: `'Poppins', system-ui, -apple-system, sans-serif`,
+  body: `'Inter', system-ui, -apple-system, sans-serif`,
+  accent: `'Space Grotesk', system-ui, -apple-system, sans-serif`,
+};
 
-const fontSizes = {
-  xs: '0.75rem',   // 12px
-  sm: '0.875rem',  // 14px
-  md: '1rem',      // 16px (base)
-  lg: '1.125rem',  // 18px
-  xl: '1.25rem',   // 20px
-  '2xl': '1.5rem', // 24px
-  '3xl': '1.875rem', // 30px
-  '4xl': '2.25rem',  // 36px
-  '5xl': '3rem',     // 48px
-  '6xl': '3.75rem',  // 60px
-}
+const shadows = {
+  sm: '0 2px 8px rgba(0, 0, 0, 0.04)',
+  md: '0 8px 32px rgba(0, 0, 0, 0.05)',
+  lg: '0 12px 40px rgba(0, 0, 0, 0.1)',
+  xl: '0 20px 60px rgba(0, 0, 0, 0.15)',
+  'sm-dark': '0 2px 8px rgba(0, 0, 0, 0.2)',
+  'md-dark': '0 8px 32px rgba(0, 0, 0, 0.3)',
+  'lg-dark': '0 12px 40px rgba(0, 0, 0, 0.4)',
+  'xl-dark': '0 20px 60px rgba(0, 0, 0, 0.5)',
+};
 
-// Component style overrides for accessibility
 const components = {
   Button: {
     baseStyle: {
-      fontWeight: 'medium',
-      borderRadius: 'md',
-      _focus: {
-        boxShadow: '0 0 0 3px rgba(24, 144, 255, 0.3)',
-        outline: 'none',
+      fontFamily: 'heading',
+      fontWeight: '600',
+      borderRadius: '16px',
+      minH: '44px',
+      transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+      _hover: {
+        transform: 'translateY(-3px) scale(1.02)',
       },
-      _disabled: {
-        opacity: 0.6,
-        cursor: 'not-allowed',
+      _active: {
+        transform: 'translateY(1px) scale(0.98)',
+      },
+      _focusVisible: {
+        outline: '3px solid rgba(24, 144, 255, 0.5)',
+        outlineOffset: '2px',
       },
     },
     variants: {
       solid: (props: any) => ({
-        bg: mode('brand.500', 'brand.200')(props),
-        color: mode('white', 'gray.800')(props),
+        bg: `${props.colorScheme}.500`,
+        color: 'white',
+        boxShadow: mode(shadows.md, shadows['md-dark'])(props),
         _hover: {
-          bg: mode('brand.600', 'brand.300')(props),
-          _disabled: {
-            bg: mode('brand.500', 'brand.200')(props),
-          },
-        },
-        _active: {
-          bg: mode('brand.700', 'brand.400')(props),
+          bg: `${props.colorScheme}.600`,
+          boxShadow: mode(shadows.lg, shadows['lg-dark'])(props),
         },
       }),
-      outline: (props: any) => ({
-        border: '2px solid',
-        borderColor: mode('brand.500', 'brand.200')(props),
-        color: mode('brand.500', 'brand.200')(props),
+      startup: {
+        background: 'linear-gradient(135deg, #FF9500 0%, #FF5500 100%)',
+        clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%)',
+        pl: 8,
+        color: 'white',
+        boxShadow: '0 4px 20px rgba(255, 149, 0, 0.3)',
         _hover: {
-          bg: mode('brand.50', 'whiteAlpha.200')(props),
+          boxShadow: '0 8px 25px rgba(255, 149, 0, 0.4)',
+        },
+      },
+      investor: {
+        background: 'linear-gradient(135deg, #52C41A 0%, #237804 100%)',
+        borderRadius: '50px 16px 16px 50px',
+        color: 'white',
+        boxShadow: '0 4px 20px rgba(82, 196, 26, 0.3)',
+        _hover: {
+          boxShadow: '0 8px 25px rgba(82, 196, 26, 0.4)',
+        },
+      },
+      asymmetric: {
+        clipPath: 'polygon(0 0, 100% 0, 90% 100%, 0 100%)',
+        pr: 8,
+        background: 'linear-gradient(135deg, #1890FF 0%, #0050B3 100%)',
+        color: 'white',
+        boxShadow: '0 4px 20px rgba(24, 144, 255, 0.3)',
+      },
+      glass: (props: any) => ({
+        bg: mode('bg.glass.light', 'bg.glass.dark')(props),
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid',
+        borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(255, 255, 255, 0.06)')(props),
+        color: mode('text.primary.light', 'text.primary.dark')(props),
+        boxShadow: mode(shadows.sm, shadows['sm-dark'])(props),
+        _hover: {
+          bg: mode('rgba(255, 255, 255, 0.9)', 'rgba(18, 18, 19, 0.9)')(props),
         },
       }),
       ghost: (props: any) => ({
-        color: mode('brand.500', 'brand.200')(props),
+        bg: 'transparent',
+        color: mode('text.secondary.light', 'text.secondary.dark')(props),
         _hover: {
-          bg: mode('brand.50', 'whiteAlpha.200')(props),
+          bg: mode('rgba(24, 144, 255, 0.08)', 'rgba(24, 144, 255, 0.12)')(props),
         },
       }),
-      // Custom variant for CTA sections with dark backgrounds
-      'cta-primary': {
-        bg: 'white',
-        color: 'brand.500',
-        _hover: {
-          bg: 'gray.100',
-        },
-        _focus: {
-          boxShadow: '0 0 0 3px rgba(255, 255, 255, 0.3)',
-        },
-      },
-      'cta-secondary': {
-        border: '2px solid white',
-        borderColor: 'white',
-        color: 'white',
+      outline: (props: any) => ({
         bg: 'transparent',
+        border: '2px solid',
+        borderColor: `${props.colorScheme}.500`,
+        color: `${props.colorScheme}.500`,
         _hover: {
-          bg: 'whiteAlpha.200',
+          bg: `${props.colorScheme}.50`,
         },
-        _focus: {
-          boxShadow: '0 0 0 3px rgba(255, 255, 255, 0.3)',
-        },
-      },
+      }),
     },
     sizes: {
       sm: {
-        h: '32px',
-        minW: '32px',
-        fontSize: 'sm',
-        px: 3,
+        minH: '36px',
+        px: 4,
+        py: 2,
+        fontSize: 'xs',
       },
       md: {
-        h: '40px',
-        minW: '40px',
-        fontSize: 'md',
-        px: 4,
+        minH: '44px',
+        px: 6,
+        py: 3,
+        fontSize: 'sm',
       },
       lg: {
-        h: '48px',
-        minW: '48px',
+        minH: '56px',
+        px: 8,
+        py: 4,
+        fontSize: 'md',
+      },
+      xl: {
+        minH: '64px',
+        px: 10,
+        py: 5,
         fontSize: 'lg',
-        px: 6,
       },
     },
   },
-  
-  Input: {
+  Card: {
+    baseStyle: (props: any) => ({
+      container: {
+        bg: mode('bg.surface.light', 'bg.surface.dark')(props),
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        borderRadius: '24px',
+        border: '1px solid',
+        borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(255, 255, 255, 0.06)')(props),
+        boxShadow: mode(shadows.md, shadows['md-dark'])(props),
+        overflow: 'hidden',
+        transition: 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
+        _hover: {
+          transform: 'translateY(-8px) scale(1.02)',
+          boxShadow: mode(shadows.xl, shadows['xl-dark'])(props),
+        },
+      },
+    }),
     variants: {
-      outline: (props: any) => ({
-        field: {
-          borderColor: mode('gray.300', 'gray.600')(props),
-          _hover: {
-            borderColor: mode('brand.300', 'brand.500')(props),
-          },
-          _focus: {
-            borderColor: mode('brand.500', 'brand.300')(props),
-            boxShadow: '0 0 0 1px rgba(24, 144, 255, 0.3)',
-          },
-          _invalid: {
-            borderColor: 'semantic.error',
-            boxShadow: '0 0 0 1px rgba(255, 77, 79, 0.3)',
-          },
+      startup: (props: any) => ({
+        container: {
+          borderRadius: '24px 50% 24px 24px',
+          borderLeft: '4px solid',
+          borderLeftColor: 'startup.500',
+        },
+      }),
+      investor: (props: any) => ({
+        container: {
+          borderRadius: '50px 24px 24px 50px',
+          borderLeft: '4px solid',
+          borderLeftColor: 'investor.500',
+        },
+      }),
+      glass: (props: any) => ({
+        container: {
+          bg: mode('bg.glass.light', 'bg.glass.dark')(props),
         },
       }),
     },
   },
-
-  Card: {
-    baseStyle: (props: any) => ({
-      container: {
-        bg: mode('white', 'gray.800')(props),
-        borderRadius: 'lg',
-        border: '1px solid',
-        borderColor: mode('gray.200', 'gray.700')(props),
-        boxShadow: 'sm',
-        _hover: {
-          boxShadow: 'md',
-        },
-      },
-    }),
-  },
-
-  Link: {
-    baseStyle: (props: any) => ({
-      color: mode('brand.500', 'brand.300')(props),
-      _hover: {
-        textDecoration: 'underline',
-        color: mode('brand.600', 'brand.200')(props),
-      },
-      _focus: {
-        boxShadow: '0 0 0 2px rgba(24, 144, 255, 0.3)',
-        outline: 'none',
-        borderRadius: 'sm',
-      },
-    }),
-  },
-
   Heading: {
     baseStyle: (props: any) => ({
-      color: mode('gray.800', 'white')(props),
-      fontWeight: 'bold',
-      lineHeight: 'shorter',
+      fontFamily: 'heading',
+      fontWeight: '700',
+      letterSpacing: '-0.02em',
+      lineHeight: '1.2',
+      color: mode('text.primary.light', 'text.primary.dark')(props),
     }),
   },
-
   Text: {
     baseStyle: (props: any) => ({
-      color: mode('gray.700', 'gray.300')(props),
-      lineHeight: 'base',
+      color: mode('text.secondary.light', 'text.secondary.dark')(props),
+      lineHeight: '1.6',
     }),
   },
-
-  Alert: {
-    variants: {
-      solid: (props: any) => {
-        const { status } = props
-        const statusColors = {
-          success: 'semantic.success',
-          error: 'semantic.error',
-          warning: 'semantic.warning',
-          info: 'semantic.info',
-        }
-        return {
-          container: {
-            bg: statusColors[status as keyof typeof statusColors],
-            color: 'white',
-          },
-        }
+  Input: {
+    baseStyle: {
+      field: {
+        borderRadius: '12px',
+        minH: '44px',
+        transition: 'all 0.3s ease',
+        _focusVisible: {
+          outline: '3px solid rgba(24, 144, 255, 0.5)',
+          outlineOffset: '2px',
+        },
       },
+    },
+    variants: {
+      glass: (props: any) => ({
+        field: {
+          bg: mode('bg.glass.light', 'bg.glass.dark')(props),
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          border: '1px solid',
+          borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(255, 255, 255, 0.06)')(props),
+        },
+      }),
     },
   },
-}
+  Container: {
+    baseStyle: {
+      maxW: '1200px',
+      px: { base: 4, md: 6, lg: 8 },
+    },
+  },
+};
 
-// Global styles
 const styles = {
   global: (props: any) => ({
-    'html, body': {
-      fontSize: 'md',
-      bg: mode('gray.50', 'gray.900')(props),
-      color: mode('gray.800', 'white')(props),
+    body: {
+      bg: mode('bg.base.light', 'bg.base.dark')(props),
+      color: mode('text.primary.light', 'text.primary.dark')(props),
+      fontFamily: 'body',
+      lineHeight: '1.6',
+      WebkitFontSmoothing: 'antialiased',
+      MozOsxFontSmoothing: 'grayscale',
+      transition: 'background-color 0.3s ease, color 0.3s ease',
     },
-    '*::placeholder': {
-      color: mode('gray.400', 'gray.500')(props),
+    '*': {
+      boxSizing: 'border-box',
     },
-    '*, *::before, *::after': {
-      borderColor: mode('gray.200', 'gray.700')(props),
+    'h1, h2, h3, h4, h5, h6': {
+      fontFamily: 'heading',
+      fontWeight: '700',
+      letterSpacing: '-0.02em',
+      lineHeight: '1.2',
     },
-    // Focus styles for keyboard navigation
-    '*:focus-visible': {
-      outline: '2px solid',
-      outlineColor: 'brand.500',
-      outlineOffset: '2px',
+    h1: {
+      fontSize: { base: '2rem', md: '3rem', lg: '3.5rem' },
     },
-    // High contrast mode support
-    '@media (prefers-contrast: high)': {
-      '*': {
-        borderWidth: '2px',
-      },
+    h2: {
+      fontSize: { base: '1.5rem', md: '2rem', lg: '2.5rem' },
     },
-    // Reduced motion support
-    '@media (prefers-reduced-motion: reduce)': {
-      '*': {
-        animationDuration: '0.01ms !important',
-        animationIterationCount: '1 !important',
-        transitionDuration: '0.01ms !important',
+    h3: {
+      fontSize: { base: '1.25rem', md: '1.5rem', lg: '1.875rem' },
+    },
+    // Focus management for accessibility
+    '.skip-link': {
+      position: 'absolute',
+      top: '-40px',
+      left: '6px',
+      bg: 'brand.500',
+      color: 'white',
+      p: 2,
+      textDecoration: 'none',
+      borderRadius: 'sm',
+      zIndex: 10000,
+      transition: 'top 0.15s ease',
+      _focus: {
+        top: '6px',
       },
     },
   }),
-}
+};
 
-// Theme configuration
 const config: ThemeConfig = {
   initialColorMode: 'light',
   useSystemColorMode: true,
-  disableTransitionOnChange: false,
-}
+};
 
-// Create the theme
 export const theme = extendTheme({
   config,
   colors,
   fonts,
-  fontSizes,
+  shadows,
   components,
   styles,
   space: {
-    px: '1px',
-    0.5: '0.125rem',
-    1: '0.25rem',
-    1.5: '0.375rem',
-    2: '0.5rem',
-    2.5: '0.625rem',
-    3: '0.75rem',
-    3.5: '0.875rem',
-    4: '1rem',
-    5: '1.25rem',
-    6: '1.5rem',
-    7: '1.75rem',
-    8: '2rem',
-    9: '2.25rem',
-    10: '2.5rem',
-    12: '3rem',
-    14: '3.5rem',
-    16: '4rem',
-    20: '5rem',
-    24: '6rem',
-    28: '7rem',
-    32: '8rem',
-    36: '9rem',
-    40: '10rem',
-    44: '11rem',
-    48: '12rem',
-    52: '13rem',
-    56: '14rem',
-    60: '15rem',
-    64: '16rem',
-    72: '18rem',
-    80: '20rem',
-    96: '24rem',
+    0: '0',
+    1: '4px',
+    2: '8px',
+    3: '12px',
+    4: '16px',
+    5: '20px',
+    6: '24px',
+    8: '32px',
+    10: '40px',
+    12: '48px',
+    16: '64px',
+    20: '80px',
+    24: '96px',
   },
-  breakpoints: {
-    base: '0em',
-    sm: '30em',
-    md: '48em',
-    lg: '62em',
-    xl: '80em',
-    '2xl': '96em',
+  radii: {
+    sm: '8px',
+    md: '12px',
+    lg: '16px',
+    xl: '24px',
+    '2xl': '32px',
+    full: '9999px',
   },
-  shadows: {
-    sm: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-    md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-    xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-  },
-})
+});
 
-export default theme
+export default theme;

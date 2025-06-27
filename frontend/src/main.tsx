@@ -7,12 +7,14 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import App from './App'
 import { theme } from './theme'
-import { AuthProvider } from './providers/AuthProvider'
-import { SocketProvider } from './providers/SocketProvider'
+import { AuthProvider } from './providers/AuthProvider';
+import { SocketProvider } from './providers/SocketProvider';
 
-// Import global styles and accessibility
-import './styles/globals.css'
-import './styles/accessibility.css'
+// Import design system and global styles
+import './styles/design-system.css';
+import './styles/globals.css';
+import './styles/accessibility.css';
+import './styles/touch-targets.css';
 
 // React Query client configuration
 const queryClient = new QueryClient({
@@ -20,18 +22,18 @@ const queryClient = new QueryClient({
     queries: {
       staleTime: 5 * 60 * 1000, // 5 minutes
       retry: (failureCount, error: any) => {
-        if (error?.status === 404 || error?.status === 403) return false
-        return failureCount < 3
+        if (error?.status === 404 || error?.status === 403) return false;
+        return failureCount < 3;
       },
     },
     mutations: {
       retry: 1,
     },
   },
-})
+});
 
 // Enable React Query devtools in development
-const isDevelopment = import.meta.env.DEV
+const isDevelopment = import.meta.env.DEV;
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -49,4 +51,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </QueryClientProvider>
     </ChakraProvider>
   </React.StrictMode>,
-)
+);

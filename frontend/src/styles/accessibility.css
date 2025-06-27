@@ -43,9 +43,19 @@ button,
 [role="button"], 
 input[type="submit"], 
 input[type="button"], 
-input[type="reset"] {
+input[type="reset"],
+a[href],
+a[role="button"],
+.chakra-link,
+.chakra-button,
+.nav-link {
   min-height: 44px;
   min-width: 44px;
+  padding: 10px;  /* Add adequate padding */
+  display: inline-flex;  /* Ensure proper display */
+  align-items: center;
+  justify-content: center;
+  line-height: 24px;
 }
 
 /* High contrast mode adaptations */

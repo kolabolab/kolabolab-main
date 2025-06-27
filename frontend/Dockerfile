@@ -11,10 +11,12 @@ COPY package*.json ./
 
 # Development stage
 FROM base AS development
-RUN npm ci
+ENV ROLLUP_SKIP_LOAD_NATIVE_PLUGIN=true
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+RUN npm install --no-optional
 COPY . .
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--", "--no-native"]
 
 # Build stage
 FROM base AS builder
