@@ -1,0 +1,36 @@
+{
+  "version": 2,
+  "name": "kolabolab-backend",
+  "builds": [
+    {
+      "src": "src/main.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["dist/**"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/main.ts"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "JWT_SECRET": "@jwt-secret",
+    "JWT_REFRESH_SECRET": "@jwt-refresh-secret",
+    "DB_HOST": "@postgres-host",
+    "DB_PORT": "@postgres-port", 
+    "DB_USERNAME": "@postgres-username",
+    "DB_PASSWORD": "@postgres-password",
+    "DB_NAME": "@postgres-database",
+    "REDIS_HOST": "@redis-host",
+    "REDIS_PORT": "@redis-port",
+    "ELASTICSEARCH_HOST": "@elasticsearch-host",
+    "ELASTICSEARCH_PORT": "@elasticsearch-port",
+    "ELASTICSEARCH_PROTOCOL": "@elasticsearch-protocol",
+    "ELASTICSEARCH_USERNAME": "@elasticsearch-username",
+    "ELASTICSEARCH_PASSWORD": "@elasticsearch-password"
+  }
+}
