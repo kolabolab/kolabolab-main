@@ -14,7 +14,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { tokens, setLoading, clearAuth } = useAuth()
+  const { tokens, clearAuth } = useAuth()
 
   useEffect(() => {
     // Set up axios interceptors for authentication

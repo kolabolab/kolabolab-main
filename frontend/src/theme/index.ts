@@ -233,14 +233,14 @@ const components = {
       },
     }),
     variants: {
-      startup: (props: any) => ({
+      startup: () => ({
         container: {
           borderRadius: '24px 50% 24px 24px',
           borderLeft: '4px solid',
           borderLeftColor: 'startup.500',
         },
       }),
-      investor: (props: any) => ({
+      investor: () => ({
         container: {
           borderRadius: '50px 24px 24px 50px',
           borderLeft: '4px solid',

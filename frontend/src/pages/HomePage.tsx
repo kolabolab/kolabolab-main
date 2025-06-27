@@ -28,7 +28,7 @@ interface FeatureProps {
   gradient?: string;
 }
 
-const Feature: React.FC<FeatureProps> = ({ title, text, icon, variant = 'default', gradient }) => {
+const Feature: React.FC<FeatureProps> = ({ title, text, icon, variant = 'default' }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

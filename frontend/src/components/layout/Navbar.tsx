@@ -11,8 +11,6 @@ import {
   MenuItem,
   MenuDivider,
   useDisclosure,
-  useColorModeValue,
-  Stack,
   Avatar,
   Text,
   Link as ChakraLink,
@@ -263,7 +261,7 @@ export const Navbar: React.FC = () => {
         autoFocus={true} 
         returnFocusOnClose={true}
       >
-        <DrawerOverlay backdrop="blur(8px)" />
+        <DrawerOverlay />
         <DrawerContent className="glass-panel">
           <Box as="nav" role="navigation" aria-label="Main Navigation" p={6}>
             <VStack spacing={6} align="stretch">

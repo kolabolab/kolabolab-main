@@ -18,7 +18,7 @@ export const safeClassName = (element: HTMLElement | Element | null): string => 
   
   // Handle SVG elements where className is an SVGAnimatedString
   if (className && typeof className === 'object' && 'baseVal' in className) {
-    return className.baseVal;
+    return (className as any).baseVal;
   }
   
   return '';
@@ -32,7 +32,7 @@ export const safeAddClass = (element: HTMLElement | Element | null, className: s
   
   // For SVG elements
   if (typeof element.className === 'object' && 'baseVal' in element.className) {
-    element.className.baseVal = `${element.className.baseVal} ${className}`.trim();
+    (element.className as any).baseVal = `${(element.className as any).baseVal} ${className}`.trim();
     return;
   }
   
@@ -52,8 +52,8 @@ export const fixZeroSizedElements = (): void => {
   
   zeroLinks.forEach(element => {
     const computed = window.getComputedStyle(element);
-    const hasVisibleText = element.textContent?.trim().length > 0;
-    const hasAriaLabel = element.getAttribute('aria-label')?.length > 0;
+    const hasVisibleText = element.textContent?.trim().length && element.textContent.trim().length > 0;
+    const hasAriaLabel = element.getAttribute('aria-label')?.length && element.getAttribute('aria-label')!.length > 0;
     
     // If element has no dimensions and no visible text or aria-label
     if ((computed.width === '0px' || computed.height === '0px') && 
