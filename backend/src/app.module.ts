@@ -36,20 +36,36 @@ import { AppController } from './app.controller';
     // Database
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get('database.host'),
-        port: configService.get('database.port'),
-        username: configService.get('database.username'),
-        password: configService.get('database.password'),
-        database: configService.get('database.name'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: configService.get('NODE_ENV') === 'development',
-        logging: configService.get('NODE_ENV') === 'development',
-        ssl: configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
-        retryAttempts: 3,
-        retryDelay: 3000,
-      }),
+      useFactory: (configService: ConfigService) => {
+        const baseConfig = {
+          type: 'postgres' as const,
+          entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          synchronize: configService.get('database.synchronize'),
+          logging: configService.get('database.logging'),
+          ssl: configService.get('database.ssl'),
+          retryAttempts: 3,
+          retryDelay: 3000,
+        };
+
+        // Support connection string (for cloud providers like Neon)
+        const databaseUrl = configService.get('database.url');
+        if (databaseUrl) {
+          return {
+            ...baseConfig,
+            url: databaseUrl,
+          };
+        }
+
+        // Fall back to individual parameters
+        return {
+          ...baseConfig,
+          host: configService.get('database.host'),
+          port: configService.get('database.port'),
+          username: configService.get('database.username'),
+          password: configService.get('database.password'),
+          database: configService.get('database.name'),
+        };
+      },
       inject: [ConfigService],
     }),
 
