@@ -14,7 +14,6 @@ import {
   Input,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   Textarea,
   Select,
   Badge,
@@ -33,24 +32,13 @@ import {
   ModalCloseButton,
   IconButton,
   useToast,
-  Tabs,
-  TabList,
-  TabPanels,
-  Tab,
-  TabPanel,
   Stat,
   StatLabel,
   StatNumber,
   StatHelpText,
-  Progress,
   Switch,
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
 } from '@chakra-ui/react'
-import { Link as RouterLink } from 'react-router-dom'
+// import { Link as RouterLink } from 'react-router-dom'
 import { 
   FiEdit3, 
   FiMapPin,
@@ -61,18 +49,10 @@ import {
   FiPlus,
   FiX,
   FiEye,
-  FiHeart,
-  FiStar,
-  FiBriefcase,
   FiUsers,
-  FiDollarSign,
   FiSettings,
   FiCamera,
-  FiUpload,
-  FiExternalLink,
-  FiAward,
-  FiTarget,
-  FiCalendar
+  FiExternalLink
 } from 'react-icons/fi'
 import { Helmet } from 'react-helmet-async'
 
@@ -143,7 +123,7 @@ const ProfilePage: React.FC = () => {
   });
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [, setErrors] = useState<Record<string, string>>({});
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [portfolioForm, setPortfolioForm] = useState({
     title: '',

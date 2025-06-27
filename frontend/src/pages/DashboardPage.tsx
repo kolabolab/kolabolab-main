@@ -25,8 +25,6 @@ import {
   useColorModeValue,
   Skeleton,
   SkeletonText,
-  Alert,
-  AlertIcon,
   Menu,
   MenuButton,
   MenuList,
@@ -40,12 +38,10 @@ import {
   FiUsers, 
   FiDollarSign, 
   FiBriefcase,
-  FiHeart,
   FiEye,
   FiMessageSquare,
   FiBell,
   FiMoreVertical,
-  FiCalendar,
   FiTarget,
   FiAward,
   FiArrowRight
@@ -91,7 +87,7 @@ const DashboardPage: React.FC = () => {
   const [myStartups, setMyStartups] = useState<StartupSummary[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const bgColor = useColorModeValue('white', 'gray.800');
+  // const bgColor = useColorModeValue('white', 'gray.800');
   const cardBg = useColorModeValue('gray.50', 'gray.700');
 
   useEffect(() => {

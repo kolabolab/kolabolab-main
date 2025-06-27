@@ -8,7 +8,6 @@ import {
   HStack,
   Card,
   CardBody,
-  CardHeader,
   Button,
   Input,
   FormControl,
@@ -22,19 +21,11 @@ import {
   Badge,
   Icon,
   Image,
-  Divider,
   SimpleGrid,
   useToast,
   Progress,
   Alert,
   AlertIcon,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
   IconButton,
 } from '@chakra-ui/react'
 import { useNavigate } from 'react-router-dom'
@@ -45,17 +36,9 @@ import {
   FiCheck,
   FiArrowLeft,
   FiArrowRight,
-  FiEye,
   FiMapPin,
   FiUsers,
-  FiDollarSign,
-  FiBriefcase,
-  FiCalendar,
-  FiTarget,
-  FiGlobe,
-  FiLinkedin,
-  FiGithub,
-  FiMail
+  FiCalendar
 } from 'react-icons/fi'
 import { Helmet } from 'react-helmet-async'
 
@@ -151,7 +134,7 @@ const CreateStartupPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [newTag, setNewTag] = useState('');
   const [newTechnology, setNewTechnology] = useState('');
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const toast = useToast();
 

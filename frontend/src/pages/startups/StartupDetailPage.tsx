@@ -9,20 +9,15 @@ import {
   SimpleGrid,
   Card,
   CardBody,
-  CardHeader,
   Button,
   Badge,
   Icon,
   Avatar,
   Progress,
-  Divider,
-  Flex,
   Link,
   Image,
   Skeleton,
   SkeletonText,
-  Alert,
-  AlertIcon,
   useToast,
   Modal,
   ModalOverlay,
@@ -42,26 +37,21 @@ import {
   Stat,
   StatLabel,
   StatNumber,
-  StatHelpText,
 } from '@chakra-ui/react'
 import { Link as RouterLink, useParams, useNavigate } from 'react-router-dom'
 import { 
   FiMapPin, 
   FiUsers, 
-  FiDollarSign, 
   FiCalendar,
   FiEye,
   FiHeart,
   FiShare2,
   FiMessageSquare,
   FiStar,
-  FiTrendingUp,
-  FiTarget,
   FiAward,
   FiExternalLink,
   FiMail,
   FiLinkedin,
-  FiGithub,
   FiArrowLeft
 } from 'react-icons/fi'
 import { Helmet } from 'react-helmet-async'
@@ -133,7 +123,7 @@ const StartupDetailPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
   const [applicationMessage, setApplicationMessage] = useState('');
-  const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
+  const [, setSelectedPosition] = useState<string | null>(null);
 
   useEffect(() => {
     const loadStartupDetails = async () => {

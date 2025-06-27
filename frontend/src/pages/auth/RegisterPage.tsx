@@ -31,7 +31,7 @@ import {
   Badge,
 } from '@chakra-ui/react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
-import { FiMail, FiLock, FiEye, FiEyeOff, FiUser, FiGithub, FiMapPin, FiBriefcase } from 'react-icons/fi'
+import { FiMail, FiLock, FiEye, FiEyeOff, FiUser, FiGithub, FiMapPin } from 'react-icons/fi'
 import { FaGoogle, FaLinkedin } from 'react-icons/fa'
 import { Helmet } from 'react-helmet-async'
 

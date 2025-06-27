@@ -9,7 +9,6 @@ import {
   SimpleGrid,
   Card,
   CardBody,
-  CardHeader,
   Button,
   Input,
   InputGroup,
@@ -23,8 +22,6 @@ import {
   Badge,
   Icon,
   Avatar,
-  Progress,
-  Flex,
   Link,
   Skeleton,
   SkeletonText,
@@ -38,15 +35,12 @@ import {
   IconButton,
   Tabs,
   TabList,
-  TabPanels,
   Tab,
-  TabPanel,
   Divider,
   RangeSlider,
   RangeSliderTrack,
   RangeSliderFilledTrack,
   RangeSliderThumb,
-  useToast,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import { 
@@ -119,7 +113,7 @@ const SearchPage: React.FC = () => {
   const [resultCount, setResultCount] = useState(0);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const toast = useToast();
+  // const toast = useToast();
 
   useEffect(() => {
     performSearch();
@@ -352,12 +346,15 @@ const SearchPage: React.FC = () => {
                   </InputGroup>
 
                   <HStack spacing={4} w="full" flexWrap="wrap">
-                    <Tabs value={filters.type} onChange={(value) => handleFilterChange('type', value)}>
+                    <Tabs index={filters.type === 'all' ? 0 : filters.type === 'startups' ? 1 : filters.type === 'people' ? 2 : 3} onChange={(index) => {
+                      const types = ['all', 'startups', 'people', 'opportunities'];
+                      handleFilterChange('type', types[index]);
+                    }}>
                       <TabList>
-                        <Tab value="all">All Results</Tab>
-                        <Tab value="startups">Startups</Tab>
-                        <Tab value="people">People</Tab>
-                        <Tab value="opportunities">Opportunities</Tab>
+                        <Tab>All Results</Tab>
+                        <Tab>Startups</Tab>
+                        <Tab>People</Tab>
+                        <Tab>Opportunities</Tab>
                       </TabList>
                     </Tabs>
 
@@ -467,10 +464,10 @@ const SearchPage: React.FC = () => {
                               <HStack spacing={2} align="start">
                                 <Badge
                                   colorScheme={getResultColor(result.type)}
-                                  leftIcon={<Icon as={getResultIcon(result.type)} w={3} h={3} />}
                                   px={2}
                                   py={1}
                                 >
+                                  <Icon as={getResultIcon(result.type)} w={3} h={3} mr={1} />
                                   {result.type}
                                 </Badge>
                                 {result.featured && (
