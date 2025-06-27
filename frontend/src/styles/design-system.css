@@ -5,51 +5,51 @@
 
 /* CSS Custom Properties - Design Tokens */
 :root {
-  /* Core Brand Colors */
-  --primary-blue: #1890FF;
-  --startup-orange: #FF9500;
-  --investment-green: #52C41A;
+  /* Core Brand Colors - Green Primary Theme */
+  --primary-green: #10B981;
+  --accent-gray: #6B7280;
+  --support-blue: #3B82F6;
   
-  /* Extended Blue Palette */
-  --blue-50: #E6F4FF;
-  --blue-100: #B3D8FF;
-  --blue-200: #80BCFF;
-  --blue-300: #4DA0FF;
-  --blue-400: #1A84FF;
-  --blue-500: #1890FF;
-  --blue-600: #0050B3;
-  --blue-700: #003A80;
-  --blue-800: #00244D;
-  --blue-900: #000E1A;
+  /* Green Palette - Primary Brand Color */
+  --green-50: #ECFDF5;
+  --green-100: #D1FAE5;
+  --green-200: #A7F3D0;
+  --green-300: #6EE7B7;
+  --green-400: #34D399;
+  --green-500: #10B981;
+  --green-600: #059669;
+  --green-700: #047857;
+  --green-800: #065F46;
+  --green-900: #064E3B;
   
-  /* Orange Palette */
-  --orange-50: #FFF7E6;
-  --orange-100: #FFE7B3;
-  --orange-200: #FFD780;
-  --orange-300: #FFC74D;
-  --orange-400: #FFB71A;
-  --orange-500: #FF9500;
-  --orange-600: #CC7700;
-  --orange-700: #995900;
-  --orange-800: #663B00;
-  --orange-900: #331D00;
+  /* Gray Palette - Professional Accent */
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
   
-  /* Green Palette */
-  --green-50: #F0FFF4;
-  --green-100: #C6F7D0;
-  --green-200: #9CEFAB;
-  --green-300: #72E787;
-  --green-400: #48DF62;
-  --green-500: #52C41A;
-  --green-600: #237804;
-  --green-700: #1A5A03;
-  --green-800: #103C02;
-  --green-900: #071E01;
+  /* Blue Palette - Support Color */
+  --blue-50: #EFF6FF;
+  --blue-100: #DBEAFE;
+  --blue-200: #BFDBFE;
+  --blue-300: #93C5FD;
+  --blue-400: #60A5FA;
+  --blue-500: #3B82F6;
+  --blue-600: #2563EB;
+  --blue-700: #1D4ED8;
+  --blue-800: #1E40AF;
+  --blue-900: #1E3A8A;
   
-  /* Gradient System */
-  --gradient-blue: linear-gradient(135deg, #1890FF 0%, #0050B3 100%);
-  --gradient-orange: linear-gradient(135deg, #FF9500 0%, #FF5500 100%);
-  --gradient-green: linear-gradient(135deg, #52C41A 0%, #237804 100%);
+  /* Gradient System - Green Primary */
+  --gradient-primary: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  --gradient-secondary: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
+  --gradient-support: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
   --gradient-glass-dark: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
   
@@ -174,54 +174,69 @@ p {
   margin-bottom: var(--space-4);
 }
 
-/* Revolutionary Button System */
+/* Professional Button System - Uniform Alignment */
 .btn {
-  /* Base Properties */
+  /* Base Properties - Uniform Sizing */
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 44px; /* WCAG Compliance */
-  padding: var(--space-3) var(--space-6);
+  min-height: 44px; /* WCAG Compliance - Consistent Height */
+  height: 44px; /* Fixed height for uniform alignment */
+  padding: 0 var(--space-6); /* Horizontal padding only */
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 0.875rem;
+  line-height: 1; /* Consistent line height */
   text-decoration: none;
   border: none;
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  vertical-align: middle; /* Align buttons on same baseline */
   transition: all var(--duration-normal) var(--ease-bounce);
   
   /* Default Styling */
-  background: var(--gradient-blue);
+  background: var(--gradient-primary);
   color: white;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
 }
 
-/* Button Variants */
+/* Button Variants - Green Primary Professional Design */
 .btn-primary {
-  background: var(--gradient-blue);
-  box-shadow: 0 4px 20px rgba(24, 144, 255, 0.3);
+  background: var(--gradient-primary);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
 }
 
-.btn-startup {
-  background: var(--gradient-orange);
-  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
-  padding-left: var(--space-8);
-  box-shadow: 0 4px 20px rgba(255, 149, 0, 0.3);
+.btn-secondary {
+  background: var(--gradient-secondary);
+  box-shadow: 0 4px 20px rgba(107, 114, 128, 0.2);
 }
 
-.btn-investor {
-  background: var(--gradient-green);
-  border-radius: 50px var(--radius-lg) var(--radius-lg) 50px;
-  box-shadow: 0 4px 20px rgba(82, 196, 26, 0.3);
+.btn-support {
+  background: var(--gradient-support);
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
 }
 
-.btn-asymmetric {
-  clip-path: polygon(0 0, 100% 0, 90% 100%, 0 100%);
-  padding-right: var(--space-8);
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--primary-blue);
+  color: var(--primary-blue);
+  box-shadow: none;
+}
+
+.btn-outline-secondary {
+  background: transparent;
+  border: 2px solid var(--accent-gray);
+  color: var(--accent-gray);
+  box-shadow: none;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  box-shadow: none;
 }
 
 .btn-glass {
@@ -233,51 +248,41 @@ p {
   box-shadow: var(--shadow-sm);
 }
 
-.btn-secondary {
-  background: transparent;
-  border: 2px solid var(--primary-blue);
-  color: var(--primary-blue);
-  box-shadow: none;
-}
-
-.btn-ghost {
-  background: transparent;
-  color: var(--text-secondary);
-  box-shadow: none;
-}
-
-/* Button Sizes */
+/* Button Sizes - Uniform Heights */
 .btn-sm {
+  height: 36px;
   min-height: 36px;
-  padding: var(--space-2) var(--space-4);
+  padding: 0 var(--space-4);
   font-size: 0.75rem;
 }
 
 .btn-lg {
-  min-height: 56px;
-  padding: var(--space-4) var(--space-8);
+  height: 52px;
+  min-height: 52px;
+  padding: 0 var(--space-8);
   font-size: 1rem;
 }
 
 .btn-xl {
-  min-height: 64px;
-  padding: var(--space-5) var(--space-10);
+  height: 60px;
+  min-height: 60px;
+  padding: 0 var(--space-10);
   font-size: 1.125rem;
 }
 
-/* Button States */
+/* Button States - Professional and Subtle */
 .btn:hover {
-  transform: translateY(-3px) scale(1.02);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-lg);
 }
 
 .btn:active {
-  transform: translateY(1px) scale(0.98);
+  transform: translateY(0px);
   transition-duration: var(--duration-fast);
 }
 
 .btn:focus-visible {
-  outline: 3px solid rgba(24, 144, 255, 0.5);
+  outline: 3px solid rgba(16, 185, 129, 0.5);
   outline-offset: 2px;
 }
 
@@ -322,19 +327,21 @@ p {
 }
 
 .card-hover:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: var(--shadow-xl);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Asymmetric Card Variants */
-.card-startup {
-  border-radius: var(--radius-xl) 50% var(--radius-xl) var(--radius-xl);
-  border-left: 4px solid var(--startup-orange);
+/* Professional Card Variants */
+.card-primary {
+  border-left: 4px solid var(--primary-green);
 }
 
-.card-investor {
-  border-radius: 50px var(--radius-xl) var(--radius-xl) 50px;
-  border-left: 4px solid var(--investment-green);
+.card-secondary {
+  border-left: 4px solid var(--accent-gray);
+}
+
+.card-support {
+  border-left: 4px solid var(--support-blue);
 }
 
 /* Grid System */
@@ -377,21 +384,21 @@ p {
 }
 
 .gradient-text {
-  background: var(--gradient-blue);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.startup-gradient-text {
-  background: var(--gradient-orange);
+.secondary-gradient-text {
+  background: var(--gradient-secondary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.investor-gradient-text {
-  background: var(--gradient-green);
+.support-gradient-text {
+  background: var(--gradient-support);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -426,7 +433,7 @@ p {
 }
 
 .interactive-element:hover {
-  transform: scale(1.05) rotate(2deg);
+  transform: scale(1.02);
 }
 
 /* Responsive Design */
@@ -492,15 +499,27 @@ p {
   top: 6px;
 }
 
-/* Contextual Background Classes */
-.startup-context {
-  background: linear-gradient(135deg, rgba(255, 149, 0, 0.05) 0%, rgba(255, 149, 0, 0.02) 100%);
+/* Contextual Background Classes - Green Primary */
+.primary-context {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
 }
 
-.investor-context {
-  background: linear-gradient(135deg, rgba(82, 196, 26, 0.05) 0%, rgba(82, 196, 26, 0.02) 100%);
+.secondary-context {
+  background: linear-gradient(135deg, rgba(107, 114, 128, 0.05) 0%, rgba(107, 114, 128, 0.02) 100%);
 }
 
-.collaboration-context {
-  background: linear-gradient(135deg, rgba(24, 144, 255, 0.05) 0%, rgba(24, 144, 255, 0.02) 100%);
+.support-context {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
+}
+
+/* Button Group Alignment Utilities */
+.btn-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.btn-group .btn {
+  flex-shrink: 0; /* Prevent buttons from shrinking */
 }

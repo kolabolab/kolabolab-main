@@ -113,9 +113,6 @@ function App() {
           >
             <Suspense fallback={<RouteLoader />}>
               <Routes>
-                {/* Root redirect */}
-                <Route path="" element={<Navigate to="/" replace />} />
-                
                 {/* Public routes */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/home" element={<Navigate to="/" replace />} />

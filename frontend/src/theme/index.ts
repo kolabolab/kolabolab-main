@@ -3,40 +3,40 @@ import { mode } from '@chakra-ui/theme-tools';
 
 const colors = {
   brand: {
-    50: '#E6F4FF',
-    100: '#B3D8FF', 
-    200: '#80BCFF',
-    300: '#4DA0FF',
-    400: '#1A84FF',
-    500: '#1890FF', // Primary Blue - matches design system
-    600: '#0050B3',
-    700: '#003A80',
-    800: '#00244D',
-    900: '#000E1A',
+    50: '#ECFDF5',
+    100: '#D1FAE5',
+    200: '#A7F3D0',
+    300: '#6EE7B7',
+    400: '#34D399',
+    500: '#10B981', // Primary Green - matches design system
+    600: '#059669',
+    700: '#047857',
+    800: '#065F46',
+    900: '#064E3B',
   },
-  startup: {
-    50: '#FFF7E6',
-    100: '#FFE7B3',
-    200: '#FFD780',
-    300: '#FFC74D',
-    400: '#FFB71A',
-    500: '#FF9500', // Startup Orange
-    600: '#CC7700',
-    700: '#995900',
-    800: '#663B00',
-    900: '#331D00',
+  gray: {
+    50: '#F9FAFB',
+    100: '#F3F4F6',
+    200: '#E5E7EB',
+    300: '#D1D5DB',
+    400: '#9CA3AF',
+    500: '#6B7280', // Professional Accent Gray
+    600: '#4B5563',
+    700: '#374151',
+    800: '#1F2937',
+    900: '#111827',
   },
-  investor: {
-    50: '#F0FFF4',
-    100: '#C6F7D0',
-    200: '#9CEFAB',
-    300: '#72E787',
-    400: '#48DF62',
-    500: '#52C41A', // Investment Green
-    600: '#237804',
-    700: '#1A5A03',
-    800: '#103C02',
-    900: '#071E01',
+  blue: {
+    50: '#EFF6FF',
+    100: '#DBEAFE',
+    200: '#BFDBFE',
+    300: '#93C5FD',
+    400: '#60A5FA',
+    500: '#3B82F6', // Support Blue - used sparingly
+    600: '#2563EB',
+    700: '#1D4ED8',
+    800: '#1E40AF',
+    900: '#1E3A8A',
   },
   neutral: {
     0: '#FFFFFF',
@@ -132,32 +132,24 @@ const components = {
           boxShadow: mode(shadows.lg, shadows['lg-dark'])(props),
         },
       }),
-      startup: {
-        background: 'linear-gradient(135deg, #FF9500 0%, #FF5500 100%)',
-        clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%)',
-        pl: 8,
+      secondary: (props: any) => ({
+        bg: 'gray.500',
         color: 'white',
-        boxShadow: '0 4px 20px rgba(255, 149, 0, 0.3)',
+        boxShadow: '0 4px 20px rgba(107, 114, 128, 0.2)',
         _hover: {
-          boxShadow: '0 8px 25px rgba(255, 149, 0, 0.4)',
+          bg: 'gray.600',
+          boxShadow: '0 8px 25px rgba(107, 114, 128, 0.3)',
         },
-      },
-      investor: {
-        background: 'linear-gradient(135deg, #52C41A 0%, #237804 100%)',
-        borderRadius: '50px 16px 16px 50px',
+      }),
+      success: (props: any) => ({
+        bg: 'green.500',
         color: 'white',
-        boxShadow: '0 4px 20px rgba(82, 196, 26, 0.3)',
+        boxShadow: '0 4px 20px rgba(16, 185, 129, 0.25)',
         _hover: {
-          boxShadow: '0 8px 25px rgba(82, 196, 26, 0.4)',
+          bg: 'green.600',
+          boxShadow: '0 8px 25px rgba(16, 185, 129, 0.35)',
         },
-      },
-      asymmetric: {
-        clipPath: 'polygon(0 0, 100% 0, 90% 100%, 0 100%)',
-        pr: 8,
-        background: 'linear-gradient(135deg, #1890FF 0%, #0050B3 100%)',
-        color: 'white',
-        boxShadow: '0 4px 20px rgba(24, 144, 255, 0.3)',
-      },
+      }),
       glass: (props: any) => ({
         bg: mode('bg.glass.light', 'bg.glass.dark')(props),
         backdropFilter: 'blur(12px)',
@@ -186,31 +178,48 @@ const components = {
           bg: `${props.colorScheme}.50`,
         },
       }),
+      'outline-secondary': (props: any) => ({
+        bg: 'transparent',
+        border: '2px solid',
+        borderColor: 'gray.500',
+        color: 'gray.500',
+        _hover: {
+          bg: 'gray.50',
+        },
+      }),
     },
     sizes: {
       sm: {
+        h: '36px',
         minH: '36px',
         px: 4,
-        py: 2,
+        py: 0,
         fontSize: 'xs',
+        lineHeight: 1,
       },
       md: {
+        h: '44px',
         minH: '44px',
         px: 6,
-        py: 3,
+        py: 0,
         fontSize: 'sm',
+        lineHeight: 1,
       },
       lg: {
-        minH: '56px',
+        h: '52px',
+        minH: '52px',
         px: 8,
-        py: 4,
+        py: 0,
         fontSize: 'md',
+        lineHeight: 1,
       },
       xl: {
-        minH: '64px',
+        h: '60px',
+        minH: '60px',
         px: 10,
-        py: 5,
+        py: 0,
         fontSize: 'lg',
+        lineHeight: 1,
       },
     },
   },
@@ -233,18 +242,22 @@ const components = {
       },
     }),
     variants: {
-      startup: () => ({
+      primary: () => ({
         container: {
-          borderRadius: '24px 50% 24px 24px',
           borderLeft: '4px solid',
-          borderLeftColor: 'startup.500',
+          borderLeftColor: 'brand.500',
         },
       }),
-      investor: () => ({
+      secondary: () => ({
         container: {
-          borderRadius: '50px 24px 24px 50px',
           borderLeft: '4px solid',
-          borderLeftColor: 'investor.500',
+          borderLeftColor: 'gray.500',
+        },
+      }),
+      success: () => ({
+        container: {
+          borderLeft: '4px solid',
+          borderLeftColor: 'green.500',
         },
       }),
       glass: (props: any) => ({

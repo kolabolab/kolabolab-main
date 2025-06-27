@@ -24,11 +24,11 @@ interface FeatureProps {
   title: string;
   text: string;
   icon: any;
-  variant?: 'startup' | 'investor' | 'default';
+  variant?: 'primary' | 'secondary' | 'success';
   gradient?: string;
 }
 
-const Feature: React.FC<FeatureProps> = ({ title, text, icon, variant = 'default' }) => {
+const Feature: React.FC<FeatureProps> = ({ title, text, icon, variant = 'primary' }) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,24 +52,27 @@ const Feature: React.FC<FeatureProps> = ({ title, text, icon, variant = 'default
 
   const getCardVariant = () => {
     switch (variant) {
-      case 'startup': return 'startup';
-      case 'investor': return 'investor';
+      case 'primary': return 'primary';
+      case 'secondary': return 'secondary';
+      case 'success': return 'success';
       default: return 'glass';
     }
   };
 
   const getIconColor = () => {
     switch (variant) {
-      case 'startup': return 'startup.500';
-      case 'investor': return 'investor.500';
+      case 'primary': return 'brand.500';
+      case 'secondary': return 'gray.500';
+      case 'success': return 'blue.500';
       default: return 'brand.500';
     }
   };
 
   const getGradientText = () => {
     switch (variant) {
-      case 'startup': return 'startup-gradient-text';
-      case 'investor': return 'investor-gradient-text';
+      case 'primary': return 'gradient-text';
+      case 'secondary': return 'secondary-gradient-text';
+      case 'success': return 'support-gradient-text';
       default: return 'gradient-text';
     }
   };
@@ -153,15 +156,10 @@ const HomePage: React.FC = () => {
         <meta name="keywords" content="startup, collaboration, investment, entrepreneur, innovation, technology, social impact" />
       </Helmet>
 
-      {/* Skip Link for Accessibility */}
-      <a href="#main-content" className="skip-link">
-        Skip to main content
-      </a>
-
       <Box as="main" id="main-content">
         {/* Hero Section with Gradient Background */}
         <Box
-          className="collaboration-context"
+          className="primary-context"
           position="relative"
           overflow="hidden"
           minH="100vh"
@@ -176,7 +174,7 @@ const HomePage: React.FC = () => {
             w="100px"
             h="100px"
             borderRadius="full"
-            bg="linear-gradient(135deg, rgba(24, 144, 255, 0.1) 0%, rgba(24, 144, 255, 0.05) 100%)"
+            bg="linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)"
             className="float-animation"
             style={{ animationDelay: '0s' }}
           />
@@ -187,7 +185,7 @@ const HomePage: React.FC = () => {
             w="80px"
             h="80px"
             borderRadius="full"
-            bg="linear-gradient(135deg, rgba(255, 149, 0, 0.1) 0%, rgba(255, 149, 0, 0.05) 100%)"
+            bg="linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(107, 114, 128, 0.05) 100%)"
             className="float-animation"
             style={{ animationDelay: '2s' }}
           />
@@ -198,7 +196,7 @@ const HomePage: React.FC = () => {
             w="60px"
             h="60px"
             borderRadius="full"
-            bg="linear-gradient(135deg, rgba(82, 196, 26, 0.1) 0%, rgba(82, 196, 26, 0.05) 100%)"
+            bg="linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)"
             className="float-animation"
             style={{ animationDelay: '4s' }}
           />
@@ -221,7 +219,7 @@ const HomePage: React.FC = () => {
               >
                 <HStack spacing={2}>
                   <Icon as={FiZap} />
-                  <Text>Powered by AI & Global Accessibility</Text>
+                  <Text>Global Startup Collaboration Platform</Text>
                 </HStack>
               </Badge>
 
@@ -233,12 +231,12 @@ const HomePage: React.FC = () => {
                 lineHeight="shorter"
                 maxW="4xl"
               >
-                Revolutionary Platform for{' '}
-                <Text as="span" className="startup-gradient-text">
+                Professional Platform for{' '}
+                <Text as="span" className="gradient-text">
                   Startup
                 </Text>{' '}
                 Collaboration &{' '}
-                <Text as="span" className="investor-gradient-text">
+                <Text as="span" className="support-gradient-text">
                   Investment
                 </Text>
               </Heading>
@@ -250,7 +248,7 @@ const HomePage: React.FC = () => {
                 lineHeight="tall"
               >
                 Connect with co-founders, find skilled collaborators, and secure funding through our 
-                AI-powered matching system. Built for global accessibility and bias-free connections.
+                intelligent matching platform. Built for global accessibility and meaningful connections.
               </Text>
 
               <HStack
@@ -262,19 +260,21 @@ const HomePage: React.FC = () => {
                 <Button
                   as={RouterLink}
                   to="/register"
-                  variant="startup"
+                  variant="solid"
+                  colorScheme="brand"
                   size="xl"
                   rightIcon={<FiArrowRight />}
-                  className="interactive-element"
+                  className="btn btn-primary btn-xl"
                 >
                   Launch Your Startup
                 </Button>
                 <Button
                   as={RouterLink}
                   to="/startups"
-                  variant="investor"
+                  variant="solid"
+                  colorScheme="blue"
                   size="xl"
-                  className="interactive-element"
+                  className="btn btn-support btn-xl"
                 >
                   Discover Opportunities
                 </Button>
@@ -289,16 +289,16 @@ const HomePage: React.FC = () => {
                 maxW="2xl"
               >
                 <StatsCard number="50+" label="Languages Supported" icon={FiGlobe} />
-                <StatsCard number="AI" label="Powered Matching" icon={FiZap} />
+                <StatsCard number="Smart" label="Matching System" icon={FiZap} />
                 <StatsCard number="WCAG" label="2.2 AA Compliant" icon={FiHeart} />
-                <StatsCard number="∞" label="Global Reach" icon={FiUsers} />
+                <StatsCard number="Global" label="Reach" icon={FiUsers} />
               </SimpleGrid>
             </VStack>
           </Container>
         </Box>
 
         {/* Features Section */}
-        <Box py={24} className="startup-context">
+        <Box py={24} className="primary-context">
           <Container maxW="6xl">
             <VStack spacing={6} mb={16} textAlign="center">
               <Badge
@@ -306,7 +306,7 @@ const HomePage: React.FC = () => {
                 py={2}
                 borderRadius="full"
                 variant="subtle"
-                colorScheme="startup"
+                colorScheme="brand"
                 fontSize="sm"
               >
                 For Every Visionary
@@ -326,19 +326,19 @@ const HomePage: React.FC = () => {
 
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8}>
               <Feature
-                variant="startup"
+                variant="primary"
                 icon={FiTarget}
                 title="For Entrepreneurs"
-                text="Launch your vision with AI-powered co-founder matching, access to skilled collaborators, and direct connections to investors who align with your mission."
+                text="Launch your vision with intelligent co-founder matching, access to skilled collaborators, and direct connections to investors who align with your mission."
               />
               <Feature
-                variant="default"
+                variant="secondary"
                 icon={FiUsers}
                 title="For Collaborators"
                 text="Discover exciting projects that match your skills and interests. Build your portfolio while contributing to innovations that create positive impact."
               />
               <Feature
-                variant="investor"
+                variant="success"
                 icon={FiTrendingUp}
                 title="For Investors"
                 text="Access curated opportunities in social impact technology. Use our analytics to identify promising startups and make informed investment decisions."
@@ -348,7 +348,7 @@ const HomePage: React.FC = () => {
         </Box>
 
         {/* Innovation Section */}
-        <Box py={24} className="investor-context">
+        <Box py={24} className="success-context">
           <Container maxW="6xl">
             <Card variant="glass" size="lg" className="card-hover">
               <CardBody p={12}>
@@ -363,10 +363,10 @@ const HomePage: React.FC = () => {
                       py={2}
                       borderRadius="full"
                       variant="subtle"
-                      colorScheme="investor"
+                      colorScheme="green"
                       fontSize="sm"
                     >
-                      Revolutionary Technology
+                      Professional Technology
                     </Badge>
                     <Heading
                       as="h2"
@@ -382,7 +382,7 @@ const HomePage: React.FC = () => {
                     </Heading>
                     <Text fontSize="lg" textAlign={{ base: 'center', lg: 'left' }}>
                       Our platform breaks down barriers with real-time translation, screen reader compatibility, 
-                      voice input support, and bias-free AI matching algorithms that ensure equal opportunities for all.
+                      voice input support, and intelligent matching algorithms that ensure equal opportunities for all.
                     </Text>
                     <HStack spacing={4} pt={4}>
                       <Button
