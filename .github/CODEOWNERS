@@ -4,52 +4,52 @@
 
 # Global owners - require approval for any changes
 # Replace 'your-github-username' with actual GitHub usernames
-* @your-github-username
+* @ztevens
 
 # Frontend specific
-/frontend/ @your-github-username
-/frontend/src/components/ @your-github-username
-/frontend/src/styles/ @your-github-username
-/frontend/src/theme/ @your-github-username
+/frontend/ @ztevens
+/frontend/src/components/ @ztevens
+/frontend/src/styles/ @ztevens
+/frontend/src/theme/ @ztevens
 
 # Backend specific
-/backend/ @your-github-username
-/backend/src/auth/ @your-github-username
-/backend/src/config/ @your-github-username
-/backend/src/database/ @your-github-username
+/backend/ @ztevens
+/backend/src/auth/ @ztevens
+/backend/src/config/ @ztevens
+/backend/src/database/ @ztevens
 
 # Infrastructure and DevOps
-/.github/ @your-github-username
-/docker-compose*.yml @your-github-username
-/Dockerfile* @your-github-username
-/wrangler.toml @your-github-username
-/vercel.json @your-github-username
-/railway.json @your-github-username
+/.github/ @ztevens
+/docker-compose*.yml @ztevens
+/Dockerfile* @ztevens
+/wrangler.toml @ztevens
+/vercel.json @ztevens
+/railway.json @ztevens
 
 # Security sensitive files (require extra attention)
-/backend/src/auth/ @your-github-username
-/.github/workflows/security-scan.yml @your-github-username
-/.github/workflows/production-deploy.yml @your-github-username
+/backend/src/auth/ @ztevens
+/.github/workflows/security-scan.yml @ztevens
+/.github/workflows/production-deploy.yml @ztevens
 
 # Documentation
-/README.md @your-github-username
-/DEPLOYMENT_GUIDE.md @your-github-username
-/SECURITY.md @your-github-username
-/docs/ @your-github-username
+/README.md @ztevens
+/DEPLOYMENT_GUIDE.md @ztevens
+/SECURITY.md @ztevens
+/docs/ @ztevens
 
 # Package management
-package*.json @your-github-username
-/frontend/package*.json @your-github-username
-/backend/package*.json @your-github-username
+package*.json @ztevens
+/frontend/package*.json @ztevens
+/backend/package*.json @ztevens
 
 # Configuration files
-tsconfig*.json @your-github-username
-.eslintrc* @your-github-username
-.prettierrc* @your-github-username
-vite.config.ts @your-github-username
-nest-cli.json @your-github-username
+tsconfig*.json @ztevens
+.eslintrc* @ztevens
+.prettierrc* @ztevens
+vite.config.ts @ztevens
+nest-cli.json @ztevens
 
 # Instructions:
-# 1. Replace '@your-github-username' with your actual GitHub username
+# 1. Replace '@ztevens' with your actual GitHub username
 # 2. Add additional collaborators by adding their usernames: @username1 @username2
 # 3. For multiple reviewers, separate with spaces: @user1 @user2 @user3
