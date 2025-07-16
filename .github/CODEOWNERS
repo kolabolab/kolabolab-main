@@ -1,0 +1,48 @@
+# KolaboLab Code Owners
+# This file defines who is responsible for code review in different parts of the repository
+
+# Global owners - require approval for any changes
+* @kolabolab/maintainers
+
+# Frontend specific
+/frontend/ @kolabolab/frontend-team @kolabolab/maintainers
+/frontend/src/components/ @kolabolab/ui-team @kolabolab/frontend-team
+/frontend/src/styles/ @kolabolab/ui-team @kolabolab/frontend-team
+/frontend/src/theme/ @kolabolab/ui-team @kolabolab/frontend-team
+
+# Backend specific
+/backend/ @kolabolab/backend-team @kolabolab/maintainers
+/backend/src/auth/ @kolabolab/security-team @kolabolab/backend-team
+/backend/src/config/ @kolabolab/devops-team @kolabolab/backend-team
+/backend/src/database/ @kolabolab/database-team @kolabolab/backend-team
+
+# Infrastructure and DevOps
+/.github/ @kolabolab/devops-team @kolabolab/maintainers
+/docker-compose*.yml @kolabolab/devops-team
+/Dockerfile* @kolabolab/devops-team
+/wrangler.toml @kolabolab/devops-team
+/vercel.json @kolabolab/devops-team
+/railway.json @kolabolab/devops-team
+
+# Security sensitive files
+/backend/src/auth/ @kolabolab/security-team @kolabolab/maintainers
+/.github/workflows/security-scan.yml @kolabolab/security-team @kolabolab/devops-team
+/.github/workflows/production-deploy.yml @kolabolab/security-team @kolabolab/devops-team
+
+# Documentation
+/README.md @kolabolab/maintainers
+/DEPLOYMENT_GUIDE.md @kolabolab/devops-team @kolabolab/maintainers
+/SECURITY.md @kolabolab/security-team @kolabolab/maintainers
+/docs/ @kolabolab/maintainers
+
+# Package management
+package*.json @kolabolab/maintainers
+/frontend/package*.json @kolabolab/frontend-team @kolabolab/maintainers
+/backend/package*.json @kolabolab/backend-team @kolabolab/maintainers
+
+# Configuration files
+tsconfig*.json @kolabolab/maintainers
+.eslintrc* @kolabolab/maintainers
+.prettierrc* @kolabolab/maintainers
+vite.config.ts @kolabolab/frontend-team
+nest-cli.json @kolabolab/backend-team

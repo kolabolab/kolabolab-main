@@ -1,0 +1,193 @@
+name: 🔒 Security Scanning
+
+on:
+  schedule:
+    - cron: '0 2 * * 1' # Weekly on Monday at 2 AM
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  # CodeQL Analysis
+  codeql-analysis:
+    name: 🔍 CodeQL Analysis
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript', 'typescript' ]
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔍 Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-and-quality
+
+      - name: 🏗️ Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: 🔍 Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{matrix.language}}"
+
+  # Dependency Scanning
+  dependency-scan:
+    name: 🔍 Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🔍 Run npm audit (Frontend)
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm audit --audit-level=moderate
+
+      - name: 🔍 Run npm audit (Backend)
+        working-directory: ./backend
+        run: |
+          npm ci
+          npm audit --audit-level=moderate
+
+      - name: 🔍 Snyk security scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+
+  # Secret Scanning
+  secret-scan:
+    name: 🔐 Secret Scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 TruffleHog OSS
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./
+          base: main
+          head: HEAD
+          extra_args: --debug --only-verified
+
+      - name: 🔍 GitLeaks scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Container Security
+  container-security:
+    name: 🐳 Container Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Build Docker image
+        run: |
+          docker build -t kolabolab:security-scan -f frontend/Dockerfile frontend/
+
+      - name: 🔍 Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'kolabolab:security-scan'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: 📊 Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: 🔍 Run Grype vulnerability scanner
+        uses: anchore/scan-action@v3
+        with:
+          image: 'kolabolab:security-scan'
+          fail-build: true
+          severity-cutoff: high
+
+  # OWASP ZAP Security Testing
+  zap-scan:
+    name: 🕷️ OWASP ZAP Security Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🕷️ ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'https://staging.kolabolab.com'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+
+  # License Compliance
+  license-scan:
+    name: 📄 License Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🔍 License check (Frontend)
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npx license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC'
+
+      - name: 🔍 License check (Backend)
+        working-directory: ./backend
+        run: |
+          npm ci
+          npx license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC'
+
+  # Security Policy Compliance
+  policy-check:
+    name: 📋 Security Policy Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔍 Check for security policy
+        run: |
+          if [ ! -f SECURITY.md ]; then
+            echo "❌ SECURITY.md file not found"
+            exit 1
+          fi
+          echo "✅ Security policy found"
+
+      - name: 🔍 Check for vulnerability disclosure
+        run: |
+          if [ ! -f .github/SECURITY.md ] && [ ! -f SECURITY.md ]; then
+            echo "❌ No vulnerability disclosure policy found"
+            exit 1
+          fi
+          echo "✅ Vulnerability disclosure policy found"

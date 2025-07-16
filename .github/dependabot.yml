@@ -1,0 +1,118 @@
+version: 2
+updates:
+  # Frontend dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "kolabolab/maintainers"
+    assignees:
+      - "kolabolab/maintainers"
+    commit-message:
+      prefix: "deps(frontend)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "frontend"
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    ignore:
+      # Ignore major version updates for critical packages
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@chakra-ui/react"
+        update-types: ["version-update:semver-major"]
+
+  # Backend dependencies
+  - package-ecosystem: "npm"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "kolabolab/maintainers"
+    assignees:
+      - "kolabolab/maintainers"
+    commit-message:
+      prefix: "deps(backend)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "backend"
+    allow:
+      - dependency-type: "direct"
+      - dependency-type: "indirect"
+    ignore:
+      # Ignore major version updates for critical packages
+      - dependency-name: "@nestjs/core"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@nestjs/common"
+        update-types: ["version-update:semver-major"]
+
+  # Root dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 3
+    reviewers:
+      - "kolabolab/maintainers"
+    assignees:
+      - "kolabolab/maintainers"
+    commit-message:
+      prefix: "deps(root)"
+      include: "scope"
+    labels:
+      - "dependencies"
+      - "root"
+
+  # Docker dependencies
+  - package-ecosystem: "docker"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    reviewers:
+      - "kolabolab/maintainers"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "frontend"
+
+  - package-ecosystem: "docker"
+    directory: "/backend"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+    reviewers:
+      - "kolabolab/maintainers"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "backend"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+    reviewers:
+      - "kolabolab/maintainers"
+    labels:
+      - "dependencies"
+      - "github-actions"
