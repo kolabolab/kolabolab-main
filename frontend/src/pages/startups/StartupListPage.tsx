@@ -312,10 +312,11 @@ const StartupCard: React.FC<{ startup: Startup }> = ({ startup }) => {
               to={`/startups/${startup.id}`}
               variant="solid"
               colorScheme="brand"
-              size="sm"
               rightIcon={<FiArrowRight />}
               flex={1}
-              className="btn btn-primary btn-sm"
+              variant="solid"
+              colorScheme="brand"
+              size="sm"
             >
               View Details
             </Button>
@@ -325,7 +326,6 @@ const StartupCard: React.FC<{ startup: Startup }> = ({ startup }) => {
               variant="outline"
               colorScheme="gray"
               size="sm"
-              className="btn btn-outline-secondary btn-sm"
               title="Sign in to save startup"
             >
               <Icon as={FiHeart} />
@@ -338,7 +338,6 @@ const StartupCard: React.FC<{ startup: Startup }> = ({ startup }) => {
                 rel="noopener noreferrer"
                 variant="ghost"
                 size="sm"
-                className="btn btn-ghost btn-sm"
               >
                 <Icon as={FiEye} />
               </Button>
@@ -569,7 +568,7 @@ const StartupListPage: React.FC = () => {
                     }}
                     variant="outline"
                     colorScheme="brand"
-                    className="btn btn-outline btn-lg"
+                    size="lg"
                   >
                     Clear Filters
                   </Button>
@@ -593,7 +592,6 @@ const StartupListPage: React.FC = () => {
                       colorScheme="brand"
                       size="lg"
                       rightIcon={<FiArrowRight />}
-                      className="btn btn-primary btn-lg"
                     >
                       Create Startup Profile
                     </Button>
@@ -603,7 +601,6 @@ const StartupListPage: React.FC = () => {
                       variant="outline"
                       colorScheme="blue"
                       size="lg"
-                      className="btn btn-outline btn-lg"
                     >
                       Join as Collaborator
                     </Button>

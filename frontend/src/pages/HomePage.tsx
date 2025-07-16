@@ -264,7 +264,7 @@ const HomePage: React.FC = () => {
                   colorScheme="brand"
                   size="xl"
                   rightIcon={<FiArrowRight />}
-                  className="btn btn-primary btn-xl"
+                  
                 >
                   Launch Your Startup
                 </Button>
@@ -274,7 +274,6 @@ const HomePage: React.FC = () => {
                   variant="solid"
                   colorScheme="blue"
                   size="xl"
-                  className="btn btn-support btn-xl"
                 >
                   Discover Opportunities
                 </Button>
