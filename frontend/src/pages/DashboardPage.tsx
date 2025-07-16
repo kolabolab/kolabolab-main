@@ -310,7 +310,7 @@ const DashboardPage: React.FC = () => {
                     variant="solid"
                     colorScheme="brand"
                     size="lg"
-                    className="btn btn-primary btn-lg"
+                    
                   >
                     Create Startup
                   </Button>
@@ -321,7 +321,6 @@ const DashboardPage: React.FC = () => {
                     variant="outline"
                     colorScheme="brand"
                     size="lg"
-                    className="btn btn-outline btn-lg"
                   >
                     Find Collaborators
                   </Button>
@@ -332,7 +331,6 @@ const DashboardPage: React.FC = () => {
                     variant="outline"
                     colorScheme="green"
                     size="lg"
-                    className="btn btn-outline btn-lg"
                   >
                     Investment Opportunities
                   </Button>

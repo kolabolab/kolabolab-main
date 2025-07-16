@@ -1,0 +1,50 @@
+# ZAP Scanning Rules for KolaboLab
+# Format: ID	THRESHOLD	[IGNORE/WARN/FAIL]	[CONFIDENCE]
+
+# High Priority Security Rules
+10021	WARN	High	# X-Content-Type-Options Header Missing
+10020	WARN	High	# X-Frame-Options Header Missing
+10016	WARN	High	# Web Browser XSS Protection Not Enabled
+10035	WARN	High	# Strict-Transport-Security Header Missing
+10038	WARN	High	# Content Security Policy (CSP) Header Not Set
+
+# Medium Priority Rules
+10015	WARN	Medium	# Incomplete or No Cache-control and Pragma HTTP Header Set
+10017	WARN	Medium	# Cross-Domain JavaScript Source File Inclusion
+10019	WARN	Medium	# Content-Type Header Missing
+10036	WARN	Medium	# Server Leaks Version Information via "Server" HTTP Response Header Field
+
+# Authentication & Session Management
+10040	FAIL	High	# Secure Cookie Without Secure Flag
+10041	FAIL	High	# HTTP to HTTPS Insecure Transition in Form Post
+10042	FAIL	High	# HTTPS to HTTP Insecure Transition in Form Post
+10043	FAIL	High	# User Controllable JavaScript Event (XSS)
+
+# Input Validation
+40012	FAIL	High	# Cross Site Scripting (Reflected)
+40013	FAIL	High	# Cross Site Scripting (Persistent)
+40014	FAIL	High	# Cross Site Scripting (Persistent) - Prime
+40016	FAIL	High	# Cross Site Scripting (Persistent) - Spider
+40017	FAIL	High	# Cross Site Scripting (Persistent) - OData
+
+# SQL Injection
+40018	FAIL	High	# SQL Injection
+40019	FAIL	High	# SQL Injection - MySQL
+40020	FAIL	High	# SQL Injection - Hypersonic SQL
+40021	FAIL	High	# SQL Injection - Oracle
+40022	FAIL	High	# SQL Injection - PostgreSQL
+
+# Information Disclosure
+10024	WARN	Medium	# Information Disclosure - Suspicious Comments
+10025	WARN	Medium	# Information Disclosure - Database Error Messages
+10026	WARN	Medium	# HTTP Parameter Override
+10027	WARN	Medium	# Information Disclosure - Suspicious Comments
+
+# Ignore rules for development/testing
+90001	IGNORE	Low	# Insecure JSF ViewState
+90011	IGNORE	Low	# Charset Mismatch
+90020	IGNORE	Low	# Missing Anti-clickjacking Header
+
+# Custom rules for API endpoints
+# Allow CORS for development but warn in production
+10011	WARN	Medium	# Cookie Without Secure Flag

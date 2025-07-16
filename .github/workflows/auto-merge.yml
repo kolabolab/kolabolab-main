@@ -1,0 +1,176 @@
+name: 🤖 Auto Merge
+
+on:
+  pull_request:
+    types: [labeled, unlabeled, synchronize, opened, edited, ready_for_review, reopened]
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+  status: {}
+
+jobs:
+  auto-merge:
+    name: 🤖 Auto Merge Dependabot PRs
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔍 Check PR status
+      id: pr-status
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: pr } = await github.rest.pulls.get({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+          });
+          
+          // Check if PR is ready for auto-merge
+          const isReady = pr.mergeable_state === 'clean' && 
+                         pr.state === 'open' && 
+                         !pr.draft;
+          
+          // Check for security updates (auto-approve minor/patch)
+          const title = pr.title.toLowerCase();
+          const isSecurityUpdate = title.includes('security') || 
+                                  title.includes('vulnerability');
+          const isMinorUpdate = title.includes('bump') && 
+                               (title.includes('patch') || title.includes('minor'));
+          
+          core.setOutput('ready', isReady);
+          core.setOutput('security', isSecurityUpdate);
+          core.setOutput('minor', isMinorUpdate);
+          core.setOutput('title', pr.title);
+
+    - name: ✅ Auto-approve minor updates
+      if: steps.pr-status.outputs.minor == 'true' && steps.pr-status.outputs.ready == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          await github.rest.pulls.createReview({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+            event: 'APPROVE',
+            body: '🤖 Auto-approved: Minor dependency update'
+          });
+
+    - name: 🔒 Request review for security updates
+      if: steps.pr-status.outputs.security == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          await github.rest.pulls.requestReviewers({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+            team_reviewers: ['security-team']
+          });
+          
+          await github.rest.issues.addLabels({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            labels: ['security', 'needs-review']
+          });
+
+    - name: 🚀 Auto-merge approved PRs
+      if: steps.pr-status.outputs.ready == 'true' && steps.pr-status.outputs.minor == 'true'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          // Wait for checks to complete
+          await new Promise(resolve => setTimeout(resolve, 30000));
+          
+          const { data: checks } = await github.rest.checks.listForRef({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            ref: context.payload.pull_request.head.sha,
+          });
+          
+          const allPassed = checks.check_runs.every(check => 
+            check.status === 'completed' && check.conclusion === 'success'
+          );
+          
+          if (allPassed) {
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              commit_title: `🤖 ${context.payload.pull_request.title}`,
+              commit_message: 'Auto-merged by dependabot workflow',
+              merge_method: 'squash'
+            });
+          }
+
+  auto-label:
+    name: 🏷️ Auto Label PRs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 🏷️ Add labels based on changes
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: files } = await github.rest.pulls.listFiles({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            pull_number: context.issue.number,
+          });
+          
+          const labels = new Set();
+          
+          // Analyze changed files
+          for (const file of files) {
+            const path = file.filename;
+            
+            if (path.startsWith('frontend/')) labels.add('frontend');
+            if (path.startsWith('backend/')) labels.add('backend');
+            if (path.startsWith('.github/')) labels.add('ci/cd');
+            if (path.includes('test') || path.includes('spec')) labels.add('tests');
+            if (path.includes('security') || path.includes('auth')) labels.add('security');
+            if (path.includes('docker') || path.includes('deploy')) labels.add('infrastructure');
+            if (path.endsWith('.md')) labels.add('documentation');
+            if (path.includes('package.json') || path.includes('package-lock.json')) labels.add('dependencies');
+          }
+          
+          // Analyze PR title and description
+          const title = context.payload.pull_request.title.toLowerCase();
+          const body = (context.payload.pull_request.body || '').toLowerCase();
+          
+          if (title.includes('fix') || title.includes('bug')) labels.add('bug');
+          if (title.includes('feat') || title.includes('feature')) labels.add('feature');
+          if (title.includes('break') || body.includes('breaking')) labels.add('breaking-change');
+          if (title.includes('perf') || title.includes('performance')) labels.add('performance');
+          if (title.includes('style') || title.includes('ui')) labels.add('ui/ux');
+          if (title.includes('refactor') || title.includes('cleanup')) labels.add('refactor');
+          
+          // Add size label
+          const additions = files.reduce((sum, file) => sum + file.additions, 0);
+          const deletions = files.reduce((sum, file) => sum + file.deletions, 0);
+          const totalChanges = additions + deletions;
+          
+          if (totalChanges > 500) labels.add('size/large');
+          else if (totalChanges > 100) labels.add('size/medium');
+          else labels.add('size/small');
+          
+          // Apply labels
+          if (labels.size > 0) {
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: Array.from(labels)
+            });
+          }

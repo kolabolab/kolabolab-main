@@ -183,7 +183,7 @@ const LoginPage: React.FC = () => {
                       leftIcon={<FaGoogle />}
                       onClick={() => handleOAuthLogin('google')}
                       isLoading={isLoading}
-                      className="btn btn-outline btn-lg"
+                      colorScheme="gray"
                     >
                       Continue with Google
                     </Button>
@@ -195,7 +195,7 @@ const LoginPage: React.FC = () => {
                         leftIcon={<FaLinkedin />}
                         onClick={() => handleOAuthLogin('linkedin')}
                         isLoading={isLoading}
-                        className="btn btn-outline btn-lg"
+                        colorScheme="gray"
                       >
                         LinkedIn
                       </Button>
@@ -206,7 +206,7 @@ const LoginPage: React.FC = () => {
                         leftIcon={<FiGithub />}
                         onClick={() => handleOAuthLogin('github')}
                         isLoading={isLoading}
-                        className="btn btn-outline btn-lg"
+                        colorScheme="gray"
                       >
                         GitHub
                       </Button>
@@ -294,7 +294,6 @@ const LoginPage: React.FC = () => {
                         w="full"
                         isLoading={isLoading}
                         loadingText="Signing in..."
-                        className="btn btn-primary btn-lg"
                       >
                         Sign In
                       </Button>

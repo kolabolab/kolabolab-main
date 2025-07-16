@@ -181,7 +181,7 @@ const SearchPage: React.FC = () => {
         id: '4',
         type: 'opportunity',
         title: 'Lead Frontend Developer',
-        subtitle: 'EcoTech Solutions â€¢ Full-time',
+        subtitle: 'EcoTech Solutions • Full-time',
         description: 'Join our mission to build sustainable technology solutions that make a real environmental impact.',
         location: 'San Francisco, CA (Remote OK)',
         image: 'https://via.placeholder.com/80x80/10B981/FFFFFF?text=ET',
@@ -362,7 +362,7 @@ const SearchPage: React.FC = () => {
                       leftIcon={<FiFilter />}
                       variant="outline"
                       onClick={onOpen}
-                      className="btn btn-outline"
+                      colorScheme="gray"
                     >
                       Filters
                       {activeFilters.length > 0 && (

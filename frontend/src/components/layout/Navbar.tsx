@@ -227,13 +227,16 @@ export const Navbar: React.FC = () => {
                   </Menu>
                 </HStack>
               ) : (
-                <HStack spacing={3}>
+                <HStack spacing={3} align="center">
                   <Button
                     as={RouterLink}
                     to="/login"
                     variant="ghost"
                     size="md"
                     className="interactive-element"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                   >
                     Sign In
                   </Button>
@@ -243,6 +246,9 @@ export const Navbar: React.FC = () => {
                     variant="asymmetric"
                     size="md"
                     className="interactive-element"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
                   >
                     Sign Up
                   </Button>
@@ -354,7 +360,7 @@ export const Navbar: React.FC = () => {
                       onClick={onClose}
                     >
                       <HStack>
-                        <Text>🤝</Text>
+                        <Icon as={FiUsers} />
                         <Text>Collaborations</Text>
                       </HStack>
                     </ChakraLink>
@@ -417,6 +423,9 @@ export const Navbar: React.FC = () => {
                       size="lg"
                       width="100%"
                       onClick={onClose}
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
                     >
                       Sign In
                     </Button>
@@ -429,6 +438,9 @@ export const Navbar: React.FC = () => {
                       width="100%"
                       mt={2}
                       onClick={onClose}
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
                     >
                       Sign Up
                     </Button>
