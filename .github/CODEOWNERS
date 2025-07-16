@@ -1,48 +1,55 @@
 # KolaboLab Code Owners
 # This file defines who is responsible for code review in different parts of the repository
+# Using individual GitHub usernames (free accounts compatible)
 
 # Global owners - require approval for any changes
-* @kolabolab/maintainers
+# Replace 'your-github-username' with actual GitHub usernames
+* @your-github-username
 
 # Frontend specific
-/frontend/ @kolabolab/frontend-team @kolabolab/maintainers
-/frontend/src/components/ @kolabolab/ui-team @kolabolab/frontend-team
-/frontend/src/styles/ @kolabolab/ui-team @kolabolab/frontend-team
-/frontend/src/theme/ @kolabolab/ui-team @kolabolab/frontend-team
+/frontend/ @your-github-username
+/frontend/src/components/ @your-github-username
+/frontend/src/styles/ @your-github-username
+/frontend/src/theme/ @your-github-username
 
 # Backend specific
-/backend/ @kolabolab/backend-team @kolabolab/maintainers
-/backend/src/auth/ @kolabolab/security-team @kolabolab/backend-team
-/backend/src/config/ @kolabolab/devops-team @kolabolab/backend-team
-/backend/src/database/ @kolabolab/database-team @kolabolab/backend-team
+/backend/ @your-github-username
+/backend/src/auth/ @your-github-username
+/backend/src/config/ @your-github-username
+/backend/src/database/ @your-github-username
 
 # Infrastructure and DevOps
-/.github/ @kolabolab/devops-team @kolabolab/maintainers
-/docker-compose*.yml @kolabolab/devops-team
-/Dockerfile* @kolabolab/devops-team
-/wrangler.toml @kolabolab/devops-team
-/vercel.json @kolabolab/devops-team
-/railway.json @kolabolab/devops-team
+/.github/ @your-github-username
+/docker-compose*.yml @your-github-username
+/Dockerfile* @your-github-username
+/wrangler.toml @your-github-username
+/vercel.json @your-github-username
+/railway.json @your-github-username
 
-# Security sensitive files
-/backend/src/auth/ @kolabolab/security-team @kolabolab/maintainers
-/.github/workflows/security-scan.yml @kolabolab/security-team @kolabolab/devops-team
-/.github/workflows/production-deploy.yml @kolabolab/security-team @kolabolab/devops-team
+# Security sensitive files (require extra attention)
+/backend/src/auth/ @your-github-username
+/.github/workflows/security-scan.yml @your-github-username
+/.github/workflows/production-deploy.yml @your-github-username
 
 # Documentation
-/README.md @kolabolab/maintainers
-/DEPLOYMENT_GUIDE.md @kolabolab/devops-team @kolabolab/maintainers
-/SECURITY.md @kolabolab/security-team @kolabolab/maintainers
-/docs/ @kolabolab/maintainers
+/README.md @your-github-username
+/DEPLOYMENT_GUIDE.md @your-github-username
+/SECURITY.md @your-github-username
+/docs/ @your-github-username
 
 # Package management
-package*.json @kolabolab/maintainers
-/frontend/package*.json @kolabolab/frontend-team @kolabolab/maintainers
-/backend/package*.json @kolabolab/backend-team @kolabolab/maintainers
+package*.json @your-github-username
+/frontend/package*.json @your-github-username
+/backend/package*.json @your-github-username
 
 # Configuration files
-tsconfig*.json @kolabolab/maintainers
-.eslintrc* @kolabolab/maintainers
-.prettierrc* @kolabolab/maintainers
-vite.config.ts @kolabolab/frontend-team
-nest-cli.json @kolabolab/backend-team
+tsconfig*.json @your-github-username
+.eslintrc* @your-github-username
+.prettierrc* @your-github-username
+vite.config.ts @your-github-username
+nest-cli.json @your-github-username
+
+# Instructions:
+# 1. Replace '@your-github-username' with your actual GitHub username
+# 2. Add additional collaborators by adding their usernames: @username1 @username2
+# 3. For multiple reviewers, separate with spaces: @user1 @user2 @user3
