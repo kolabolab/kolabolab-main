@@ -61,8 +61,6 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -74,28 +72,28 @@ jobs:
           cache-dependency-path: frontend/pnpm-lock.yaml
 
       - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: 🔍 Lint code
-        run: pnpm run lint
+        run: npm run lint
 
       - name: 🎯 Type check
-        run: pnpm run type-check || npx tsc --noEmit
+        run: npm run type-check || npx tsc --noEmit
 
       - name: 🧪 Run unit tests
-        run: pnpm run test:coverage
+        run: npm run test:coverage
 
       - name: 🎭 Install Playwright browsers
         run: npx playwright install --with-deps
 
       - name: 🎭 Run E2E tests
-        run: pnpm run test:e2e
+        run: npm run test:e2e
 
       - name: ♿ Run accessibility tests
-        run: pnpm run test:a11y
+        run: npm run test:a11y
 
       - name: 🏗️ Build frontend
-        run: pnpm run build
+        run: npm run build
 
       - name: 📊 Upload coverage reports
         uses: codecov/codecov-action@v3
@@ -153,8 +151,6 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -166,16 +162,16 @@ jobs:
           cache-dependency-path: backend/pnpm-lock.yaml
 
       - name: 📦 Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: 🔍 Lint code
-        run: pnpm run lint
+        run: npm run lint
 
       - name: 🎯 Type check
-        run: pnpm run build
+        run: npm run build
 
       - name: 🧪 Run unit tests
-        run: pnpm run test:cov
+        run: npm run test:cov
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/kolabolab_test
           REDIS_URL: redis://localhost:6379
@@ -183,7 +179,7 @@ jobs:
           JWT_REFRESH_SECRET: test-refresh-secret
 
       - name: 🧪 Run integration tests
-        run: pnpm run test:e2e
+        run: npm run test:e2e
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/kolabolab_test
           REDIS_URL: redis://localhost:6379
@@ -268,19 +264,17 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
 
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
       # Frontend Build
       - name: 📦 Install frontend dependencies
         working-directory: ./frontend
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: 🏗️ Build frontend
         working-directory: ./frontend
-        run: pnpm run build
+        run: npm run build
         env:
           VITE_API_URL: ${{ matrix.environment == 'production' && 'https://api.kolabolab.com' || 'https://staging-api.kolabolab.com' }}
           VITE_ENVIRONMENT: ${{ matrix.environment }}
@@ -288,11 +282,11 @@ jobs:
       # Backend Build
       - name: 📦 Install backend dependencies
         working-directory: ./backend
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: 🏗️ Build backend
         working-directory: ./backend
-        run: pnpm run build
+        run: npm run build
 
       # Deploy to Cloudflare
       - name: 🚀 Deploy to Cloudflare Pages (Frontend)
