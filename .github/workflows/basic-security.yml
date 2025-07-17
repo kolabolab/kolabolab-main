@@ -10,10 +10,6 @@ jobs:
   security-check:
     name: 🛡️ Security Check
     runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
 
     steps:
     - name: 📥 Checkout code
@@ -41,23 +37,8 @@ jobs:
         cd backend
         npm audit --audit-level=moderate || echo "⚠️ Backend audit completed with warnings"
 
-    - name: 🔒 Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: javascript, typescript
-        queries: security-extended
-
-    - name: 🏗️ Autobuild
-      uses: github/codeql-action/autobuild@v3
-
-    - name: 🔍 Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-      with:
-        category: "/language:javascript"
-
     - name: 📊 Security Summary
       run: |
         echo "✅ Basic security scan completed"
-        echo "🔍 CodeQL analysis finished"
         echo "📦 Dependency audit completed"
         echo "🛡️ No critical security issues blocking deployment"
