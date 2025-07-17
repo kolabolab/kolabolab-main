@@ -74,7 +74,12 @@ describe('SearchService', () => {
         {
           provide: ElasticsearchService,
           useValue: {
-            getClient: jest.fn().mockReturnValue(mockClient),
+            ping: mockClient.cluster.health,
+            search: mockClient.search,
+            index: mockClient.index,
+            delete: mockClient.delete,
+            bulk: mockClient.bulk,
+            indices: mockClient.indices,
           },
         },
         {
