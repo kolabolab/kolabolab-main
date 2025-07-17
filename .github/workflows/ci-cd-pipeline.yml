@@ -16,6 +16,7 @@ jobs:
   security-scan:
     name: 🔒 Security & Code Quality
     runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -62,7 +63,7 @@ jobs:
         uses: actions/checkout@v4
 
         with:
-          version: ${{ env.PNPM_VERSION }}
+          fetch-depth: 0
 
       - name: 🟢 Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4

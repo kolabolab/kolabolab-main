@@ -198,8 +198,8 @@ jobs:
     
     steps:
     runs-on: ubuntu-latest
-      - name: 📥 Checkout code
-    - name: 📦 Create Release
+    
+    steps:
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ github.token }}
