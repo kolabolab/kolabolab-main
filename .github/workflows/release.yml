@@ -96,7 +96,6 @@ jobs:
     needs: validate-release
     runs-on: ubuntu-latest
     permissions:
-  issues: write
   pull-requests: write
       contents: read
       packages: write
@@ -197,7 +196,6 @@ jobs:
     needs: [validate-release, deploy-production]
     runs-on: ubuntu-latest
     permissions:
-  issues: write
   pull-requests: write
       contents: write
     
