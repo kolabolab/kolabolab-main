@@ -19,6 +19,8 @@ on:
         - deployments
 
 permissions:
+  issues: write
+  pull-requests: write
   contents: read
   pull-requests: read
   issues: write
@@ -245,6 +247,3 @@ jobs:
               repo: context.repo.repo,
               title: '🚨 Cleanup Workflow Failed',
               body: `The automated cleanup workflow has failed for the following components:\n\n${failures.map(([name]) => `- ${name}`).join('\n')}\n\nPlease investigate and resolve the issues.`,
-              labels: ['bug', 'infrastructure', 'needs-investigation']
-            });
-          }

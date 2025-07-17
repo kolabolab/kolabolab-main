@@ -83,10 +83,6 @@ jobs:
           target: production
           push: true
           tags: ${{ steps.meta-frontend.outputs.tags }}
-          labels: ${{ steps.meta-frontend.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
             VITE_API_URL=${{ secrets.VITE_API_URL_PRODUCTION }}
 
       - name: 🏗️ Build and push Backend image
@@ -97,10 +93,6 @@ jobs:
           file: ./backend/Dockerfile
           push: true
           tags: ${{ steps.meta-backend.outputs.tags }}
-          labels: ${{ steps.meta-backend.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
   # 🧪 Deploy to Staging
   deploy-staging:
     name: 🧪 Deploy to Staging
