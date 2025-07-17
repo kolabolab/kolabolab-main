@@ -29,10 +29,10 @@ jobs:
       - name: 🏗️ Autobuild
 
         with:
-          category: "/language:${{matrix.language}}"
+          category: "/language:javascript"
 
   # Dependency Scanning
-  dependency-scan:
+      dependency-scan:
     name: 🔍 Dependency Vulnerability Scan
     runs-on: ubuntu-latest
     steps:

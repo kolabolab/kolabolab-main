@@ -96,10 +96,9 @@ jobs:
     needs: validate-release
     runs-on: ubuntu-latest
     permissions:
-  pull-requests: write
+    permissions:
       contents: read
       packages: write
-    
     strategy:
       matrix:
         component: [frontend, backend]
