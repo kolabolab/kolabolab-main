@@ -65,7 +65,8 @@ export class SearchService implements OnModuleInit {
 
   private async ensureConnection(): Promise<void> {
     try {
-      const health = await this.elasticsearchService.ping();
+      const client = this.elasticsearchService.getClient();
+      const health = await client.cluster.health();
       this.logger.log(`Elasticsearch connection successful`);
     } catch (error) {
       throw new Error(`Failed to connect to Elasticsearch: ${error.message}`);
@@ -74,13 +75,14 @@ export class SearchService implements OnModuleInit {
 
   private async createIndicesIfNotExist(): Promise<void> {
     const mappings = this.getSearchMappings();
+    const client = this.elasticsearchService.getClient();
 
     for (const [entityType, indexName] of Object.entries(this.indices)) {
       try {
-        const exists = await this.elasticsearchService.indices.exists({ index: indexName });
+        const exists = await client.indices.exists({ index: indexName });
         
         if (!exists) {
-          await this.elasticsearchService.indices.create({
+          await client.indices.create({
             index: indexName,
             body: mappings[entityType as keyof typeof mappings],
           } as any);
@@ -99,7 +101,8 @@ export class SearchService implements OnModuleInit {
       const query = this.buildSearchQuery(searchDto);
       const indices = this.getTargetIndices(searchDto.entity);
 
-      const response = await this.elasticsearchService.search({
+      const client = this.elasticsearchService.getClient();
+      const response = await client.search({
         index: indices,
         body: query,
         size: searchDto.limit,
@@ -144,7 +147,8 @@ export class SearchService implements OnModuleInit {
     try {
       const indices = this.getTargetIndices(suggestDto.entity);
       
-      const response = await this.elasticsearchService.search({
+      const client = this.elasticsearchService.getClient();
+      const response = await client.search({
         index: indices,
         body: {
           suggest: {
@@ -200,7 +204,8 @@ export class SearchService implements OnModuleInit {
     try {
       const indices = this.getTargetIndices(autocompleteDto.entity);
       
-      const response = await this.elasticsearchService.search({
+      const client = this.elasticsearchService.getClient();
+      const response = await client.search({
         index: indices,
         body: {
           query: {
@@ -254,7 +259,8 @@ export class SearchService implements OnModuleInit {
 
       const transformedDoc = this.transformDocumentForIndexing(entity, document);
 
-      await this.elasticsearchService.index({
+      const client = this.elasticsearchService.getClient();
+      await client.index({
         index: indexName,
         id,
         body: transformedDoc,
@@ -275,7 +281,8 @@ export class SearchService implements OnModuleInit {
         throw new Error(`Invalid entity type: ${entity}`);
       }
 
-      await this.elasticsearchService.delete({
+      const client = this.elasticsearchService.getClient();
+      await client.delete({
         index: indexName,
         id,
       });
@@ -320,7 +327,8 @@ export class SearchService implements OnModuleInit {
         }
 
         if (body.length > 0) {
-          const response = await this.elasticsearchService.bulk({ body });
+          const client = this.elasticsearchService.getClient();
+          const response = await client.bulk({ body });
           
           response.items.forEach((item: any) => {
             if (item.index?.error) {
@@ -346,7 +354,8 @@ export class SearchService implements OnModuleInit {
   async getStats(): Promise<SearchStats> {
     try {
       // For simplicity, we'll create mock stats since cluster.stats may not be available
-      const indicesStats = await this.elasticsearchService.indices.stats();
+      const client = this.elasticsearchService.getClient();
+      const indicesStats = await client.indices.stats();
 
       const indices: Record<string, any> = {};
       
