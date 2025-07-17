@@ -70,5 +70,4 @@ jobs:
         echo "🛡️ No critical blocking issues found"
         echo ""
         echo "💡 For advanced security scanning:"
-        echo "   - Make repository public (enables free CodeQL)"
         echo "   - Or upgrade to GitHub Team plan"
