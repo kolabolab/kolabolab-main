@@ -197,6 +197,7 @@ jobs:
       contents: write
     
     steps:
+    runs-on: ubuntu-latest
       - name: 📥 Checkout code
     - name: 📦 Create Release
       uses: actions/create-release@v1
