@@ -195,9 +195,9 @@ jobs:
     needs: [validate-release, deploy-production]
     permissions:
       contents: write
-      pull-requests: write
-      uses: actions/checkout@v4
-
+    
+    steps:
+      - name: 📥 Checkout code
     - name: 📦 Create Release
       uses: actions/create-release@v1
       env:

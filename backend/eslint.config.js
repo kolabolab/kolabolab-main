@@ -1,6 +1,5 @@
-// ESLint v9 configuration for NestJS backend
-import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import js from '@eslint/js'
+import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   js.configs.recommended,
@@ -8,15 +7,7 @@ export default tseslint.config(
   {
     files: ['**/*.ts'],
     languageOptions: {
-      parser: tseslint.parser,
-      parserOptions: {
-        project: './tsconfig.json',
-        tsconfigRootDir: import.meta.dirname,
-        sourceType: 'module',
-      },
-    },
-    plugins: {
-      '@typescript-eslint': tseslint.plugin,
+      ecmaVersion: 2020,
     },
     rules: {
       '@typescript-eslint/interface-name-prefix': 'off',
@@ -25,6 +16,6 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
-    ignores: ['dist/', 'node_modules/', '*.js'],
+    ignores: ['dist/', 'node_modules/'],
   }
-);
+)
