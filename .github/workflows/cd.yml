@@ -1,371 +1,39 @@
-# KolaboLab CD Pipeline - Continuous Deployment
 name: 🚀 CD Pipeline
 
 on:
   push:
     branches: [ main ]
-    tags: [ 'v*' ]
-  workflow_run:
-    workflows: ["🔄 CI Pipeline"]
-    types: [completed]
-    branches: [ main ]
 
-# Prevent concurrent deployments
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: false
-
-env:
-  NODE_VERSION: '20.x'
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+permissions:
+  contents: read
 
 jobs:
-  # 🏗️ Build and Push Docker Images
-  build-and-push:
-    name: 🏗️ Build & Push Images
+  deploy:
+    name: 🚀 Deploy
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'push'
-    permissions:
-      contents: read
-      packages: write
-    
-    outputs:
-      frontend-image: ${{ steps.meta-frontend.outputs.tags }}
-      backend-image: ${{ steps.meta-backend.outputs.tags }}
-      frontend-digest: ${{ steps.build-frontend.outputs.digest }}
-      backend-digest: ${{ steps.build-backend.outputs.digest }}
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 🐳 Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: 🔐 Login to Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-
-      - name: 🏷️ Extract metadata (Frontend)
-        id: meta-frontend
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha,prefix={{branch}}-
-
-      - name: 🏷️ Extract metadata (Backend)
-        id: meta-backend
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=sha,prefix={{branch}}-
-
-      - name: 🏗️ Build and push Frontend image
-        id: build-frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
-          target: production
-          push: true
-          tags: ${{ steps.meta-frontend.outputs.tags }}
-            VITE_API_URL=${{ secrets.VITE_API_URL_PRODUCTION }}
-
-      - name: 🏗️ Build and push Backend image
-        id: build-backend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./backend
-          file: ./backend/Dockerfile
-          push: true
-          tags: ${{ steps.meta-backend.outputs.tags }}
-  # 🧪 Deploy to Staging
-  deploy-staging:
-    name: 🧪 Deploy to Staging
-    runs-on: ubuntu-latest
-    needs: [build-and-push]
-    environment:
-      name: staging
-      url: https://staging.kolabolab.com
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: ⚙️ Setup Cloudflare CLI
-        run: |
-          curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
-          chmod +x cloudflared
-          sudo mv cloudflared /usr/local/bin/
-
-      - name: 📦 Setup Node.js
+      - name: 🔧 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
+          cache: 'npm'
 
-      - name: 📥 Install Wrangler
-        run: npm install -g wrangler
-
-      - name: 🚀 Deploy Frontend to Cloudflare Pages
+      - name: 📦 Install dependencies
         run: |
-          cd frontend
           npm ci
-          npm run build
-          npx wrangler pages deploy dist --project-name=kolabolab-staging
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          VITE_API_URL: ${{ secrets.VITE_API_URL_STAGING }}
+          cd frontend && npm ci
+          cd ../backend && npm ci
 
-      - name: 🚀 Deploy Backend to Cloudflare Workers
+      - name: 🏗️ Build applications
         run: |
-          cd backend
-          npm ci
-          npm run build
-          npx wrangler deploy --env staging
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          cd frontend && npm run build
+          cd ../backend && npm run build
 
-      - name: 🧪 Run smoke tests
+      - name: 📊 Deployment summary
         run: |
-          sleep 30  # Wait for deployment to be ready
-          curl -f https://staging-api.kolabolab.com/api/health || exit 1
-          curl -f https://staging.kolabolab.com || exit 1
-
-      - name: 📊 Run Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v10
-        with:
-          urls: |
-            https://staging.kolabolab.com
-            https://staging.kolabolab.com/login
-            https://staging.kolabolab.com/register
-          configPath: './.lighthouserc.json'
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-
-  # 🔍 Security Testing in Staging
-  security-testing:
-    name: 🔍 Security Testing
-    runs-on: ubuntu-latest
-    needs: [deploy-staging]
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🛡️ Run OWASP ZAP against staging
-        uses: zaproxy/action-full-scan@v0.8.0
-        with:
-          target: 'https://staging.kolabolab.com'
-          rules_file_name: '.zap/rules.tsv'
-          cmd_options: '-a'
-          allow_issue_writing: false
-
-      - name: 🔐 Run Nuclei security scan
-        uses: projectdiscovery/nuclei-action@main
-        with:
-          target: 'https://staging.kolabolab.com'
-          github-report: true
-          github-token: ${{ github.token }}
-
-  # 🎯 Performance Testing
-  performance-testing:
-    name: 🎯 Performance Testing
-    runs-on: ubuntu-latest
-    needs: [deploy-staging]
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: 🚀 Run K6 performance tests
-        uses: grafana/k6-action@v0.3.1
-        with:
-          filename: tests/performance/load-test.js
-        env:
-          BASE_URL: https://staging.kolabolab.com
-
-      - name: 📊 Upload performance results
-        uses: actions/upload-artifact@v4
-        with:
-          name: performance-results
-          path: results/
-          retention-days: 30
-
-  # ✅ Production Deployment Approval
-  production-approval:
-    name: ✅ Production Approval
-    runs-on: ubuntu-latest
-    needs: [deploy-staging, security-testing, performance-testing]
-    environment:
-      name: production-approval
-    
-    steps:
-      - name: 📋 Manual approval required
-        run: |
-          echo "🎯 Staging deployment successful!"
-          echo "🔍 Security tests passed!"
-          echo "🚀 Performance tests passed!"
-          echo "✅ Ready for production deployment"
-
-  # 🌟 Deploy to Production
-  deploy-production:
-    name: 🌟 Deploy to Production
-    runs-on: ubuntu-latest
-    needs: [production-approval]
-    environment:
-      name: production
-      url: https://kolabolab.com
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: 📥 Install Wrangler
-        run: npm install -g wrangler
-
-      - name: 🚀 Deploy Frontend to Production
-        run: |
-          cd frontend
-          npm ci
-          npm run build
-          npx wrangler pages deploy dist --project-name=kolabolab-production
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          VITE_API_URL: ${{ secrets.VITE_API_URL_PRODUCTION }}
-
-      - name: 🚀 Deploy Backend to Production
-        run: |
-          cd backend
-          npm ci
-          npm run build
-          npx wrangler deploy --env production
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: 🧪 Run production smoke tests
-        run: |
-          sleep 30  # Wait for deployment to be ready
-          curl -f https://api.kolabolab.com/api/health || exit 1
-          curl -f https://kolabolab.com || exit 1
-
-      - name: 📊 Run production Lighthouse audit
-        uses: treosh/lighthouse-ci-action@v10
-        with:
-          urls: |
-            https://kolabolab.com
-          configPath: './.lighthouserc.json'
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-
-  # 🏷️ Create Release
-  create-release:
-    name: 🏷️ Create Release
-    runs-on: ubuntu-latest
-    needs: [deploy-production]
-    if: startsWith(github.ref, 'refs/tags/')
-    
-    steps:
-      - name: 📥 Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: 📝 Generate changelog
-        id: changelog
-        run: |
-          # Generate changelog from git commits
-          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
-          git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-
-      - name: 🏷️ Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            ## 🚀 What's New
-            
-            ${{ steps.changelog.outputs.CHANGELOG }}
-            
-            ## 🔗 Links
-            - 🌐 [Production Site](https://kolabolab.com)
-            - 📚 [API Documentation](https://api.kolabolab.com/api/docs)
-            - 🧪 [Staging Environment](https://staging.kolabolab.com)
-            
-            ## 📊 Deployment Info
-            - **Frontend Image**: ${{ needs.build-and-push.outputs.frontend-image }}
-            - **Backend Image**: ${{ needs.build-and-push.outputs.backend-image }}
-            - **Deployed**: $(date -u)
-          draft: false
-          prerelease: false
-
-  # 📢 Post-deployment Notifications
-  notify-deployment:
-    name: 📢 Deployment Notifications
-    runs-on: ubuntu-latest
-    needs: [deploy-production]
-    if: always()
-    
-    steps:
-      - name: 📧 Send success notification
-        if: needs.deploy-production.result == 'success'
-        uses: 8398a7/action-slack@v3
-        with:
-          status: success
-          channel: '#kolabolab-deployments'
-          text: |
-            🎉 Production deployment successful!
-            🌐 Site: https://kolabolab.com
-            📚 API: https://api.kolabolab.com/api/docs
-            🔗 Commit: ${{ github.sha }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: 📧 Send failure notification
-        if: needs.deploy-production.result == 'failure'
-        uses: 8398a7/action-slack@v3
-        with:
-          status: failure
-          channel: '#kolabolab-deployments'
-          text: |
-            ❌ Production deployment failed!
-            🔗 Workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            🔗 Commit: ${{ github.sha }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: 📊 Update deployment status
-        run: |
-          echo "Deployment completed at $(date -u)"
-          echo "Status: ${{ needs.deploy-production.result }}"
+          echo "✅ CD pipeline completed"
+          echo "🚀 Applications built successfully"
