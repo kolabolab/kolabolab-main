@@ -18,6 +18,12 @@ on:
         - packages
         - deployments
 
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+  actions: read
+
 jobs:
   cleanup-artifacts:
     name: 🗑️ Cleanup Artifacts

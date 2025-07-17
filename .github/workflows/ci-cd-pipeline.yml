@@ -296,7 +296,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: kolabolab-${{ matrix.environment }}
           directory: frontend/dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          gitHubToken: ${{ github.token }}
 
       - name: 🚀 Deploy to Cloudflare Workers (Backend)
         uses: cloudflare/wrangler-action@v3

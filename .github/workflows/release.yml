@@ -115,7 +115,7 @@ jobs:
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ github.token }}
 
     - name: 📋 Extract metadata
       id: meta
@@ -184,7 +184,7 @@ jobs:
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         projectName: kolabolab-production
         directory: frontend/dist
-        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+        gitHubToken: ${{ github.token }}
 
     - name: 🚀 Deploy Backend to Cloudflare Workers
       run: |
@@ -208,7 +208,7 @@ jobs:
     - name: 📦 Create Release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ github.token }}
       with:
         tag_name: ${{ needs.validate-release.outputs.version }}
         release_name: Release ${{ needs.validate-release.outputs.version }}

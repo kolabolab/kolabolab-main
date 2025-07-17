@@ -147,7 +147,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: kolabolab-production
           directory: frontend/dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          gitHubToken: ${{ github.token }}
 
       - name: 🚀 Deploy backend to Cloudflare Workers
         working-directory: ./backend
