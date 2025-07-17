@@ -96,9 +96,7 @@ jobs:
     needs: validate-release
     runs-on: ubuntu-latest
     permissions:
-    permissions:
-      contents: read
-      packages: write
+      contents: write
     strategy:
       matrix:
         component: [frontend, backend]
