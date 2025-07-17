@@ -1,0 +1,174 @@
+name: 🔒 Security Scan
+
+on:
+  push:
+    branches: [ main, dev-branch ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run security scans daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+jobs:
+  security-scan:
+    name: 🛡️ Security Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: 📦 Install dependencies
+      run: |
+        npm ci
+        cd frontend && npm ci
+        cd ../backend && npm ci
+
+    - name: 🔍 Run npm audit (Frontend)
+      run: |
+        cd frontend
+        npm audit --audit-level=moderate || true
+        npm audit --json > ../frontend-audit.json || true
+
+    - name: 🔍 Run npm audit (Backend)
+      run: |
+        cd backend
+        npm audit --audit-level=moderate || true
+        npm audit --json > ../backend-audit.json || true
+
+    - name: 🔒 Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: javascript, typescript
+        queries: security-extended,security-and-quality
+
+    - name: 🏗️ Autobuild
+      uses: github/codeql-action/autobuild@v3
+
+    - name: 🔍 Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:javascript"
+
+    - name: 🔐 Run Semgrep Security Scan
+      uses: returntocorp/semgrep-action@v1
+      with:
+        config: >-
+          p/security-audit
+          p/secrets
+          p/owasp-top-ten
+          p/javascript
+          p/typescript
+          p/react
+          p/nodejs
+      env:
+        SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+    - name: 🔍 Secret Scanning with TruffleHog
+      uses: trufflesecurity/trufflehog@main
+      with:
+        path: ./
+        base: main
+        head: HEAD
+        extra_args: --debug --only-verified
+
+    - name: 🔒 Docker Security Scan
+      if: github.event_name == 'push'
+      run: |
+        # Install Trivy
+        sudo apt-get update
+        sudo apt-get install wget apt-transport-https gnupg lsb-release
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+        echo "deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+        sudo apt-get update
+        sudo apt-get install trivy
+        
+        # Scan Dockerfiles
+        trivy config --format sarif --output trivy-config.sarif .
+        
+        # Build and scan Docker images
+        docker build -f frontend/Dockerfile -t kolabolab-frontend:latest frontend/
+        docker build -f backend/Dockerfile -t kolabolab-backend:latest backend/
+        
+        trivy image --format sarif --output trivy-frontend.sarif kolabolab-frontend:latest
+        trivy image --format sarif --output trivy-backend.sarif kolabolab-backend:latest
+
+    - name: 📊 Upload Trivy scan results
+      if: github.event_name == 'push'
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: 'trivy-config.sarif'
+
+    - name: 🔍 OWASP ZAP Baseline Scan
+      if: github.event_name == 'push'
+      uses: zaproxy/action-baseline@v0.10.0
+      with:
+        target: 'http://localhost:3000'
+        rules_file_name: '.zap/rules.tsv'
+        cmd_options: '-a'
+
+    - name: 📈 Upload security scan results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: security-scan-results
+        path: |
+          frontend-audit.json
+          backend-audit.json
+          trivy-*.sarif
+          report_html.html
+        retention-days: 30
+
+  dependency-review:
+    name: 📦 Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔍 Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: moderate
+        allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC
+        deny-licenses: GPL-2.0, GPL-3.0
+
+  license-check:
+    name: 📄 License Compliance
+    runs-on: ubuntu-latest
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: 📦 Install license checker
+      run: npm install -g license-checker
+
+    - name: 🔍 Check Frontend licenses
+      run: |
+        cd frontend
+        npm ci
+        license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;Unlicense;WTFPL' --excludePrivatePackages
+
+    - name: 🔍 Check Backend licenses
+      run: |
+        cd backend
+        npm ci
+        license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;Unlicense;WTFPL' --excludePrivatePackages

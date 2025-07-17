@@ -1,0 +1,291 @@
+name: 🚀 Staging Deployment
+
+on:
+  push:
+    branches: [ dev-branch ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+        - staging
+        - preview
+
+env:
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-test:
+    name: 🏗️ Build & Test
+    runs-on: ubuntu-latest
+    outputs:
+      frontend-changed: ${{ steps.changes.outputs.frontend }}
+      backend-changed: ${{ steps.changes.outputs.backend }}
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 🔍 Detect changes
+      uses: dorny/paths-filter@v3
+      id: changes
+      with:
+        filters: |
+          frontend:
+            - 'frontend/**'
+            - 'package.json'
+            - '.github/workflows/**'
+          backend:
+            - 'backend/**'
+            - 'package.json'
+            - '.github/workflows/**'
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: 📦 Install root dependencies
+      run: npm ci
+
+    - name: 📦 Install frontend dependencies
+      if: steps.changes.outputs.frontend == 'true'
+      run: cd frontend && npm ci
+
+    - name: 📦 Install backend dependencies
+      if: steps.changes.outputs.backend == 'true'
+      run: cd backend && npm ci
+
+    - name: 🔍 Lint frontend
+      if: steps.changes.outputs.frontend == 'true'
+      run: cd frontend && npm run lint
+
+    - name: 🔍 Lint backend
+      if: steps.changes.outputs.backend == 'true'
+      run: cd backend && npm run lint
+
+    - name: 🧪 Test frontend
+      if: steps.changes.outputs.frontend == 'true'
+      run: cd frontend && npm run test
+
+    - name: 🧪 Test backend
+      if: steps.changes.outputs.backend == 'true'
+      run: cd backend && npm run test
+
+    - name: 🏗️ Build frontend
+      if: steps.changes.outputs.frontend == 'true'
+      run: cd frontend && npm run build
+      env:
+        VITE_API_URL: https://staging-api.kolabolab.com
+        VITE_APP_ENV: staging
+
+    - name: 🏗️ Build backend
+      if: steps.changes.outputs.backend == 'true'
+      run: cd backend && npm run build
+
+    - name: 📦 Cache build artifacts
+      uses: actions/cache@v4
+      with:
+        path: |
+          frontend/dist
+          backend/dist
+        key: build-${{ github.sha }}
+
+  deploy-frontend-staging:
+    name: 🌐 Deploy Frontend to Staging
+    needs: build-and-test
+    if: needs.build-and-test.outputs.frontend-changed == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.kolabolab.com
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 📦 Restore build cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          frontend/dist
+          backend/dist
+        key: build-${{ github.sha }}
+
+    - name: 🏗️ Build frontend (if cache miss)
+      run: |
+        cd frontend
+        npm ci
+        npm run build
+      env:
+        VITE_API_URL: https://staging-api.kolabolab.com
+        VITE_APP_ENV: staging
+
+    - name: 🚀 Deploy to Cloudflare Pages (Staging)
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: kolabolab-staging
+        directory: frontend/dist
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 🔗 Update deployment status
+      run: |
+        echo "Frontend deployed to: https://staging.kolabolab.com"
+
+  deploy-backend-staging:
+    name: ⚙️ Deploy Backend to Staging
+    needs: build-and-test
+    if: needs.build-and-test.outputs.backend-changed == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging-api.kolabolab.com
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 📦 Install Wrangler
+      run: npm install -g wrangler
+
+    - name: 📦 Restore build cache
+      uses: actions/cache@v4
+      with:
+        path: |
+          frontend/dist
+          backend/dist
+        key: build-${{ github.sha }}
+
+    - name: 🏗️ Build backend (if cache miss)
+      run: |
+        cd backend
+        npm ci
+        npm run build
+
+    - name: 🚀 Deploy to Cloudflare Workers (Staging)
+      run: |
+        cd backend
+        wrangler deploy --env staging
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+    - name: 🔗 Update deployment status
+      run: |
+        echo "Backend deployed to: https://staging-api.kolabolab.com"
+
+  e2e-tests:
+    name: 🧪 E2E Tests
+    needs: [deploy-frontend-staging, deploy-backend-staging]
+    if: always() && (needs.deploy-frontend-staging.result == 'success' || needs.deploy-backend-staging.result == 'success')
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 📦 Install dependencies
+      run: |
+        cd frontend
+        npm ci
+        npx playwright install
+
+    - name: 🧪 Run E2E tests
+      run: |
+        cd frontend
+        npm run test:e2e
+      env:
+        PLAYWRIGHT_BASE_URL: https://staging.kolabolab.com
+
+    - name: 📊 Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-test-results
+        path: |
+          frontend/playwright-report/
+          frontend/test-results/
+        retention-days: 7
+
+  performance-test:
+    name: ⚡ Performance Testing
+    needs: [deploy-frontend-staging]
+    if: needs.deploy-frontend-staging.result == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 📦 Install Lighthouse CI
+      run: npm install -g @lhci/cli
+
+    - name: ⚡ Run Lighthouse CI
+      run: |
+        lhci autorun
+      env:
+        LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        LHCI_SERVER_BASE_URL: https://staging.kolabolab.com
+
+    - name: 📊 Upload Lighthouse results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: lighthouse-results
+        path: .lighthouseci/
+        retention-days: 7
+
+  notify-deployment:
+    name: 📢 Notify Deployment
+    needs: [deploy-frontend-staging, deploy-backend-staging, e2e-tests]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📢 Slack Notification
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#deployments'
+        text: |
+          🚀 Staging Deployment Complete!
+          
+          Frontend: ${{ needs.deploy-frontend-staging.result }}
+          Backend: ${{ needs.deploy-backend-staging.result }}
+          E2E Tests: ${{ needs.e2e-tests.result }}
+          
+          🔗 Staging URL: https://staging.kolabolab.com
+          📊 View Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: always()

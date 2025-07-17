@@ -1,0 +1,327 @@
+name: 🚀 Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+      prerelease:
+        description: 'Mark as pre-release'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  validate-release:
+    name: 🔍 Validate Release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is-prerelease: ${{ steps.version.outputs.prerelease }}
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: 🔍 Extract version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+          PRERELEASE="${{ github.event.inputs.prerelease }}"
+        else
+          VERSION="${GITHUB_REF#refs/tags/}"
+          PRERELEASE="false"
+        fi
+        
+        echo "version=${VERSION}" >> $GITHUB_OUTPUT
+        echo "prerelease=${PRERELEASE}" >> $GITHUB_OUTPUT
+        echo "Release version: ${VERSION}"
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 📦 Install dependencies
+      run: |
+        npm ci
+        cd frontend && npm ci
+        cd ../backend && npm ci
+
+    - name: 🧪 Run tests
+      run: |
+        npm run test
+
+    - name: 🏗️ Build applications
+      run: |
+        npm run build
+
+    - name: 📋 Generate changelog
+      id: changelog
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { execSync } = require('child_process');
+          
+          try {
+            // Get commits since last tag
+            const lastTag = execSync('git describe --tags --abbrev=0 HEAD^', { encoding: 'utf8' }).trim();
+            const commits = execSync(`git log ${lastTag}..HEAD --pretty=format:"%h %s"`, { encoding: 'utf8' });
+            
+            const changelog = commits.split('\n')
+              .filter(line => line.trim())
+              .map(line => `- ${line}`)
+              .join('\n');
+            
+            core.setOutput('changelog', changelog);
+          } catch (error) {
+            core.setOutput('changelog', 'Initial release');
+          }
+
+  build-and-push-images:
+    name: 🐳 Build & Push Images
+    needs: validate-release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    
+    strategy:
+      matrix:
+        component: [frontend, backend]
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: 🔐 Login to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 📋 Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.component }}
+        tags: |
+          type=ref,event=tag
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=semver,pattern={{major}}
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: 🏗️ Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: ./${{ matrix.component }}
+        file: ./${{ matrix.component }}/Dockerfile
+        target: production
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: linux/amd64,linux/arm64
+
+  deploy-production:
+    name: 🌐 Deploy to Production
+    needs: [validate-release, build-and-push-images]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://kolabolab.com
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 📦 Install Wrangler
+      run: npm install -g wrangler
+
+    - name: 🏗️ Build frontend
+      run: |
+        cd frontend
+        npm ci
+        npm run build
+      env:
+        VITE_API_URL: https://api.kolabolab.com
+        VITE_APP_ENV: production
+
+    - name: 🏗️ Build backend
+      run: |
+        cd backend
+        npm ci
+        npm run build
+
+    - name: 🚀 Deploy Frontend to Cloudflare Pages
+      uses: cloudflare/pages-action@v1
+      with:
+        apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        projectName: kolabolab-production
+        directory: frontend/dist
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: 🚀 Deploy Backend to Cloudflare Workers
+      run: |
+        cd backend
+        wrangler deploy --env production
+      env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+  create-release:
+    name: 📦 Create GitHub Release
+    needs: [validate-release, deploy-production]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Create Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ needs.validate-release.outputs.version }}
+        release_name: Release ${{ needs.validate-release.outputs.version }}
+        body: |
+          ## 🚀 What's New in ${{ needs.validate-release.outputs.version }}
+          
+          ### 📋 Changes
+          ${{ needs.validate-release.outputs.changelog }}
+          
+          ### 🔗 Links
+          - **Frontend**: https://kolabolab.com
+          - **API**: https://api.kolabolab.com
+          - **Documentation**: https://docs.kolabolab.com
+          
+          ### 🐳 Docker Images
+          - Frontend: `ghcr.io/${{ github.repository }}-frontend:${{ needs.validate-release.outputs.version }}`
+          - Backend: `ghcr.io/${{ github.repository }}-backend:${{ needs.validate-release.outputs.version }}`
+          
+          ### 📊 Metrics
+          - Build Time: ${{ github.run_duration }}
+          - Deployment: Successful ✅
+          
+          ---
+          
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/v${{ needs.validate-release.outputs.previous-version }}...${{ needs.validate-release.outputs.version }}
+        draft: false
+        prerelease: ${{ needs.validate-release.outputs.is-prerelease }}
+
+  post-release-tests:
+    name: 🧪 Post-Release Tests
+    needs: [validate-release, deploy-production]
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: 📦 Install dependencies
+      run: |
+        cd frontend
+        npm ci
+        npx playwright install
+
+    - name: 🧪 Run smoke tests
+      run: |
+        cd frontend
+        npm run test:e2e:smoke
+      env:
+        PLAYWRIGHT_BASE_URL: https://kolabolab.com
+
+    - name: ⚡ Performance audit
+      run: |
+        npm install -g lighthouse
+        lighthouse https://kolabolab.com --output=json --output-path=./lighthouse-report.json
+        
+    - name: 📊 Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: post-release-tests
+        path: |
+          lighthouse-report.json
+          frontend/test-results/
+        retention-days: 30
+
+  notify-release:
+    name: 📢 Notify Release
+    needs: [validate-release, create-release, post-release-tests]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: 📢 Slack Notification
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#releases'
+        text: |
+          🚀 **KolaboLab ${{ needs.validate-release.outputs.version }} Released!**
+          
+          **Status**: ${{ needs.create-release.result == 'success' && '✅ Success' || '❌ Failed' }}
+          **Environment**: Production
+          **Deployment**: ${{ needs.deploy-production.result }}
+          **Tests**: ${{ needs.post-release-tests.result }}
+          
+          🔗 **Links**:
+          • [Release Notes](https://github.com/${{ github.repository }}/releases/tag/${{ needs.validate-release.outputs.version }})
+          • [Live Site](https://kolabolab.com)
+          • [API Docs](https://api.kolabolab.com/docs)
+          
+          📊 [View Workflow](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+    - name: 📧 Email Notification
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: "🚀 KolaboLab ${{ needs.validate-release.outputs.version }} Released"
+        to: team@kolabolab.com
+        from: noreply@kolabolab.com
+        body: |
+          KolaboLab ${{ needs.validate-release.outputs.version }} has been successfully released to production!
+          
+          Release Notes: https://github.com/${{ github.repository }}/releases/tag/${{ needs.validate-release.outputs.version }}
+          Live Site: https://kolabolab.com
+          
+          The KolaboLab Team
