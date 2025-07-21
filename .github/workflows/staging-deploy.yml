@@ -141,7 +141,7 @@ jobs:
         accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         projectName: kolabolab-staging
         directory: frontend/dist
-        gitHubToken: ${{ github.token }}
+        gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 
     - name: 🔗 Update deployment status
       run: |
