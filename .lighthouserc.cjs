@@ -2,16 +2,16 @@ module.exports = {
   ci: {
     collect: {
       url: [
-        'http://localhost:3000',
-        'http://localhost:3000/login',
-        'http://localhost:3000/register',
-        'http://localhost:3000/startups',
-        'http://localhost:3000/search'
+        'http://localhost:4173',
+        'http://localhost:4173/login',
+        'http://localhost:4173/register',
+        'http://localhost:4173/startups',
+        'http://localhost:4173/search'
       ],
-      startServerCommand: 'cd frontend && npm ci && npm run build && npm run preview',
-      startServerReadyPattern: 'Local:',
-      startServerReadyTimeout: 30000,
-      numberOfRuns: 3
+      startServerCommand: 'cd frontend && npm ci && npm run build && npm run preview -- --port 4173 --host 0.0.0.0',
+      startServerReadyPattern: 'Local.*4173',
+      startServerReadyTimeout: 60000,
+      numberOfRuns: 1
     },
     assert: {
       assertions: {
