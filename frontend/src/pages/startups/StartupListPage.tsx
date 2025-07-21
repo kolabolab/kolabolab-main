@@ -314,8 +314,6 @@ const StartupCard: React.FC<{ startup: Startup }> = ({ startup }) => {
               colorScheme="brand"
               rightIcon={<FiArrowRight />}
               flex={1}
-              variant="solid"
-              colorScheme="brand"
               size="sm"
             >
               View Details

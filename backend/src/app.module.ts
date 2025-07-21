@@ -36,7 +36,7 @@ import { AppController } from './app.controller';
     // Database
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => {
+      useFactory: (configService: ConfigService): any => {
         const baseConfig = {
           type: 'postgres' as const,
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
@@ -52,18 +52,18 @@ import { AppController } from './app.controller';
         if (databaseUrl) {
           return {
             ...baseConfig,
-            url: databaseUrl,
+            url: databaseUrl as string,
           };
         }
 
         // Fall back to individual parameters
         return {
           ...baseConfig,
-          host: configService.get('database.host'),
-          port: configService.get('database.port'),
-          username: configService.get('database.username'),
-          password: configService.get('database.password'),
-          database: configService.get('database.name'),
+          host: configService.get<string>('database.host'),
+          port: configService.get<number>('database.port'),
+          username: configService.get<string>('database.username'),
+          password: configService.get<string>('database.password'),
+          database: configService.get<string>('database.name'),
         };
       },
       inject: [ConfigService],

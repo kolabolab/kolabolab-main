@@ -59,8 +59,6 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -68,23 +66,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: 'npm'
 
       - name: 📦 Install dependencies
         run: |
-          cd frontend && pnpm install --frozen-lockfile --production=false
-          cd ../backend && pnpm install --frozen-lockfile --production=false
+          cd frontend && npm ci --production=false
+          cd ../backend && npm ci --production=false
 
       - name: 🏗️ Build frontend for production
         working-directory: ./frontend
-        run: pnpm run build
+        run: npm run build
         env:
           NODE_ENV: production
           VITE_API_URL: https://api.kolabolab.com
 
       - name: 🏗️ Build backend for production
         working-directory: ./backend
-        run: pnpm run build
+        run: npm run build
         env:
           NODE_ENV: production
 
@@ -128,8 +126,6 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v2
         with:
           version: ${{ env.PNPM_VERSION }}
 
@@ -137,7 +133,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'pnpm'
+          cache: 'npm'
 
       - name: 📦 Extract build artifacts
         run: |
@@ -151,7 +147,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: kolabolab-production
           directory: frontend/dist
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          gitHubToken: ${{ github.token }}
 
       - name: 🚀 Deploy backend to Cloudflare Workers
         working-directory: ./backend
