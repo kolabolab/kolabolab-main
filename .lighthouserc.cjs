@@ -8,7 +8,7 @@ module.exports = {
         'http://localhost:3000/startups',
         'http://localhost:3000/search'
       ],
-      startServerCommand: 'npm run preview',
+      startServerCommand: 'cd frontend && npm run preview',
       startServerReadyPattern: 'Local:',
       startServerReadyTimeout: 30000,
       numberOfRuns: 3
