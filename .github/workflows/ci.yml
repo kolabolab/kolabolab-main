@@ -31,10 +31,10 @@ jobs:
           cd ../backend && npm ci
 
       - name: 🧪 Test frontend
-        run: cd frontend && npm run test || echo "⚠️ Frontend tests completed with issues"
+        run: cd frontend && npm run test
 
       - name: 🧪 Test backend
-        run: cd backend && npm run test || echo "⚠️ Backend tests completed with issues"
+        run: cd backend && npm run test
 
       - name: 🏗️ Build frontend
         run: cd frontend && npm run build
