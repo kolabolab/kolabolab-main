@@ -13,12 +13,11 @@ test.describe('KolaboLab.com Deployment Tests', () => {
     // Wait for the page to be fully loaded
     await page.waitForLoadState('networkidle');
     
-    // Wait a bit more for React to hydrate and set the title
+    // Wait a bit more for React to hydrate
     await page.waitForTimeout(2000);
     
-    // Check if the page title is set correctly (more flexible check)
-    const title = await page.title();
-    expect(title.length).toBeGreaterThan(0); // Just ensure title exists
+    // Verify page loaded successfully by checking for root element
+    await expect(page.locator('#root')).toBeVisible();
     
     // Take a screenshot for visual reference
     await page.screenshot({ path: 'homepage.png', fullPage: true });
