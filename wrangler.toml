@@ -1,6 +1,6 @@
 # Cloudflare Workers configuration for KolaboLab
 name = "kolabolab-api"
-main = "backend/dist/main.js"
+main = "backend/src/workers-main.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
@@ -34,7 +34,7 @@ id = "2999eb454f6f4b729c706b1c056735a3"
 
 [[env.staging.kv_namespaces]]
 binding = "CACHE"
-id = "your-kv-staging-namespace-id"
+id = "2999eb454f6f4b729c706b1c056735a3"
 
 # R2 bucket for file uploads
 [[env.production.r2_buckets]]
@@ -64,9 +64,9 @@ FRONTEND_URL = "https://staging.kolabolab.com"
 # wrangler secret put SMTP_PASSWORD
 # wrangler secret put CLOUDINARY_API_SECRET
 
-# Worker limits
-[limits]
-cpu_ms = 50
+# Worker limits - removed for free plan compatibility
+# [limits]
+# cpu_ms = 50
 
 # Build configuration - disabled for manual builds
 # [build]
