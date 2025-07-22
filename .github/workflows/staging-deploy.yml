@@ -187,8 +187,12 @@ jobs:
 
     - name: 🚀 Deploy to Cloudflare Workers (Staging)
       run: |
+        # Ensure backend dependencies are installed
         cd backend
-        wrangler deploy --env staging || echo "⚠️ Cloudflare Workers deployment failed"
+        npm ci
+        cd ..
+        # Deploy using wrangler from root directory
+        npx wrangler deploy --env staging || echo "⚠️ Cloudflare Workers deployment failed"
       env:
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -68,8 +68,8 @@ FRONTEND_URL = "https://staging.kolabolab.com"
 # [limits]
 # cpu_ms = 50
 
-# Build configuration - disabled for manual builds
-# [build]
-# command = "npm run build"
-# cwd = "backend"
+# Build configuration
+[build]
+command = "npm ci"
+cwd = "backend"
 
