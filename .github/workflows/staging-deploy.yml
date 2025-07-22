@@ -3,6 +3,12 @@ name: 🚀 Staging Deployment
 on:
   push:
     branches: [ dev-branch ]
+    paths-ignore:
+      - '*.md'
+      - 'docs/**'
+      - '.gitignore'
+      - 'LICENSE'
+      - '.github/workflows/ci.yml'
   workflow_dispatch:
     inputs:
       environment:
@@ -48,12 +54,42 @@ jobs:
             - '.github/workflows/**'
 
     - name: 🔧 Setup Node.js
+      if: steps.changes.outputs.frontend == 'true' || steps.changes.outputs.backend == 'true'
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
 
+    # Enhanced caching for faster builds
+    - name: 📦 Cache root dependencies
+      if: steps.changes.outputs.frontend == 'true' || steps.changes.outputs.backend == 'true'
+      uses: actions/cache@v4
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-root-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-root-
+
+    - name: 📦 Cache frontend dependencies
+      if: steps.changes.outputs.frontend == 'true'
+      uses: actions/cache@v4
+      with:
+        path: frontend/node_modules
+        key: ${{ runner.os }}-frontend-${{ hashFiles('frontend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-frontend-
+
+    - name: 📦 Cache backend dependencies
+      if: steps.changes.outputs.backend == 'true'
+      uses: actions/cache@v4
+      with:
+        path: backend/node_modules
+        key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-backend-
+
     - name: 📦 Install root dependencies
+      if: steps.changes.outputs.frontend == 'true' || steps.changes.outputs.backend == 'true'
       run: npm ci
 
     - name: 📦 Install frontend dependencies
@@ -64,22 +100,15 @@ jobs:
       if: steps.changes.outputs.backend == 'true'
       run: cd backend && npm ci
 
-    - name: 🔍 Lint frontend
-      if: steps.changes.outputs.frontend == 'true'
-      run: cd frontend && npm run lint
-
-    - name: 🔍 Lint backend
-      if: steps.changes.outputs.backend == 'true'
-      run: cd backend && npm run lint
-
+    # Skip linting in staging to save time (done in CI)
     - name: 🧪 Test frontend
       if: steps.changes.outputs.frontend == 'true'
-      run: cd frontend && npm run test || echo "⚠️ Frontend tests completed with issues"
+      run: cd frontend && npm run test -- --watchAll=false --passWithNoTests
       continue-on-error: true
 
     - name: 🧪 Test backend
       if: steps.changes.outputs.backend == 'true'
-      run: cd backend && npm run test || echo "⚠️ Backend tests completed with issues"
+      run: cd backend && npm run test -- --passWithNoTests
       continue-on-error: true
 
     - name: 🏗️ Build frontend
