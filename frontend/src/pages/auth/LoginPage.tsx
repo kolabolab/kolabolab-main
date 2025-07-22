@@ -24,6 +24,7 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
 import { FiMail, FiLock, FiEye, FiEyeOff, FiGithub } from 'react-icons/fi'
 import { FaGoogle, FaLinkedin } from 'react-icons/fa'
 import { Helmet } from 'react-helmet-async'
@@ -47,8 +48,16 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const toast = useToast();
+  const { setAuth, isAuthenticated } = useAuth();
 
   const from = (location.state as any)?.from?.pathname || '/dashboard';
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, from]);
 
   const validateForm = (): boolean => {
     const newErrors: LoginErrors = {};
@@ -80,7 +89,25 @@ const LoginPage: React.FC = () => {
       // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
       
-      // Mock successful login
+      // Mock successful login - create mock user and tokens
+      const mockUser = {
+        id: '1',
+        email: formData.email,
+        username: formData.email.split('@')[0],
+        firstName: 'Test',
+        lastName: 'User',
+        roles: ['user'],
+        isEmailVerified: true,
+      };
+
+      const mockTokens = {
+        accessToken: 'mock-access-token-' + Date.now(),
+        refreshToken: 'mock-refresh-token-' + Date.now(),
+      };
+
+      // Set authentication state
+      setAuth(mockUser, mockTokens);
+      
       toast({
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
@@ -89,6 +116,7 @@ const LoginPage: React.FC = () => {
         isClosable: true,
       });
       
+      // Navigate to dashboard or intended page
       navigate(from, { replace: true });
     } catch (error) {
       setErrors({ general: 'Invalid email or password. Please try again.' });
