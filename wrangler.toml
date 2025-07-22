@@ -20,17 +20,17 @@ routes = [
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "kolabolab-production"
-database_id = "your-d1-database-id"
+database_id = "108293bb-d093-4147-84b2-41aecf35179a"
 
 [[env.staging.d1_databases]]
 binding = "DB"
 database_name = "kolabolab-staging"
-database_id = "your-d1-staging-database-id"
+database_id = "42a0ff21-2f4a-4bba-8935-2a8edf8af62b"
 
 # KV storage for sessions and cache
 [[env.production.kv_namespaces]]
 binding = "CACHE"
-id = "your-kv-namespace-id"
+id = "2999eb454f6f4b729c706b1c056735a3"
 
 [[env.staging.kv_namespaces]]
 binding = "CACHE"
@@ -68,8 +68,8 @@ FRONTEND_URL = "https://staging.kolabolab.com"
 [limits]
 cpu_ms = 50
 
-# Build configuration
-[build]
-command = "npm run build"
-cwd = "backend"
+# Build configuration - disabled for manual builds
+# [build]
+# command = "npm run build"
+# cwd = "backend"
 
