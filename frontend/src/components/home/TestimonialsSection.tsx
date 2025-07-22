@@ -1,4 +1,5 @@
 import React from 'react';
+// Fixed FiQuote icon issue - using FiMessageCircle instead
 import {
   Box,
   Container,
