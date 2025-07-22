@@ -1,6 +1,6 @@
 # Cloudflare Workers configuration for KolaboLab
 name = "kolabolab-api"
-main = "backend/src/workers-main.ts"
+main = "backend/workers-main.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
