@@ -24,7 +24,7 @@ import {
 } from '@chakra-ui/react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons'
-import { FiZap, FiTrendingUp, FiUsers, FiSettings, FiLogOut } from 'react-icons/fi'
+import { FiZap, FiTrendingUp, FiUsers, FiSettings, FiLogOut, FiFolderPlus, FiUser, FiChevronDown } from 'react-icons/fi'
 import { useAuth } from '../../hooks/useAuth'
 
 const NavLink = ({ children, to, variant = 'default' }: { 
@@ -167,62 +167,125 @@ export const Navbar: React.FC = () => {
                   <Menu>
                     <MenuButton
                       as={Button}
-                      rounded="full"
                       variant="ghost"
                       cursor="pointer"
-                      minW={0}
-                      p={1}
+                      p={2}
+                      pr={3}
+                      borderRadius="xl"
                       className="interactive-element"
+                      _hover={{
+                        bg: 'rgba(24, 144, 255, 0.08)',
+                        transform: 'translateY(-1px)',
+                      }}
+                      _active={{
+                        bg: 'rgba(24, 144, 255, 0.12)',
+                      }}
+                      transition="all 0.2s"
                     >
-                      <HStack spacing={2}>
+                      <HStack spacing={3}>
                         <Avatar
                           size="sm"
                           src={user?.avatar}
                           name={`${user?.firstName} ${user?.lastName}`}
+                          border="2px solid"
+                          borderColor="brand.100"
                         />
-                        {user?.roles?.includes('investor') && (
-                          <Badge
-                            variant="subtle"
-                            colorScheme="investor"
-                            fontSize="xs"
-                            display={{ base: 'none', md: 'block' }}
-                          >
-                            <Icon as={FiTrendingUp} mr={1} />
-                            Investor
-                          </Badge>
-                        )}
-                      </HStack>
-                    </MenuButton>
-                    <MenuList className="glass-panel" border="none" shadow="xl">
-                      <MenuItem>
-                        <VStack spacing={0} align="start">
-                          <Text fontWeight="600">
+                        <VStack spacing={0} align="start" display={{ base: 'none', lg: 'flex' }}>
+                          <Text fontWeight="600" fontSize="sm" lineHeight="1.2">
                             {user?.firstName} {user?.lastName}
                           </Text>
-                          <Text fontSize="sm" opacity={0.7}>
+                          <HStack spacing={1}>
+                            <Text fontSize="xs" color="gray.500">
+                              @{user?.username}
+                            </Text>
+                            {user?.roles?.includes('investor') && (
+                              <Badge
+                                variant="subtle"
+                                colorScheme="green"
+                                fontSize="xs"
+                                px={1}
+                                py={0}
+                              >
+                                Investor
+                              </Badge>
+                            )}
+                          </HStack>
+                        </VStack>
+                        <Icon as={FiChevronDown} w={4} h={4} color="gray.500" />
+                      </HStack>
+                    </MenuButton>
+                    <MenuList 
+                      className="glass-panel" 
+                      border="1px solid"
+                      borderColor="gray.200"
+                      shadow="xl"
+                      borderRadius="xl"
+                      py={2}
+                      minW="220px"
+                    >
+                      {/* User Info Header */}
+                      <Box px={4} py={3} borderBottom="1px solid" borderColor="gray.100">
+                        <VStack spacing={1} align="start">
+                          <Text fontWeight="700" fontSize="md">
+                            {user?.firstName} {user?.lastName}
+                          </Text>
+                          <Text fontSize="sm" color="gray.600">
                             @{user?.username}
                           </Text>
+                          <Text fontSize="xs" color="gray.500">
+                            {user?.email}
+                          </Text>
+                          {user?.roles?.includes('investor') && (
+                            <Badge
+                              variant="subtle"
+                              colorScheme="green"
+                              fontSize="xs"
+                              mt={1}
+                            >
+                              <Icon as={FiTrendingUp} mr={1} w={3} h={3} />
+                              Investor Account
+                            </Badge>
+                          )}
                         </VStack>
-                      </MenuItem>
-                      <MenuDivider />
-                      <MenuItem as={RouterLink} to="/dashboard" icon={<FiUsers />}>
-                        Dashboard
-                      </MenuItem>
-                      <MenuItem as={RouterLink} to="/profile" icon={<FiSettings />}>
-                        Profile Settings
-                      </MenuItem>
-                      <MenuItem as={RouterLink} to="/collaborations" icon={<FiUsers />}>
-                        Collaborations
-                      </MenuItem>
-                      {user?.roles?.includes('investor') && (
-                        <MenuItem as={RouterLink} to="/investments" icon={<FiTrendingUp />}>
-                          Investments
+                      </Box>
+
+                      {/* Menu Items */}
+                      <Box py={1}>
+                        <MenuItem 
+                          as={RouterLink} 
+                          to="/startups?filter=my-projects" 
+                          icon={<FiFolderPlus />}
+                          fontSize="sm"
+                          fontWeight="500"
+                          py={3}
+                          _hover={{ bg: 'brand.50' }}
+                        >
+                          My Projects
                         </MenuItem>
-                      )}
-                      <MenuDivider />
-                      <MenuItem onClick={handleLogout} color="red.500" icon={<FiLogOut />}>
-                        Sign Out
-                      </MenuItem>
+                        <MenuItem 
+                          as={RouterLink} 
+                          to="/profile" 
+                          icon={<FiUser />}
+                          fontSize="sm"
+                          fontWeight="500"
+                          py={3}
+                          _hover={{ bg: 'brand.50' }}
+                        >
+                          My Profile
+                        </MenuItem>
+                        <MenuDivider my={2} />
+                        <MenuItem 
+                          onClick={handleLogout} 
+                          color="red.500" 
+                          icon={<FiLogOut />}
+                          fontSize="sm"
+                          fontWeight="500"
+                          py={3}
+                          _hover={{ bg: 'red.50', color: 'red.600' }}
+                        >
+                          Logout
+                        </MenuItem>
+                      </Box>
                     </MenuList>
                   </Menu>
                 </HStack>
@@ -329,6 +392,83 @@ export const Navbar: React.FC = () => {
                 
                 {isAuthenticated ? (
                   <>
+                    {/* User Profile Section */}
+                    <Box 
+                      px={4} 
+                      py={4} 
+                      bg="brand.50" 
+                      rounded="xl" 
+                      border="1px solid" 
+                      borderColor="brand.100"
+                      mb={4}
+                    >
+                      <HStack spacing={3}>
+                        <Avatar
+                          size="md"
+                          src={user?.avatar}
+                          name={`${user?.firstName} ${user?.lastName}`}
+                          border="2px solid"
+                          borderColor="brand.200"
+                        />
+                        <VStack spacing={0} align="start" flex="1">
+                          <Text fontWeight="700" fontSize="md">
+                            {user?.firstName} {user?.lastName}
+                          </Text>
+                          <Text fontSize="sm" color="gray.600">
+                            @{user?.username}
+                          </Text>
+                          {user?.roles?.includes('investor') && (
+                            <Badge
+                              variant="subtle"
+                              colorScheme="green"
+                              fontSize="xs"
+                              mt={1}
+                            >
+                              <Icon as={FiTrendingUp} mr={1} w={3} h={3} />
+                              Investor
+                            </Badge>
+                          )}
+                        </VStack>
+                      </HStack>
+                    </Box>
+
+                    {/* Navigation Links */}
+                    <ChakraLink
+                      as={RouterLink}
+                      to="/startups?filter=my-projects"
+                      px={4}
+                      py={3}
+                      w="100%" 
+                      rounded="lg"
+                      minH="48px"
+                      fontWeight="500"
+                      _hover={{ bg: "brand.50" }}
+                      onClick={onClose}
+                    >
+                      <HStack>
+                        <Icon as={FiFolderPlus} />
+                        <Text>My Projects</Text>
+                      </HStack>
+                    </ChakraLink>
+                    
+                    <ChakraLink
+                      as={RouterLink}
+                      to="/profile"
+                      px={4}
+                      py={3}
+                      w="100%"
+                      rounded="lg"
+                      minH="48px"
+                      fontWeight="500"
+                      _hover={{ bg: "brand.50" }}
+                      onClick={onClose}
+                    >
+                      <HStack>
+                        <Icon as={FiUser} />
+                        <Text>My Profile</Text>
+                      </HStack>
+                    </ChakraLink>
+                    
                     <ChakraLink
                       as={RouterLink}
                       to="/dashboard"
@@ -344,24 +484,6 @@ export const Navbar: React.FC = () => {
                       <HStack>
                         <Icon as={FiUsers} />
                         <Text>Dashboard</Text>
-                      </HStack>
-                    </ChakraLink>
-                    
-                    <ChakraLink
-                      as={RouterLink}
-                      to="/collaborations"
-                      px={4}
-                      py={3}
-                      w="100%"
-                      rounded="lg"
-                      minH="48px"
-                      fontWeight="500"
-                      _hover={{ bg: "rgba(24, 144, 255, 0.08)" }}
-                      onClick={onClose}
-                    >
-                      <HStack>
-                        <Icon as={FiUsers} />
-                        <Text>Collaborations</Text>
                       </HStack>
                     </ChakraLink>
 
@@ -411,7 +533,7 @@ export const Navbar: React.FC = () => {
                       mt={2}
                       leftIcon={<FiLogOut />}
                     >
-                      Sign Out
+                      Logout
                     </Button>
                   </>
                 ) : (
