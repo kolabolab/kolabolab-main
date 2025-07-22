@@ -12,8 +12,10 @@ import {
   Avatar,
   Icon,
   useColorModeValue,
+  Button,
 } from '@chakra-ui/react';
-import { FiStar, FiQuote } from 'react-icons/fi';
+import { Link as RouterLink } from 'react-router-dom';
+import { FiStar, FiQuote, FiArrowRight } from 'react-icons/fi';
 
 interface Testimonial {
   id: string;
