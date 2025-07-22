@@ -15,7 +15,7 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { FiStar, FiQuote, FiArrowRight } from 'react-icons/fi';
+import { FiStar, FiMessageCircle, FiArrowRight } from 'react-icons/fi';
 
 interface Testimonial {
   id: string;
@@ -121,7 +121,7 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }
       <CardBody p={6}>
         <VStack align="start" spacing={4} h="full">
           <HStack spacing={3} w="full">
-            <Icon as={FiQuote} color="brand.500" w={6} h={6} />
+            <Icon as={FiMessageCircle} color="brand.500" w={6} h={6} />
             <StarRating rating={testimonial.rating} />
           </HStack>
           
