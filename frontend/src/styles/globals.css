@@ -1,4 +1,5 @@
 /* Global styles for KolaboLab */
+@import './professional.css';
 
 /* Reset and base styles */
 * {
