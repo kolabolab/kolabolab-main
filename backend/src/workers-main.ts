@@ -230,6 +230,36 @@ async function sendVerificationEmail(apiKey: string, email: string, firstName: s
   }
 }
 
+// Manual user verification (for testing)
+app.post('/api/auth/verify-manual', async (c) => {
+  try {
+    const { email } = await c.req.json();
+    
+    if (!email) {
+      throw new HTTPException(400, { message: 'Email required' });
+    }
+    
+    // Update user to verified
+    const result = await c.env.DB.prepare(
+      'UPDATE users SET isVerified = 1 WHERE email = ?'
+    ).bind(email).run();
+    
+    if (result.changes === 0) {
+      throw new HTTPException(404, { message: 'User not found' });
+    }
+    
+    return c.json({ 
+      message: 'User verified successfully',
+      email: email
+    });
+    
+  } catch (error) {
+    if (error instanceof HTTPException) throw error;
+    console.error('Manual verification error:', error);
+    throw new HTTPException(500, { message: 'Internal server error' });
+  }
+});
+
 // Database initialization
 app.get('/api/init-db', async (c) => {
   try {
