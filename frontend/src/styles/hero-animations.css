@@ -1,0 +1,60 @@
+/* Hero Section Animations */
+
+/* Slide-up and fade-in animation for hero elements */
+@keyframes slideUpFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero right card animation */
+.hero-right-card {
+  animation: slideUpFadeIn 0.8s ease-out 0.3s both;
+}
+
+/* Hero CTA buttons animation */
+.hero-cta-buttons {
+  animation: slideUpFadeIn 0.8s ease-out 0.5s both;
+}
+
+/* Enhanced float animation for decorative elements */
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px); 
+  }
+  50% { 
+    transform: translateY(-20px); 
+  }
+}
+
+/* Responsive animation adjustments */
+@media (max-width: 768px) {
+  .hero-right-card {
+    animation: slideUpFadeIn 0.6s ease-out 0.2s both;
+  }
+  
+  .hero-cta-buttons {
+    animation: slideUpFadeIn 0.6s ease-out 0.3s both;
+  }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .hero-right-card,
+  .hero-cta-buttons {
+    animation: none;
+  }
+  
+  .float-animation {
+    animation: none;
+  }
+}

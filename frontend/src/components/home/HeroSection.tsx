@@ -52,10 +52,15 @@ export const HeroSection: React.FC = () => {
 
   return (
     <Box bgGradient={bgGradient} pt={20} pb={16}>
-      <Container maxW="7xl">
-        <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={12} alignItems="center">
+      <Container maxW="6xl">
+        <SimpleGrid 
+          columns={{ base: 1, lg: 2 }} 
+          spacing={{ base: 12, lg: 8 }} 
+          alignItems="flex-start"
+          templateColumns={{ base: "1fr", lg: "1fr 0.8fr" }}
+        >
           {/* Left Column - Content */}
-          <VStack align="start" spacing={8}>
+          <VStack align="start" spacing={8} pt={{ base: 0, lg: 4 }}>
             <VStack align="start" spacing={6}>
               <Heading
                 as="h1"
@@ -88,7 +93,14 @@ export const HeroSection: React.FC = () => {
             </VStack>
 
             {/* CTA Buttons */}
-            <HStack spacing={4} flexWrap="wrap" pt={2}>
+            <HStack 
+              spacing={4} 
+              flexWrap="wrap" 
+              pt={2}
+              justify={{ base: "center", lg: "flex-start" }}
+              w="full"
+              className="hero-cta-buttons"
+            >
               <Button
                 as={RouterLink}
                 to="/register"
@@ -121,18 +133,18 @@ export const HeroSection: React.FC = () => {
                 to="/startups"
                 size="lg"
                 variant="outline"
-                borderColor="gray.300"
-                color="gray.700"
+                borderColor="gray.500"
+                color="gray.800"
                 px={8}
                 py={7}
                 fontSize="md"
-                fontWeight="500"
+                fontWeight="600"
                 borderRadius="xl"
                 borderWidth="2px"
                 bg="white"
                 _hover={{
-                  borderColor: "brand.400",
-                  color: "brand.600",
+                  borderColor: "brand.500",
+                  color: "brand.700",
                   bg: "brand.50",
                   transform: 'translateY(-2px)',
                   shadow: 'md',
@@ -147,11 +159,21 @@ export const HeroSection: React.FC = () => {
             </HStack>
 
             {/* Trust Indicators */}
-            <VStack align="start" spacing={3} pt={4}>
+            <VStack 
+              align={{ base: "center", lg: "start" }} 
+              spacing={3} 
+              pt={4}
+              w="full"
+            >
               <Text fontSize="sm" color="gray.500" fontWeight="medium">
                 TRUSTED BY LEADING ORGANIZATIONS
               </Text>
-              <HStack spacing={6} opacity={0.7}>
+              <HStack 
+                spacing={6} 
+                opacity={0.7}
+                flexWrap="wrap"
+                justify={{ base: "center", lg: "flex-start" }}
+              >
                 <Text fontSize="sm" fontWeight="bold" color="gray.600">
                   United Nations
                 </Text>
@@ -169,13 +191,20 @@ export const HeroSection: React.FC = () => {
           </VStack>
 
           {/* Right Column - Visual */}
-          <Box position="relative">
+          <Box 
+            position="relative" 
+            pt={{ base: 0, lg: 4 }}
+            className="hero-right-card"
+          >
             <Box
               bg="linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)"
               borderRadius="2xl"
               p={8}
               position="relative"
               overflow="hidden"
+              border="1px solid"
+              borderColor={useColorModeValue('gray.200', 'gray.700')}
+              shadow="lg"
             >
               {/* Placeholder for hero image/illustration */}
               <VStack spacing={6} textAlign="center" py={12}>

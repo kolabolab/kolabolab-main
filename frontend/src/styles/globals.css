@@ -1,5 +1,6 @@
 /* Global styles for KolaboLab */
 @import './professional.css';
+@import './hero-animations.css';
 
 /* Reset and base styles */
 * {
