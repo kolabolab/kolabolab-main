@@ -174,42 +174,37 @@ export const Footer: React.FC = () => {
               © {new Date().getFullYear()} KolaboLab. All rights reserved.
             </Text>
             
-            <HStack spacing={6}>
+            <HStack spacing={6} flexWrap="wrap" justify={{ base: "center", md: "flex-end" }}>
               <Link 
                 href="/privacy" 
                 fontSize="sm" 
-                isExternal
                 className="footer-link"
-                display="flex"
-                alignItems="center" 
-                minH="44px"
-                px={2}
+                _hover={{ color: 'brand.500', textDecoration: 'none' }}
+                transition="color 0.2s ease"
               >
                 Privacy Policy
               </Link>
               <Link 
                 href="/terms" 
                 fontSize="sm" 
-                isExternal
                 className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
+                _hover={{ color: 'brand.500', textDecoration: 'none' }}
+                transition="color 0.2s ease"
               >
                 Terms of Service
               </Link>
               <Link 
-                href="/cookies" 
-                fontSize="sm" 
-                isExternal
+                as={RouterLink}
+                to="/about"
+                fontSize="sm"
                 className="footer-link"
+                _hover={{ color: 'brand.500', textDecoration: 'none' }}
+                transition="color 0.2s ease"
                 display="flex"
                 alignItems="center"
-                minH="44px"
-                px={2}
+                gap={1}
               >
-                Cookie Policy
+                Made with <Icon as={FiHeart} color="red.500" w={3} h={3} /> for social impact
               </Link>
             </HStack>
           </Stack>
