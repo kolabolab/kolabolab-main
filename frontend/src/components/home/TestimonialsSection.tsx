@@ -337,13 +337,14 @@ export const TestimonialsSection: React.FC = () => {
             <Text fontSize="lg" color="gray.600">
               Ready to join our community of changemakers?
             </Text>
-            <HStack spacing={4}>
+            <HStack spacing={4} className="button-group-aligned">
               <Button
                 as={RouterLink}
                 to="/register"
                 size="lg"
                 colorScheme="brand"
                 rightIcon={<Icon as={FiArrowRight} />}
+                className="button-aligned"
               >
                 Get Started Today
               </Button>
@@ -353,6 +354,7 @@ export const TestimonialsSection: React.FC = () => {
                 size="lg"
                 variant="outline"
                 colorScheme="brand"
+                className="button-aligned"
               >
                 Explore Projects
               </Button>

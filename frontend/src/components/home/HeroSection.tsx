@@ -99,7 +99,7 @@ export const HeroSection: React.FC = () => {
               pt={2}
               justify={{ base: "center", lg: "flex-start" }}
               w="full"
-              className="hero-cta-buttons"
+              className="hero-cta-buttons button-group-aligned"
             >
               <Button
                 as={RouterLink}
@@ -107,8 +107,8 @@ export const HeroSection: React.FC = () => {
                 size="lg"
                 colorScheme="brand"
                 rightIcon={<Icon as={FiArrowRight} />}
+                className="button-aligned"
                 px={10}
-                py={7}
                 fontSize="lg"
                 fontWeight="600"
                 borderRadius="xl"
@@ -133,10 +133,10 @@ export const HeroSection: React.FC = () => {
                 to="/startups"
                 size="lg"
                 variant="outline"
+                className="button-aligned"
                 borderColor="gray.500"
                 color="gray.800"
                 px={8}
-                py={7}
                 fontSize="md"
                 fontWeight="600"
                 borderRadius="xl"

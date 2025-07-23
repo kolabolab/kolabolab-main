@@ -1,5 +1,94 @@
 /* Global Alignment Fixes for KolaboLab */
 
+/* FORCE PERFECT ALIGNMENT ACROSS THE ENTIRE SITE */
+
+/* Fix navbar alignment issues */
+.navbar-container {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.navbar-content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  height: 80px !important;
+}
+
+.navbar-left {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+.navbar-center {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  gap: 0 !important;
+}
+
+.navbar-right {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  margin-left: auto !important;
+}
+
+/* Force all navbar elements to same height and alignment */
+.navbar-element {
+  height: 44px !important;
+  min-height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+  vertical-align: baseline !important;
+}
+
+/* Fix button alignment issues globally */
+.button-group-aligned {
+  display: flex !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  height: auto !important;
+}
+
+.button-aligned {
+  height: 48px !important;
+  min-height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin: 0 !important;
+  vertical-align: top !important;
+  box-sizing: border-box !important;
+}
+
+/* Fix container width issues */
+.full-width-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+.content-container {
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
 /* Fix common VStack and HStack alignment issues */
 .chakra-stack {
   align-items: center !important;
