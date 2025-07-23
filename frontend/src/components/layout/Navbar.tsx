@@ -45,13 +45,16 @@ const NavLink = ({ children, to, variant = 'default' }: {
       as={RouterLink}
       to={to}
       px={4}
-      py={2}
+      py={0}
       rounded="lg"
       className="nav-link"
       height="44px"
+      minHeight="44px"
       minWidth="44px"
-      display="inline-flex"
+      display="flex"
       alignItems="center"
+      justifyContent="center"
+      lineHeight="1"
       _hover={{
         textDecoration: 'none',
         bg: getHoverBg(),
@@ -101,12 +104,13 @@ export const Navbar: React.FC = () => {
               className="interactive-element"
             />
 
-            <HStack spacing={8} alignItems="center">
+            <HStack spacing={8} alignItems="center" height="100%">
               {/* Logo */}
               <Box>
                 <ChakraLink
                   as={RouterLink}
                   to="/"
+                  height="44px"
                   minH="44px"
                   display="flex"
                   alignItems="center"
@@ -114,13 +118,14 @@ export const Navbar: React.FC = () => {
                   _hover={{ textDecoration: 'none' }}
                   className="interactive-element"
                 >
-                  <HStack spacing={2}>
+                  <HStack spacing={2} alignItems="center">
                     <Icon as={FiZap} color="brand.500" boxSize={6} />
                     <Text
                       fontSize="xl"
                       fontWeight="800"
                       className="gradient-text"
                       fontFamily="heading"
+                      lineHeight="1"
                     >
                       KolaboLab
                     </Text>
@@ -133,6 +138,8 @@ export const Navbar: React.FC = () => {
                 as="nav"
                 spacing={2}
                 display={{ base: 'none', md: 'flex' }}
+                alignItems="center"
+                height="100%"
               >
                 <NavLink to="/startups" variant="startup">Startups</NavLink>
                 <NavLink to="/search">Search</NavLink>
