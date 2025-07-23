@@ -194,22 +194,17 @@ export const Navbar: React.FC = () => {
                           <Text fontWeight="600" fontSize="sm" lineHeight="1.2">
                             {user?.firstName} {user?.lastName}
                           </Text>
-                          <HStack spacing={1}>
-                            <Text fontSize="xs" color="gray.500">
-                              @{user?.username}
-                            </Text>
-                            {user?.roles?.includes('investor') && (
-                              <Badge
-                                variant="subtle"
-                                colorScheme="green"
-                                fontSize="xs"
-                                px={1}
-                                py={0}
-                              >
-                                Investor
-                              </Badge>
-                            )}
-                          </HStack>
+                          {user?.roles?.includes('investor') && (
+                            <Badge
+                              variant="subtle"
+                              colorScheme="green"
+                              fontSize="xs"
+                              px={1}
+                              py={0}
+                            >
+                              Investor
+                            </Badge>
+                          )}
                         </VStack>
                         <Icon as={FiChevronDown} w={4} h={4} color="gray.500" />
                       </HStack>
@@ -228,12 +223,6 @@ export const Navbar: React.FC = () => {
                         <VStack spacing={1} align="start">
                           <Text fontWeight="700" fontSize="md">
                             {user?.firstName} {user?.lastName}
-                          </Text>
-                          <Text fontSize="sm" color="gray.600">
-                            @{user?.username}
-                          </Text>
-                          <Text fontSize="xs" color="gray.500">
-                            {user?.email}
                           </Text>
                           {user?.roles?.includes('investor') && (
                             <Badge
@@ -413,9 +402,6 @@ export const Navbar: React.FC = () => {
                         <VStack spacing={0} align="start" flex="1">
                           <Text fontWeight="700" fontSize="md">
                             {user?.firstName} {user?.lastName}
-                          </Text>
-                          <Text fontSize="sm" color="gray.600">
-                            @{user?.username}
                           </Text>
                           {user?.roles?.includes('investor') && (
                             <Badge
