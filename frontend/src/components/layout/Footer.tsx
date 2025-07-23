@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
+import { FiHeart } from 'react-icons/fi'
 
 export const Footer: React.FC = () => {
   return (
