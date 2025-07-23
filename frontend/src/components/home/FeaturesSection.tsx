@@ -89,8 +89,8 @@ const FeatureCard: React.FC<{ feature: Feature; index: number }> = ({ feature, i
       transition="all 0.3s ease"
       h="full"
     >
-      <CardBody p={8}>
-        <VStack align="start" spacing={4} h="full">
+      <CardBody p={{ base: 6, md: 8 }}>
+        <VStack align="start" spacing={{ base: 4, md: 5 }} h="full">
           <Box
             p={3}
             borderRadius="lg"
@@ -105,20 +105,21 @@ const FeatureCard: React.FC<{ feature: Feature; index: number }> = ({ feature, i
             />
           </Box>
           
-          <VStack align="start" spacing={3} flex="1">
+          <VStack align="start" spacing={{ base: 2, md: 3 }} flex="1">
             <Heading
               as="h3"
-              fontSize="xl"
+              fontSize={{ base: 'lg', md: 'xl' }}
               fontWeight="bold"
               lineHeight="shorter"
+              color={useColorModeValue('gray.900', 'white')}
             >
               {feature.title}
             </Heading>
             
             <Text
-              color="gray.600"
-              lineHeight="tall"
-              fontSize="md"
+              color={useColorModeValue('gray.600', 'gray.300')}
+              lineHeight="relaxed"
+              fontSize={{ base: 'sm', md: 'md' }}
             >
               {feature.description}
             </Text>
@@ -160,8 +161,9 @@ export const FeaturesSection: React.FC = () => {
           {/* Features Grid */}
           <SimpleGrid
             columns={{ base: 1, md: 2, lg: 4 }}
-            spacing={8}
+            spacing={{ base: 6, md: 8 }}
             w="full"
+            px={{ base: 4, md: 0 }}
           >
             {features.map((feature, index) => (
               <FeatureCard
