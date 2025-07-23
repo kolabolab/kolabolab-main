@@ -76,10 +76,11 @@ export const HeroSection: React.FC = () => {
               </Heading>
               
               <Text
-                fontSize={{ base: 'xl', md: '2xl' }}
-                color="gray.600"
-                lineHeight="tall"
+                fontSize={{ base: 'lg', md: 'xl' }}
+                color="gray.700"
+                lineHeight="relaxed"
                 maxW="xl"
+                fontWeight="400"
               >
                 Connect with passionate entrepreneurs, skilled developers, and impact investors 
                 to build startups that solve the world's most pressing challenges.
@@ -87,21 +88,30 @@ export const HeroSection: React.FC = () => {
             </VStack>
 
             {/* CTA Buttons */}
-            <HStack spacing={4} flexWrap="wrap">
+            <HStack spacing={4} flexWrap="wrap" pt={2}>
               <Button
                 as={RouterLink}
                 to="/register"
                 size="lg"
                 colorScheme="brand"
                 rightIcon={<Icon as={FiArrowRight} />}
-                px={8}
-                py={6}
+                px={10}
+                py={7}
                 fontSize="lg"
+                fontWeight="600"
+                borderRadius="xl"
+                bg="brand.500"
+                color="white"
+                boxShadow="0 4px 14px 0 rgba(16, 185, 129, 0.25)"
                 _hover={{
-                  transform: 'translateY(-2px)',
-                  shadow: 'xl',
+                  bg: "brand.600",
+                  transform: 'translateY(-3px)',
+                  boxShadow: "0 8px 25px 0 rgba(16, 185, 129, 0.35)",
                 }}
-                transition="all 0.3s ease"
+                _active={{
+                  transform: 'translateY(-1px)',
+                }}
+                transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
               >
                 Start Building Today
               </Button>
@@ -111,15 +121,26 @@ export const HeroSection: React.FC = () => {
                 to="/startups"
                 size="lg"
                 variant="outline"
-                colorScheme="brand"
+                borderColor="gray.300"
+                color="gray.700"
                 px={8}
-                py={6}
-                fontSize="lg"
+                py={7}
+                fontSize="md"
+                fontWeight="500"
+                borderRadius="xl"
+                borderWidth="2px"
+                bg="white"
                 _hover={{
+                  borderColor: "brand.400",
+                  color: "brand.600",
+                  bg: "brand.50",
                   transform: 'translateY(-2px)',
-                  shadow: 'lg',
+                  shadow: 'md',
                 }}
-                transition="all 0.3s ease"
+                _active={{
+                  transform: 'translateY(0px)',
+                }}
+                transition="all 0.3s cubic-bezier(0.4, 0, 0.2, 1)"
               >
                 Explore Projects
               </Button>
