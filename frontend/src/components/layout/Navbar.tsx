@@ -286,24 +286,12 @@ export const Navbar: React.FC = () => {
                   </Menu>
                 </HStack>
               ) : (
-                <HStack spacing={3} alignItems="center" height="100%">
+                <HStack spacing={3} alignItems="center" height="100%" className="header-auth-buttons">
                   <Button
                     as={RouterLink}
                     to="/login"
                     variant="ghost"
-                    size="md"
-                    className="interactive-element"
-                    height="40px"
-                    minHeight="40px"
-                    px={4}
-                    py={0}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    fontSize="sm"
-                    fontWeight="500"
-                    lineHeight="1"
-                    borderRadius="lg"
+                    className="header-auth-button"
                   >
                     Sign In
                   </Button>
@@ -311,19 +299,7 @@ export const Navbar: React.FC = () => {
                     as={RouterLink}
                     to="/register"
                     variant="asymmetric"
-                    size="md"
-                    className="interactive-element"
-                    height="40px"
-                    minHeight="40px"
-                    px={4}
-                    py={0}
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="center"
-                    fontSize="sm"
-                    fontWeight="500"
-                    lineHeight="1"
-                    borderRadius="lg"
+                    className="header-auth-button"
                   >
                     Sign Up
                   </Button>

@@ -36,12 +36,48 @@
   height: 100% !important;
 }
 
-/* Override any variant-specific styling that might cause misalignment */
-.chakra-button[data-variant="ghost"],
-.chakra-button[data-variant="asymmetric"] {
+/* Force identical styling for Sign In and Sign Up buttons */
+.header-auth-button {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 1rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  border-radius: 0.5rem !important;
+  box-sizing: border-box !important;
+  vertical-align: top !important;
+}
+
+/* Override any variant-specific styling that might cause misalignment */
+.chakra-button[data-variant="ghost"].header-auth-button,
+.chakra-button[data-variant="asymmetric"].header-auth-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 0 1rem !important;
+  margin: 0 !important;
+  vertical-align: top !important;
+  box-sizing: border-box !important;
+}
+
+/* Force baseline alignment for the container */
+.header-auth-buttons {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  gap: 0.75rem !important;
+}
+
+/* Remove any potential margin/padding differences */
+.header-auth-buttons .chakra-button {
+  margin: 0 !important;
+  vertical-align: top !important;
 }
 
 /* Ensure consistent baseline alignment */
