@@ -62,6 +62,22 @@ export const HeroSection: React.FC = () => {
           {/* Left Column - Content */}
           <VStack align="start" spacing={8} pt={{ base: 0, lg: 4 }}>
             <VStack align="start" spacing={6}>
+              {/* Platform Badge */}
+              <Box
+                bg="green.50"
+                color="gray.800"
+                px={4}
+                py={2}
+                borderRadius="full"
+                fontSize="sm"
+                fontWeight="600"
+                border="1px solid"
+                borderColor="green.100"
+                display="inline-block"
+              >
+                Global Startup Collaboration Platform
+              </Box>
+              
               <Heading
                 as="h1"
                 fontSize={{ base: '4xl', md: '5xl', lg: '6xl' }}
