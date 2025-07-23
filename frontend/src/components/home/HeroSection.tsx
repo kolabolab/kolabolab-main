@@ -247,33 +247,71 @@ export const HeroSection: React.FC = () => {
               border="1px solid"
               borderColor={statBorder}
               textAlign="center"
+              cursor="pointer"
+              position="relative"
+              overflow="hidden"
               _hover={{
-                transform: 'translateY(-4px)',
-                shadow: 'lg',
+                transform: 'translateY(-6px)',
+                shadow: 'xl',
+                borderColor: 'brand.200',
+                bg: useColorModeValue('brand.25', 'gray.750'),
               }}
-              transition="all 0.3s ease"
+              _before={{
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '3px',
+                bg: 'brand.500',
+                transform: 'scaleX(0)',
+                transformOrigin: 'left',
+                transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              }}
+              _hover_before={{
+                transform: 'scaleX(1)',
+              }}
+              transition="all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
             >
-              <VStack spacing={3}>
-                <Icon
-                  as={stat.icon}
-                  w={8}
-                  h={8}
-                  color="brand.500"
-                />
-                <StatNumber
-                  fontSize={{ base: '2xl', md: '3xl' }}
-                  fontWeight="bold"
-                  className="gradient-text"
+              <VStack spacing={4} alignItems="center" justifyContent="center" minH="120px">
+                <Box
+                  p={3}
+                  borderRadius="lg"
+                  bg={useColorModeValue('brand.50', 'brand.900')}
+                  transition="all 0.3s ease"
+                  _groupHover={{
+                    bg: useColorModeValue('brand.100', 'brand.800'),
+                    transform: 'scale(1.1)',
+                  }}
                 >
-                  {stat.value}
-                </StatNumber>
-                <StatLabel
-                  fontSize="sm"
-                  color="gray.600"
-                  fontWeight="medium"
-                >
-                  {stat.label}
-                </StatLabel>
+                  <Icon
+                    as={stat.icon}
+                    w={8}
+                    h={8}
+                    color="brand.500"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  />
+                </Box>
+                <VStack spacing={1} alignItems="center">
+                  <StatNumber
+                    fontSize={{ base: '2xl', md: '3xl' }}
+                    fontWeight="bold"
+                    className="gradient-text"
+                    lineHeight="1"
+                  >
+                    {stat.value}
+                  </StatNumber>
+                  <StatLabel
+                    fontSize="sm"
+                    color={useColorModeValue('gray.600', 'gray.400')}
+                    fontWeight="medium"
+                    lineHeight="1.2"
+                  >
+                    {stat.label}
+                  </StatLabel>
+                </VStack>
               </VStack>
             </Stat>
           ))}
