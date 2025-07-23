@@ -125,11 +125,11 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; isCarousel?: boolean
       }}
       transition="all 0.3s ease"
       h="full"
-      minW={isCarousel ? "280px" : "auto"}
-      maxW={isCarousel ? "320px" : "auto"}
+      minW={isCarousel ? "350px" : "auto"}
+      maxW={isCarousel ? "400px" : "auto"}
       flex={isCarousel ? "0 0 auto" : "1"}
     >
-      <CardBody p={4}>
+      <CardBody p={6}>
         <VStack align="start" spacing={4} h="full">
           <HStack spacing={3} w="full" className="testimonial-header">
             <Icon as={FiMessageCircle} color="brand.500" className="testimonial-icon" />

@@ -66,16 +66,17 @@ export const HeroSection: React.FC = () => {
               <Box
                 bg="green.50"
                 color="gray.800"
-                px={4}
-                py={2}
+                px={6}
+                py={3}
                 borderRadius="full"
-                fontSize="sm"
-                fontWeight="600"
+                fontSize={{ base: "md", md: "lg" }}
+                fontWeight="700"
                 border="1px solid"
                 borderColor="green.100"
                 display="inline-block"
+                letterSpacing="wide"
               >
-                Global Startup Collaboration Platform
+                GLOBAL STARTUP COLLABORATION PLATFORM
               </Box>
               
               <Heading

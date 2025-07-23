@@ -23,10 +23,22 @@ interface Feature {
 
 const features: Feature[] = [
   {
+    title: 'Smart Matching',
+    description: 'Our AI-powered algorithm connects you with the perfect co-founders, team members, and investors based on skills, values, and project goals.',
+    icon: FiTarget,
+    color: 'blue.500',
+  },
+  {
     title: 'Global Community',
     description: 'Join a diverse network of 15,000+ entrepreneurs, developers, designers, and investors from 45+ countries, all passionate about social impact.',
     icon: FiGlobe,
     color: 'green.500',
+  },
+  {
+    title: 'Collaboration Tools',
+    description: 'Built-in project management, communication, and file sharing tools designed specifically for startup teams and remote collaboration.',
+    icon: FiUsers,
+    color: 'purple.500',
   },
   {
     title: 'Funding Opportunities',
@@ -39,6 +51,12 @@ const features: Feature[] = [
     description: 'Connect with experienced entrepreneurs, industry experts, and thought leaders who provide guidance and support for your startup journey.',
     icon: FiAward,
     color: 'red.500',
+  },
+  {
+    title: 'Impact Measurement',
+    description: 'Track and showcase your social and environmental impact with our comprehensive metrics dashboard and reporting tools.',
+    icon: FiHeart,
+    color: 'pink.500',
   },
   {
     title: 'Secure Platform',
@@ -142,7 +160,7 @@ export const FeaturesSection: React.FC = () => {
 
           {/* Features Grid */}
           <SimpleGrid
-            columns={{ base: 1, md: 2, lg: 3 }}
+            columns={{ base: 1, md: 2, lg: 4 }}
             spacing={{ base: 6, md: 8 }}
             w="full"
             px={{ base: 4, md: 0 }}
