@@ -1,0 +1,58 @@
+/* Button Alignment Utilities */
+
+/* Ensures consistent vertical alignment for all header buttons */
+.header-button-alignment {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Desktop header buttons */
+.header-button-desktop {
+  height: 40px !important;
+  min-height: 40px !important;
+  font-size: 0.875rem !important; /* 14px */
+  font-weight: 500 !important;
+  border-radius: 0.5rem !important; /* 8px */
+}
+
+/* Mobile header buttons */
+.header-button-mobile {
+  height: 48px !important;
+  min-height: 48px !important;
+  font-size: 1rem !important; /* 16px */
+  font-weight: 500 !important;
+  width: 100% !important;
+}
+
+/* Ensures HStack containers maintain proper alignment */
+.header-button-container {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+/* Override any variant-specific styling that might cause misalignment */
+.chakra-button[data-variant="ghost"],
+.chakra-button[data-variant="asymmetric"] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Ensure consistent baseline alignment */
+.header-auth-buttons {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 0.75rem !important; /* 12px */
+}
+
+/* Fix for any potential flex item misalignment */
+.header-auth-buttons > * {
+  flex-shrink: 0 !important;
+  align-self: center !important;
+}

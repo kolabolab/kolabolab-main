@@ -294,9 +294,16 @@ export const Navbar: React.FC = () => {
                     size="md"
                     className="interactive-element"
                     height="40px"
+                    minHeight="40px"
                     px={4}
+                    py={0}
+                    display="flex"
                     alignItems="center"
                     justifyContent="center"
+                    fontSize="sm"
+                    fontWeight="500"
+                    lineHeight="1"
+                    borderRadius="lg"
                   >
                     Sign In
                   </Button>
@@ -307,9 +314,16 @@ export const Navbar: React.FC = () => {
                     size="md"
                     className="interactive-element"
                     height="40px"
+                    minHeight="40px"
                     px={4}
+                    py={0}
+                    display="flex"
                     alignItems="center"
                     justifyContent="center"
+                    fontSize="sm"
+                    fontWeight="500"
+                    lineHeight="1"
+                    borderRadius="lg"
                   >
                     Sign Up
                   </Button>
@@ -539,10 +553,16 @@ export const Navbar: React.FC = () => {
                       variant="ghost"
                       size="lg"
                       width="100%"
+                      height="48px"
+                      minHeight="48px"
                       onClick={onClose}
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
+                      fontSize="md"
+                      fontWeight="500"
+                      lineHeight="1"
+                      py={0}
                     >
                       Sign In
                     </Button>
@@ -553,11 +573,17 @@ export const Navbar: React.FC = () => {
                       variant="asymmetric"
                       size="lg"
                       width="100%"
+                      height="48px"
+                      minHeight="48px"
                       mt={2}
                       onClick={onClose}
                       display="flex"
                       alignItems="center"
                       justifyContent="center"
+                      fontSize="md"
+                      fontWeight="500"
+                      lineHeight="1"
+                      py={0}
                     >
                       Sign Up
                     </Button>
