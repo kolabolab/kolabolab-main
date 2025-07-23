@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 // Fixed FiQuote icon issue - using FiMessageCircle instead
 import {
   Box,
@@ -14,9 +14,11 @@ import {
   Icon,
   useColorModeValue,
   Button,
+  Flex,
+  IconButton,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { FiStar, FiMessageCircle, FiArrowRight } from 'react-icons/fi';
+import { FiStar, FiMessageCircle, FiArrowRight, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 interface Testimonial {
   id: string;
@@ -102,9 +104,15 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   );
 };
 
-const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }) => {
+const TestimonialCard: React.FC<{ testimonial: Testimonial; isCarousel?: boolean }> = ({ testimonial, isCarousel = false }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const cardBg = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
+  
+  const shouldTruncate = testimonial.content.length > 150;
+  const displayContent = shouldTruncate && !isExpanded 
+    ? testimonial.content.substring(0, 150) + "..."
+    : testimonial.content;
 
   return (
     <Card
@@ -118,6 +126,9 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }
       }}
       transition="all 0.3s ease"
       h="full"
+      minW={isCarousel ? "350px" : "auto"}
+      maxW={isCarousel ? "400px" : "auto"}
+      flex={isCarousel ? "0 0 auto" : "1"}
     >
       <CardBody p={6}>
         <VStack align="start" spacing={4} h="full">
@@ -126,15 +137,31 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }
             <StarRating rating={testimonial.rating} />
           </HStack>
           
-          <Text
-            fontSize="md"
-            lineHeight="tall"
-            color="gray.600"
-            flex="1"
-            fontStyle="italic"
-          >
-            "{testimonial.content}"
-          </Text>
+          <VStack align="start" spacing={2} flex="1">
+            <Text
+              fontSize="md"
+              lineHeight="tall"
+              color="gray.600"
+              fontStyle="italic"
+            >
+              "{displayContent}"
+            </Text>
+            
+            {shouldTruncate && (
+              <Button
+                variant="link"
+                size="sm"
+                color="brand.500"
+                fontWeight="medium"
+                p={0}
+                h="auto"
+                onClick={() => setIsExpanded(!isExpanded)}
+                _hover={{ color: "brand.600" }}
+              >
+                {isExpanded ? "Read Less" : "Read More"}
+              </Button>
+            )}
+          </VStack>
           
           <HStack spacing={3} w="full" pt={2}>
             <Avatar
@@ -161,7 +188,39 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial }> = ({ testimonial }
 };
 
 export const TestimonialsSection: React.FC = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const sectionBg = useColorModeValue('gray.50', 'gray.900');
+
+  const scrollToIndex = (index: number) => {
+    if (scrollRef.current) {
+      const cardWidth = 400; // maxW of cards + spacing
+      scrollRef.current.scrollTo({
+        left: index * cardWidth,
+        behavior: 'smooth'
+      });
+      setCurrentIndex(index);
+    }
+  };
+
+  const scrollLeft = () => {
+    const newIndex = currentIndex > 0 ? currentIndex - 1 : testimonials.length - 1;
+    scrollToIndex(newIndex);
+  };
+
+  const scrollRight = () => {
+    const newIndex = currentIndex < testimonials.length - 1 ? currentIndex + 1 : 0;
+    scrollToIndex(newIndex);
+  };
+
+  // Auto-scroll functionality
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      scrollRight();
+    }, 5000); // Auto-scroll every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [currentIndex]);
 
   return (
     <Box bg={sectionBg} py={20}>
@@ -189,16 +248,89 @@ export const TestimonialsSection: React.FC = () => {
             </Text>
           </VStack>
 
-          {/* Testimonials Grid */}
-          <SimpleGrid
-            columns={{ base: 1, md: 2, lg: 3 }}
-            spacing={8}
-            w="full"
-          >
-            {testimonials.map((testimonial) => (
+          {/* Desktop Carousel */}
+          <Box w="full" display={{ base: 'none', md: 'block' }}>
+            <Box position="relative">
+              {/* Navigation Buttons */}
+              <IconButton
+                aria-label="Previous testimonial"
+                icon={<FiChevronLeft />}
+                position="absolute"
+                left="-20px"
+                top="50%"
+                transform="translateY(-50%)"
+                zIndex={2}
+                colorScheme="brand"
+                variant="ghost"
+                size="lg"
+                onClick={scrollLeft}
+                _hover={{ bg: 'brand.50' }}
+              />
+              
+              <IconButton
+                aria-label="Next testimonial"
+                icon={<FiChevronRight />}
+                position="absolute"
+                right="-20px"
+                top="50%"
+                transform="translateY(-50%)"
+                zIndex={2}
+                colorScheme="brand"
+                variant="ghost"
+                size="lg"
+                onClick={scrollRight}
+                _hover={{ bg: 'brand.50' }}
+              />
+
+              {/* Carousel Container */}
+              <Box
+                ref={scrollRef}
+                overflowX="auto"
+                overflowY="hidden"
+                css={{
+                  '&::-webkit-scrollbar': {
+                    display: 'none',
+                  },
+                  '-ms-overflow-style': 'none',
+                  'scrollbar-width': 'none',
+                }}
+              >
+                <Flex gap={6} pb={4}>
+                  {testimonials.map((testimonial) => (
+                    <TestimonialCard 
+                      key={testimonial.id} 
+                      testimonial={testimonial} 
+                      isCarousel={true}
+                    />
+                  ))}
+                </Flex>
+              </Box>
+
+              {/* Dots Indicator */}
+              <HStack justify="center" spacing={2} mt={6}>
+                {testimonials.map((_, index) => (
+                  <Box
+                    key={index}
+                    w={3}
+                    h={3}
+                    borderRadius="full"
+                    bg={index === currentIndex ? 'brand.500' : 'gray.300'}
+                    cursor="pointer"
+                    transition="all 0.3s ease"
+                    onClick={() => scrollToIndex(index)}
+                    _hover={{ bg: index === currentIndex ? 'brand.600' : 'gray.400' }}
+                  />
+                ))}
+              </HStack>
+            </Box>
+          </Box>
+
+          {/* Mobile Stacked Layout */}
+          <VStack spacing={6} w="full" display={{ base: 'flex', md: 'none' }}>
+            {testimonials.slice(0, 3).map((testimonial) => (
               <TestimonialCard key={testimonial.id} testimonial={testimonial} />
             ))}
-          </SimpleGrid>
+          </VStack>
 
           {/* Call to Action */}
           <VStack spacing={4} textAlign="center">
