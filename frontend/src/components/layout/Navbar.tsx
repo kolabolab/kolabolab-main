@@ -149,9 +149,9 @@ export const Navbar: React.FC = () => {
             </HStack>
 
             {/* Right side actions */}
-            <Flex alignItems="center">
+            <Flex alignItems="center" height="60px">
               {isAuthenticated ? (
-                <HStack spacing={4}>
+                <HStack spacing={4} alignItems="center" height="100%">
                   <Button
                     as={RouterLink}
                     to="/create-startup"
@@ -160,6 +160,10 @@ export const Navbar: React.FC = () => {
                     leftIcon={<AddIcon />}
                     display={{ base: 'none', lg: 'flex' }}
                     className="interactive-element"
+                    height="40px"
+                    px={4}
+                    alignItems="center"
+                    justifyContent="center"
                   >
                     Create Startup
                   </Button>
@@ -173,6 +177,9 @@ export const Navbar: React.FC = () => {
                       pr={3}
                       borderRadius="xl"
                       className="interactive-element"
+                      height="40px"
+                      alignItems="center"
+                      justifyContent="center"
                       _hover={{
                         bg: 'rgba(24, 144, 255, 0.08)',
                         transform: 'translateY(-1px)',
@@ -279,14 +286,15 @@ export const Navbar: React.FC = () => {
                   </Menu>
                 </HStack>
               ) : (
-                <HStack spacing={3} align="center">
+                <HStack spacing={3} alignItems="center" height="100%">
                   <Button
                     as={RouterLink}
                     to="/login"
                     variant="ghost"
                     size="md"
                     className="interactive-element"
-                    display="flex"
+                    height="40px"
+                    px={4}
                     alignItems="center"
                     justifyContent="center"
                   >
@@ -298,7 +306,8 @@ export const Navbar: React.FC = () => {
                     variant="asymmetric"
                     size="md"
                     className="interactive-element"
-                    display="flex"
+                    height="40px"
+                    px={4}
                     alignItems="center"
                     justifyContent="center"
                   >
