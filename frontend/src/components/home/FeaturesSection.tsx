@@ -132,8 +132,8 @@ const FeatureCard: React.FC<{ feature: Feature; index: number }> = ({ feature, i
 
 export const FeaturesSection: React.FC = () => {
   return (
-    <Box py={20}>
-      <Container maxW="7xl">
+    <Box py={20} className="full-width-site">
+      <Container maxW="100%" className="content-max-width">
         <VStack spacing={16}>
           {/* Section Header */}
           <VStack spacing={4} textAlign="center" maxW="3xl">

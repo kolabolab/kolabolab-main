@@ -51,8 +51,8 @@ export const HeroSection: React.FC = () => {
   const statBorder = useColorModeValue('gray.200', 'gray.700');
 
   return (
-    <Box bgGradient={bgGradient} pt={20} pb={16}>
-      <Container maxW="6xl">
+    <Box bgGradient={bgGradient} pt={20} pb={16} className="full-width-site">
+      <Container maxW="100%" className="hero-full-width">
         <SimpleGrid 
           columns={{ base: 1, lg: 2 }} 
           spacing={{ base: 12, lg: 8 }} 

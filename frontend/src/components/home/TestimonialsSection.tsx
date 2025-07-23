@@ -223,8 +223,8 @@ export const TestimonialsSection: React.FC = () => {
   }, [currentIndex]);
 
   return (
-    <Box bg={sectionBg} py={20}>
-      <Container maxW="7xl">
+    <Box bg={sectionBg} py={20} className="full-width-site">
+      <Container maxW="100%" className="content-max-width">
         <VStack spacing={12}>
           {/* Section Header */}
           <VStack spacing={4} textAlign="center" maxW="3xl">
