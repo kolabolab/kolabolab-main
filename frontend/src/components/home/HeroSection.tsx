@@ -164,7 +164,7 @@ export const HeroSection: React.FC = () => {
               spacing={3} 
               pt={4}
               w="full"
-              className="trust-indicators"
+              className="trust-indicators-container"
             >
               <Text fontSize="sm" color="gray.500" fontWeight="medium">
                 TRUSTED BY LEADING ORGANIZATIONS
@@ -174,18 +174,18 @@ export const HeroSection: React.FC = () => {
                 opacity={0.7}
                 flexWrap="wrap"
                 justify={{ base: "center", lg: "flex-start" }}
-                className="alignment-fix"
+                className="trust-indicators-list"
               >
-                <Text fontSize="sm" fontWeight="bold" color="gray.600">
+                <Text className="trust-indicator-item" color="gray.600">
                   United Nations
                 </Text>
-                <Text fontSize="sm" fontWeight="bold" color="gray.600">
+                <Text className="trust-indicator-item" color="gray.600">
                   World Bank
                 </Text>
-                <Text fontSize="sm" fontWeight="bold" color="gray.600">
+                <Text className="trust-indicator-item" color="gray.600">
                   Gates Foundation
                 </Text>
-                <Text fontSize="sm" fontWeight="bold" color="gray.600">
+                <Text className="trust-indicator-item" color="gray.600">
                   Y Combinator
                 </Text>
               </HStack>
@@ -268,6 +268,7 @@ export const HeroSection: React.FC = () => {
           pt={12}
           borderTop="1px solid"
           borderColor={useColorModeValue('gray.200', 'gray.700')}
+          className="stats-container"
         >
           {stats.map((stat, index) => (
             <Stat
@@ -281,6 +282,7 @@ export const HeroSection: React.FC = () => {
               cursor="pointer"
               position="relative"
               overflow="hidden"
+              className="stat-card"
               _hover={{
                 transform: 'translateY(-6px)',
                 shadow: 'xl',
@@ -310,6 +312,7 @@ export const HeroSection: React.FC = () => {
                   borderRadius="lg"
                   bg={useColorModeValue('brand.50', 'brand.900')}
                   transition="all 0.3s ease"
+                  className="stat-icon-container"
                   _groupHover={{
                     bg: useColorModeValue('brand.100', 'brand.800'),
                     transform: 'scale(1.1)',
@@ -329,7 +332,7 @@ export const HeroSection: React.FC = () => {
                   <StatNumber
                     fontSize={{ base: '2xl', md: '3xl' }}
                     fontWeight="bold"
-                    className="gradient-text"
+                    className="gradient-text stat-number"
                     lineHeight="1"
                   >
                     {stat.value}
@@ -338,6 +341,7 @@ export const HeroSection: React.FC = () => {
                     fontSize="sm"
                     color={useColorModeValue('gray.600', 'gray.400')}
                     fontWeight="medium"
+                    className="stat-label"
                     lineHeight="1.2"
                   >
                     {stat.label}

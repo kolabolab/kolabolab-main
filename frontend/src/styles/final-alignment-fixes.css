@@ -1,0 +1,231 @@
+/* FINAL COMPREHENSIVE ALIGNMENT FIXES - ONCE AND FOR ALL */
+
+/* Trust Indicators Perfect Alignment */
+.trust-indicators-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+
+.trust-indicators-list {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 1.5rem !important;
+  width: 100% !important;
+}
+
+.trust-indicator-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+/* Star Rating Perfect Alignment */
+.star-rating-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0.25rem !important;
+  height: 24px !important;
+  min-height: 24px !important;
+}
+
+.star-rating-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Testimonial Card Header Alignment */
+.testimonial-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  gap: 0.75rem !important;
+  height: 32px !important;
+  min-height: 32px !important;
+}
+
+.testimonial-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Stats Section Perfect Alignment */
+.stats-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+  gap: 1.5rem !important;
+  width: 100% !important;
+}
+
+.stat-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  min-height: 160px !important;
+  padding: 1.5rem !important;
+}
+
+.stat-icon-container {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 64px !important;
+  height: 64px !important;
+  margin-bottom: 1rem !important;
+}
+
+.stat-number {
+  display: block !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.stat-label {
+  display: block !important;
+  text-align: center !important;
+  line-height: 1.2 !important;
+}
+
+/* Avatar and Text Alignment in Cards */
+.avatar-text-container {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  width: 100% !important;
+}
+
+.avatar-container {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.text-info-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  flex: 1 !important;
+  min-height: 48px !important;
+}
+
+/* Form Element Alignment */
+.form-element-aligned {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 48px !important;
+  width: 100% !important;
+}
+
+.form-label-aligned {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 0.5rem !important;
+  min-height: 24px !important;
+}
+
+/* Navigation Menu Alignment */
+.nav-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 1rem !important;
+  line-height: 1 !important;
+  gap: 0.5rem !important;
+}
+
+.nav-menu-icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Card Content Alignment */
+.card-content-aligned {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  height: 100% !important;
+}
+
+.card-header-aligned {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 48px !important;
+  padding: 1rem !important;
+  border-bottom: 1px solid var(--chakra-colors-gray-200) !important;
+}
+
+/* Mobile Responsive Alignment */
+@media (max-width: 768px) {
+  .trust-indicators-list {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+  }
+  
+  .trust-indicator-item {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  
+  .stats-container {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+  
+  .stat-card {
+    min-height: 120px !important;
+    padding: 1rem !important;
+  }
+}
+
+/* Force override any conflicting styles */
+.force-center-alignment {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.force-start-alignment {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+}
+
+.force-stretch-alignment {
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+}

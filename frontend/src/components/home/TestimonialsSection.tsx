@@ -89,15 +89,14 @@ const testimonials: Testimonial[] = [
 
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   return (
-    <HStack spacing={1}>
+    <HStack spacing={1} className="star-rating-container">
       {[...Array(5)].map((_, i) => (
         <Icon
           key={i}
           as={FiStar}
           color={i < rating ? 'yellow.400' : 'gray.300'}
           fill={i < rating ? 'yellow.400' : 'transparent'}
-          w={4}
-          h={4}
+          className="star-rating-icon"
         />
       ))}
     </HStack>
@@ -132,8 +131,8 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; isCarousel?: boolean
     >
       <CardBody p={6}>
         <VStack align="start" spacing={4} h="full">
-          <HStack spacing={3} w="full">
-            <Icon as={FiMessageCircle} color="brand.500" w={6} h={6} />
+          <HStack spacing={3} w="full" className="testimonial-header">
+            <Icon as={FiMessageCircle} color="brand.500" className="testimonial-icon" />
             <StarRating rating={testimonial.rating} />
           </HStack>
           
@@ -163,13 +162,14 @@ const TestimonialCard: React.FC<{ testimonial: Testimonial; isCarousel?: boolean
             )}
           </VStack>
           
-          <HStack spacing={3} w="full" pt={2}>
+          <HStack spacing={3} w="full" pt={2} className="avatar-text-container">
             <Avatar
               size="md"
               src={testimonial.avatar}
               name={testimonial.name}
+              className="avatar-container"
             />
-            <VStack align="start" spacing={0} flex="1">
+            <VStack align="start" spacing={0} flex="1" className="text-info-container">
               <Text fontWeight="bold" fontSize="sm">
                 {testimonial.name}
               </Text>
