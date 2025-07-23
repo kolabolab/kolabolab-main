@@ -164,6 +164,7 @@ export const HeroSection: React.FC = () => {
               spacing={3} 
               pt={4}
               w="full"
+              className="trust-indicators"
             >
               <Text fontSize="sm" color="gray.500" fontWeight="medium">
                 TRUSTED BY LEADING ORGANIZATIONS
@@ -173,6 +174,7 @@ export const HeroSection: React.FC = () => {
                 opacity={0.7}
                 flexWrap="wrap"
                 justify={{ base: "center", lg: "flex-start" }}
+                className="alignment-fix"
               >
                 <Text fontSize="sm" fontWeight="bold" color="gray.600">
                   United Nations

@@ -173,7 +173,7 @@ const LoginPage: React.FC = () => {
         />
       </Helmet>
 
-      <Box className="primary-context" minH="100vh" display="flex" alignItems="center" py={12}>
+      <Box className="primary-context alignment-fix" minH="100vh" py={12}>
         <Container maxW="md">
           <VStack spacing={8}>
             {/* Header */}

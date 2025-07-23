@@ -3,6 +3,7 @@
 @import './hero-animations.css';
 @import './button-alignment.css';
 @import './footer-styles.css';
+@import './global-alignment-fixes.css';
 
 /* Reset and base styles */
 * {
