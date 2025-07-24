@@ -22,7 +22,6 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     rollupOptions: {
-      external: ['hono', 'hono/cors', 'hono/jwt', 'hono/http-exception'],
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],

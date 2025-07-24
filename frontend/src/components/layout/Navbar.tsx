@@ -90,7 +90,7 @@ export const Navbar: React.FC = () => {
         zIndex={1000}
       >
         <Container maxW="100%" className="navbar-full-width">
-          <Flex h={20} alignItems="center" justifyContent="space-between" className="navbar-content">
+          <Flex h={20} alignItems="center" justifyContent="space-between" className="navbar-content" display="flex">
             <IconButton
               size="lg"
               width="48px"
