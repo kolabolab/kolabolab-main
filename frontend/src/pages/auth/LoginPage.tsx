@@ -135,23 +135,20 @@ const LoginPage: React.FC = () => {
   const handleOAuthLogin = async (provider: 'google' | 'linkedin' | 'github') => {
     setIsLoading(true);
     try {
-      // TODO: Replace with actual OAuth implementation
-      toast({
-        title: `${provider.charAt(0).toUpperCase() + provider.slice(1)} Login`,
-        description: 'OAuth integration coming soon!',
-        status: 'info',
-        duration: 3000,
-        isClosable: true,
-      });
+      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const oauthUrl = `${backendUrl}/auth/${provider}`;
+      
+      // Redirect to backend OAuth endpoint
+      window.location.href = oauthUrl;
     } catch (error) {
+      console.error(`${provider} OAuth error:`, error);
       toast({
-        title: 'OAuth Error',
-        description: 'Something went wrong with OAuth login.',
+        title: 'Authentication Error',
+        description: `Failed to initiate ${provider} login. Please try again.`,
         status: 'error',
         duration: 5000,
         isClosable: true,
       });
-    } finally {
       setIsLoading(false);
     }
   };

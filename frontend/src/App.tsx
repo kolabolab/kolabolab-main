@@ -12,6 +12,7 @@ import { ErrorBoundary } from './components/common/ErrorBoundary'
 const HomePage = React.lazy(() => import('./pages/HomePage'))
 const LoginPage = React.lazy(() => import('./pages/auth/LoginPage'))
 const RegisterPage = React.lazy(() => import('./pages/auth/RegisterPage'))
+const OAuthCallbackPage = React.lazy(() => import('./pages/auth/OAuthCallbackPage'))
 const DashboardPage = React.lazy(() => import('./pages/DashboardPage'))
 const StartupListPage = React.lazy(() => import('./pages/startups/StartupListPage'))
 const StartupDetailPage = React.lazy(() => import('./pages/startups/StartupDetailPage'))
@@ -126,6 +127,7 @@ function App() {
                 <Route path="/signup" element={<Navigate to="/register" replace />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/auth/callback" element={<OAuthCallbackPage />} />
                 
                 {/* Startup routes */}
                 <Route path="/startups" element={<StartupListPage />} />

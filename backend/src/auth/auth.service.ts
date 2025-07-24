@@ -165,7 +165,7 @@ export class AuthService {
   }
 
   async validateOAuthUser(profile: OAuthProfile): Promise<User> {
-    const { email, provider, providerId, firstName, lastName, avatar } = profile;
+    const { email, provider, id: providerId, firstName, lastName, avatar } = profile;
 
     let user = await this.userRepository.findOne({ where: { email } });
 
@@ -316,7 +316,7 @@ export class AuthService {
     return { message: 'Logged out successfully' };
   }
 
-  private async generateTokens(user: Partial<User>): Promise<AuthTokens> {
+  async generateTokens(user: Partial<User>): Promise<AuthTokens> {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.email,
