@@ -6,11 +6,7 @@
 @import './global-alignment-fixes.css';
 @import './final-alignment-fixes.css';
 @import './comprehensive-ui-fixes.css';
-@import './comprehensive-ui-fixes.css';
-@import './comprehensive-ui-fixes.css';
-@import './comprehensive-ui-fixes.css';
-@import './comprehensive-ui-fixes.css';
-@import './comprehensive-ui-fixes.css';
+@import './button-alignment-fix.css';
 
 /* Reset and base styles */
 * {

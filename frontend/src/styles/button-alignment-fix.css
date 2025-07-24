@@ -1,0 +1,54 @@
+/* Button Alignment Fixes */
+
+/* Hero Section Button Container */
+.hero-buttons-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 24px !important;
+  width: 100% !important;
+  flex-wrap: wrap !important;
+}
+
+/* Hero Section Buttons */
+.hero-button {
+  min-width: 200px !important;
+  height: 56px !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+/* Mobile responsive button alignment */
+@media (max-width: 768px) {
+  .hero-buttons-container {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  
+  .hero-button {
+    min-width: 280px !important;
+    width: 100% !important;
+    max-width: 320px !important;
+  }
+}
+
+/* Ensure buttons are same height and aligned */
+.hero-button:first-child,
+.hero-button:last-child {
+  height: 56px !important;
+  line-height: 1.2 !important;
+  padding: 0 24px !important;
+}
+
+/* Fix any text alignment issues within buttons */
+.hero-button span {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+}

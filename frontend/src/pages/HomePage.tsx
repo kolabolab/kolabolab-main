@@ -255,7 +255,9 @@ const HomePage: React.FC = () => {
                 spacing={6}
                 wrap="wrap"
                 justify="center"
+                align="center"
                 pt={4}
+                w="full"
               >
                 <Button
                   as={RouterLink}
@@ -264,7 +266,11 @@ const HomePage: React.FC = () => {
                   colorScheme="brand"
                   size="xl"
                   rightIcon={<FiArrowRight />}
-                  
+                  minW="220px"
+                  h="56px"
+                  fontSize="lg"
+                  fontWeight="600"
+                  className="hero-button"
                 >
                   Launch Your Startup
                 </Button>
@@ -274,6 +280,11 @@ const HomePage: React.FC = () => {
                   variant="solid"
                   colorScheme="blue"
                   size="xl"
+                  minW="220px"
+                  h="56px"
+                  fontSize="lg"
+                  fontWeight="600"
+                  className="hero-button"
                 >
                   Discover Opportunities
                 </Button>
