@@ -7,6 +7,7 @@
 @import './final-alignment-fixes.css';
 @import './comprehensive-ui-fixes.css';
 @import './button-alignment-fix.css';
+@import './mobile-navbar-fix.css';
 
 /* Reset and base styles */
 * {

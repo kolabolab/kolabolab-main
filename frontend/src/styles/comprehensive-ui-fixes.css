@@ -15,6 +15,22 @@
   height: 100% !important;
 }
 
+/* Mobile Auth Buttons Fix */
+@media (max-width: 640px) {
+  .header-auth-buttons {
+    display: none !important;
+  }
+  
+  .navbar-content {
+    padding: 0 16px !important;
+  }
+  
+  .navbar-right {
+    min-width: auto !important;
+    flex-shrink: 0 !important;
+  }
+}
+
 /* Mobile Hamburger Menu Enhancements */
 .mobile-menu-overlay {
   position: fixed !important;
