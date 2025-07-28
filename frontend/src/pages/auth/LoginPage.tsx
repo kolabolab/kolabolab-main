@@ -86,10 +86,20 @@ const LoginPage: React.FC = () => {
     setErrors({});
 
     try {
+      // SECURITY: Only allow registered users to login
+      const registeredUsers = [
+        'your-email@gmail.com',
+        'admin@kolabolab.com'
+      ];
+      
+      if (!registeredUsers.includes(formData.email)) {
+        throw new Error(`Email ${formData.email} is not registered. Please register first.`);
+      }
+      
       // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
       
-      // Mock successful login - create mock user and tokens
+      // Mock successful login - only for registered users
       const mockUser = {
         id: '1',
         email: formData.email,
