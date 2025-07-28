@@ -135,7 +135,7 @@ const LoginPage: React.FC = () => {
   const handleOAuthLogin = async (provider: 'google' | 'linkedin' | 'github') => {
     setIsLoading(true);
     try {
-      const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+      const backendUrl = 'http://localhost:3001';
       const oauthUrl = `${backendUrl}/auth/${provider}`;
       
       // Redirect to backend OAuth endpoint

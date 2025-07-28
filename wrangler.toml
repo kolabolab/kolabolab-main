@@ -49,6 +49,7 @@ bucket_name = "kolabolab-uploads-staging"
 [env.production.vars]
 NODE_ENV = "production"
 FRONTEND_URL = "https://kolabolab.com"
+GOOGLE_CALLBACK_URL = "https://api.kolabolab.com/auth/google/callback"
 
 [env.staging.vars]
 NODE_ENV = "staging"
@@ -58,11 +59,13 @@ FRONTEND_URL = "https://staging.kolabolab.com"
 # wrangler secret put JWT_SECRET
 # wrangler secret put JWT_REFRESH_SECRET
 # wrangler secret put DB_PASSWORD
-# wrangler secret put GOOGLE_CLIENT_SECRET
+# wrangler secret put GOOGLE_CLIENT_SECRET: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
+# wrangler secret put GOOGLE_CLIENT_ID:361419093704-i6mig7fi7jtkhm525990u7llm02tbald.apps.googleusercontent.com
 # wrangler secret put LINKEDIN_CLIENT_SECRET
 # wrangler secret put GITHUB_CLIENT_SECRET
 # wrangler secret put SMTP_PASSWORD
 # wrangler secret put CLOUDINARY_API_SECRET
+# wrangler secret put FRONTEND_URL:https://kolabolab.com
 
 # Worker limits - removed for free plan compatibility
 # [limits]
@@ -72,4 +75,3 @@ FRONTEND_URL = "https://staging.kolabolab.com"
 [build]
 command = "npm ci"
 cwd = "backend"
-

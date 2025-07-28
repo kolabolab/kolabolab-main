@@ -33,6 +33,79 @@ app.get('/api/health', (c) => {
   });
 });
 
+// OAuth Routes
+app.get('/auth/google', (c) => {
+  const clientId = c.env?.GOOGLE_CLIENT_ID || '361419093704-i6mig7fi7jtkhm525990u7llm02tbald.apps.googleusercontent.com';
+  const redirectUri = 'http://localhost:3001/auth/google/callback';
+  const scope = 'email profile';
+  
+  const googleAuthUrl = `https://accounts.google.com/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${encodeURIComponent(scope)}`;
+  
+  return c.redirect(googleAuthUrl);
+});
+
+app.get('/auth/google/callback', async (c) => {
+  const code = c.req.query('code');
+  const error = c.req.query('error');
+  
+  if (error) {
+    const frontendUrl = c.env?.FRONTEND_URL || 'http://localhost:3000';
+    return c.redirect(`${frontendUrl}/login?error=oauth_failed`);
+  }
+  
+  if (!code) {
+    const frontendUrl = c.env?.FRONTEND_URL || 'http://localhost:3000';
+    return c.redirect(`${frontendUrl}/login?error=no_code`);
+  }
+  
+  try {
+    // Exchange code for tokens
+    const clientId = c.env?.GOOGLE_CLIENT_ID || '361419093704-i6mig7fi7jtkhm525990u7llm02tbald.apps.googleusercontent.com';
+    const clientSecret = c.env?.GOOGLE_CLIENT_SECRET || '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';
+    const redirectUri = 'http://localhost:3001/auth/google/callback';
+    
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        redirect_uri: redirectUri,
+        grant_type: 'authorization_code',
+      }),
+    });
+    
+    const tokens = await tokenResponse.json();
+    
+    if (!tokens.access_token) {
+      throw new Error('No access token received');
+    }
+    
+    // Get user info from Google
+    const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        'Authorization': `Bearer ${tokens.access_token}`,
+      },
+    });
+    
+    const userInfo = await userResponse.json();
+    
+    // For now, just redirect with user info (in production, create JWT tokens)
+    const frontendUrl = c.env?.FRONTEND_URL || 'http://localhost:3000';
+    const mockToken = btoa(JSON.stringify({ email: userInfo.email, name: userInfo.name }));
+    
+    return c.redirect(`${frontendUrl}/auth/callback?token=${mockToken}&refresh=mock_refresh_token`);
+    
+  } catch (error) {
+    console.error('OAuth error:', error);
+    const frontendUrl = c.env?.FRONTEND_URL || 'http://localhost:3000';
+    return c.redirect(`${frontendUrl}/login?error=oauth_failed`);
+  }
+});
+
 // Auth routes
 app.post('/api/auth/register', async (c) => {
   try {
