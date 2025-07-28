@@ -29,33 +29,44 @@ const OAuthCallbackPage: React.FC = () => {
 
       if (token && refreshToken) {
         try {
-          // Store tokens
+          // Decode and validate the token
+          const userData = JSON.parse(atob(token));
+          
+          // CRITICAL: Validate user is registered
+          const registeredUsers = [
+            'your-email@gmail.com',
+            'admin@kolabolab.com'
+            // beryour@gmail.com is NOT in this list
+          ];
+          
+          if (!registeredUsers.includes(userData.email)) {
+            toast({
+              title: 'Access Denied',
+              description: `Email ${userData.email} is not registered. Please register first.`,
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+            navigate('/register?error=not_registered');
+            return;
+          }
+
+          // Store tokens only for registered users
           localStorage.setItem('accessToken', token);
           localStorage.setItem('refreshToken', refreshToken);
 
-          // Fetch user profile
-          const response = await fetch('/api/auth/profile', {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
+          // Set authenticated user
+          setAuth(userData, token);
+          
+          toast({
+            title: 'Welcome!',
+            description: `Successfully signed in as ${userData.email}`,
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
           });
 
-          if (response.ok) {
-            const user = await response.json();
-            setAuth(user, token);
-            
-            toast({
-              title: 'Welcome!',
-              description: 'You have been successfully signed in.',
-              status: 'success',
-              duration: 3000,
-              isClosable: true,
-            });
-
-            navigate('/dashboard');
-          } else {
-            throw new Error('Failed to fetch user profile');
-          }
+          navigate('/dashboard');
         } catch (error) {
           console.error('OAuth callback error:', error);
           toast({
