@@ -27,7 +27,7 @@ import {
 } from '@chakra-ui/react';
 import { FiCamera, FiSave, FiUser, FiMail, FiBriefcase, FiMapPin } from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../../hooks/useAuth';
 
 const ProfilePage: React.FC = () => {
   const { user, setAuth } = useAuth();
