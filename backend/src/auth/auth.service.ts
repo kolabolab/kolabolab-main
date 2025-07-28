@@ -170,7 +170,7 @@ export class AuthService {
     let user = await this.userRepository.findOne({ where: { email } });
 
     if (user) {
-      // Update provider information
+      // Update provider information for existing registered user
       const providerField = `${provider}Id` as keyof User;
       if (!user[providerField]) {
         await this.userRepository.update(user.id, {
@@ -178,26 +178,21 @@ export class AuthService {
           avatar: avatar || user.avatar,
         });
       }
+      
+      this.logger.log(`OAuth login for existing user: ${user.email} via ${provider}`);
     } else {
-      // Create new user from OAuth
-      const username = await this.generateUniqueUsername(email);
-      
-      user = this.userRepository.create({
-        email,
-        username,
-        firstName,
-        lastName,
-        avatar,
-        roles: [UserRole.ENTREPRENEUR],
-        status: UserStatus.ACTIVE,
-        isEmailVerified: true,
-        isActive: true,
-        [`${provider}Id`]: providerId,
-      });
+      // SECURITY: Only allow pre-registered users to login via OAuth
+      this.logger.warn(`OAuth login attempt for unregistered email: ${email} via ${provider}`);
+      throw new UnauthorizedException(`Email ${email} is not registered. Please register first before using OAuth login.`);
+    }
 
-      await this.userRepository.save(user);
-      
-      this.logger.log(`New OAuth user created: ${user.email} via ${provider}`);
+    // Additional security checks
+    if (!user.isActive) {
+      throw new UnauthorizedException('Account is deactivated');
+    }
+
+    if (user.status === UserStatus.SUSPENDED) {
+      throw new UnauthorizedException('Account is suspended. Please contact support.');
     }
 
     return user;

@@ -51,7 +51,13 @@ export class AuthController {
       return res.redirect(redirectUrl);
     } catch (error) {
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
-      return res.redirect(`${frontendUrl}/login?error=oauth_failed`);
+      
+      // Handle specific error cases
+      if (error.message?.includes('not registered')) {
+        return res.redirect(`${frontendUrl}/register?error=not_registered&email=${encodeURIComponent(req.user?.email || '')}&message=${encodeURIComponent('Please register first before using OAuth login')}`);
+      }
+      
+      return res.redirect(`${frontendUrl}/login?error=oauth_failed&message=${encodeURIComponent(error.message || 'OAuth authentication failed')}`);
     }
   }
 

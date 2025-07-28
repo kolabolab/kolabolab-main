@@ -32,24 +32,8 @@ const OAuthCallbackPage: React.FC = () => {
           // Decode and validate the token
           const userData = JSON.parse(atob(token));
           
-          // CRITICAL: Validate user is registered
-          const registeredUsers = [
-            'your-email@gmail.com',
-            'admin@kolabolab.com'
-            // beryour@gmail.com is NOT in this list
-          ];
-          
-          if (!registeredUsers.includes(userData.email)) {
-            toast({
-              title: 'Access Denied',
-              description: `Email ${userData.email} is not registered. Please register first.`,
-              status: 'error',
-              duration: 5000,
-              isClosable: true,
-            });
-            navigate('/register?error=not_registered');
-            return;
-          }
+          // Note: User validation is now handled by the backend
+          // The backend will only issue tokens for registered users
 
           // Store tokens only for registered users
           localStorage.setItem('accessToken', token);
