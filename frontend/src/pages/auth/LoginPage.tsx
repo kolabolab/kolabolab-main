@@ -87,26 +87,51 @@ const LoginPage: React.FC = () => {
 
     try {
       // SECURITY: Only allow registered users to login
-      const registeredUsers = [
-        'your-email@gmail.com',
-        'admin@kolabolab.com'
-      ];
+      const registeredUsers = {
+        'your-email@gmail.com': {
+          id: 'user_001',
+          firstName: 'John',
+          lastName: 'Doe',
+          username: 'johndoe',
+          roles: ['entrepreneur', 'user'],
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+          bio: 'Passionate entrepreneur looking to build the next big thing in tech.',
+          company: 'TechStart Inc.',
+          location: 'San Francisco, CA'
+        },
+        'admin@kolabolab.com': {
+          id: 'admin_001',
+          firstName: 'Sarah',
+          lastName: 'Admin',
+          username: 'sarahadmin',
+          roles: ['admin', 'moderator', 'user'],
+          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+          bio: 'Platform administrator ensuring the best experience for all users.',
+          company: 'KolaboLab',
+          location: 'New York, NY'
+        }
+      };
       
-      if (!registeredUsers.includes(formData.email)) {
+      const userProfile = registeredUsers[formData.email];
+      if (!userProfile) {
         throw new Error(`Email ${formData.email} is not registered. Please register first.`);
       }
       
       // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
       
-      // Mock successful login - only for registered users
+      // Create personalized user profile
       const mockUser = {
-        id: '1',
+        id: userProfile.id,
         email: formData.email,
-        username: formData.email.split('@')[0],
-        firstName: 'Test',
-        lastName: 'User',
-        roles: ['user'],
+        username: userProfile.username,
+        firstName: userProfile.firstName,
+        lastName: userProfile.lastName,
+        roles: userProfile.roles,
+        avatar: userProfile.avatar,
+        bio: userProfile.bio,
+        company: userProfile.company,
+        location: userProfile.location,
         isEmailVerified: true,
       };
 
