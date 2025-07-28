@@ -246,16 +246,19 @@ const RegisterPage: React.FC = () => {
                       Sign up with your social account
                     </Text>
                     
-                    <HStack spacing={3} justify="center" align="center" w="full">
+                    <HStack spacing={3} justify="center" align="stretch" w="full" flexWrap="wrap">
                       <Button
                         leftIcon={<Icon as={FiGithub} boxSize={4} />}
                         variant="outline"
                         size="md"
-                        minW="140px"
-                        height="40px"
+                        flex="1"
+                        maxW="140px"
+                        minW="120px"
+                        h="40px"
                         onClick={() => handleSocialSignup('GitHub')}
-                        _hover={{ bg: 'gray.50', borderColor: 'gray.400' }}
-                        borderColor="gray.300"
+                        _hover={{ bg: 'blue.50', borderColor: 'blue.400' }}
+                        borderColor="blue.300"
+                        color="blue.600"
                       >
                         GitHub
                       </Button>
@@ -264,11 +267,14 @@ const RegisterPage: React.FC = () => {
                         leftIcon={<Icon as={FaLinkedin} color="#0077B5" boxSize={4} />}
                         variant="outline"
                         size="md"
-                        minW="140px"
-                        height="40px"
+                        flex="1"
+                        maxW="140px"
+                        minW="120px"
+                        h="40px"
                         onClick={() => handleSocialSignup('LinkedIn')}
                         _hover={{ bg: 'blue.50', borderColor: '#0077B5' }}
                         borderColor="blue.300"
+                        color="blue.600"
                       >
                         LinkedIn
                       </Button>
@@ -277,11 +283,14 @@ const RegisterPage: React.FC = () => {
                         leftIcon={<Icon as={FaFacebook} color="#1877F2" boxSize={4} />}
                         variant="outline"
                         size="md"
-                        minW="140px"
-                        height="40px"
+                        flex="1"
+                        maxW="140px"
+                        minW="120px"
+                        h="40px"
                         onClick={() => handleSocialSignup('Facebook')}
                         _hover={{ bg: 'blue.50', borderColor: '#1877F2' }}
                         borderColor="blue.300"
+                        color="blue.600"
                       >
                         Facebook
                       </Button>
