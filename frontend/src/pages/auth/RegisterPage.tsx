@@ -246,37 +246,43 @@ const RegisterPage: React.FC = () => {
                       Sign up with your social account
                     </Text>
                     
-                    <VStack spacing={3} w="full">
+                    <HStack spacing={3} justify="center" w="full">
                       <Button
                         leftIcon={<Icon as={FiGithub} />}
                         variant="outline"
-                        w="full"
+                        size="md"
+                        minW="140px"
                         onClick={() => handleSocialSignup('GitHub')}
-                        _hover={{ bg: 'gray.50' }}
+                        _hover={{ bg: 'gray.50', borderColor: 'gray.400' }}
+                        borderColor="gray.300"
                       >
-                        Continue with GitHub
+                        GitHub
                       </Button>
                       
                       <Button
                         leftIcon={<Icon as={FaLinkedin} color="#0077B5" />}
                         variant="outline"
-                        w="full"
+                        size="md"
+                        minW="140px"
                         onClick={() => handleSocialSignup('LinkedIn')}
-                        _hover={{ bg: 'blue.50' }}
+                        _hover={{ bg: 'blue.50', borderColor: '#0077B5' }}
+                        borderColor="blue.300"
                       >
-                        Continue with LinkedIn
+                        LinkedIn
                       </Button>
                       
                       <Button
                         leftIcon={<Icon as={FaFacebook} color="#1877F2" />}
                         variant="outline"
-                        w="full"
+                        size="md"
+                        minW="140px"
                         onClick={() => handleSocialSignup('Facebook')}
-                        _hover={{ bg: 'blue.50' }}
+                        _hover={{ bg: 'blue.50', borderColor: '#1877F2' }}
+                        borderColor="blue.300"
                       >
-                        Continue with Facebook
+                        Facebook
                       </Button>
-                    </VStack>
+                    </HStack>
                   </VStack>
 
                   {/* Divider */}
