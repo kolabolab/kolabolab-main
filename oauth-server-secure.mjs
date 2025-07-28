@@ -70,13 +70,13 @@ app.get('/auth/google/callback', async (req, res) => {
     ];
     
     if (!registeredUsers.includes(userInfo.email)) {
-      // User not registered - redirect to registration with error
-      console.log('❌ Unauthorized login attempt:', userInfo.email);
+      // User not registered - REJECT and redirect to registration
+      console.log('❌ REJECTED: Unauthorized login attempt for:', userInfo.email);
       return res.redirect(`http://localhost:3000/register?error=not_registered&email=${encodeURIComponent(userInfo.email)}&message=${encodeURIComponent('Please register first before signing in with Google')}`);
     }
     
     // User is registered - create session token
-    console.log('✅ Authorized login:', userInfo.email);
+    console.log('✅ AUTHORIZED: Login successful for:', userInfo.email);
     const mockToken = btoa(JSON.stringify({ 
       email: userInfo.email, 
       name: userInfo.name,
