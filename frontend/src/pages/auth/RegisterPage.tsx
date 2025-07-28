@@ -17,6 +17,8 @@ import {
   Alert,
   AlertIcon,
   FormErrorMessage,
+  Checkbox,
+  FormHelperText,
 } from '@chakra-ui/react';
 import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
@@ -36,13 +38,15 @@ const RegisterPage: React.FC = () => {
     username: '',
     password: '',
     confirmPassword: '',
+    agreeToTerms: false,
+    subscribeToEmails: false,
   });
   const [errors, setErrors] = useState<any>({});
 
   const bgColor = useColorModeValue('gray.50', 'gray.900');
   const cardBg = useColorModeValue('white', 'gray.800');
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -59,10 +63,10 @@ const RegisterPage: React.FC = () => {
   const validateForm = (): boolean => {
     const newErrors: any = {};
 
-    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
+    if (!formData.firstName.trim()) newErrors.firstName = 'Please enter First Name';
+    if (!formData.lastName.trim()) newErrors.lastName = 'Please enter Last Name';
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'Please enter email address';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
     }
@@ -70,12 +74,17 @@ const RegisterPage: React.FC = () => {
       newErrors.username = 'Username is required';
     }
     if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = 'Password must be at least 8 characters';
+    } else if (formData.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters';
+    } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@$&])[A-Za-z\d!@$&]/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one letter, one number, and one special character (examples: !,@,$,&)';
     }
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
+    }
+    if (!formData.agreeToTerms) {
+      newErrors.agreeToTerms = 'Agree to terms of service';
     }
 
     setErrors(newErrors);
@@ -124,6 +133,8 @@ const RegisterPage: React.FC = () => {
         company: 'Startup Enthusiast',
         location: 'Global',
         isEmailVerified: true,
+        subscribeToEmails: formData.subscribeToEmails,
+        agreedToTermsAt: new Date().toISOString(),
       };
 
       // Save to localStorage
@@ -266,6 +277,36 @@ const RegisterPage: React.FC = () => {
                         placeholder="Confirm your password"
                       />
                       <FormErrorMessage>{errors.confirmPassword}</FormErrorMessage>
+                    </FormControl>
+
+                    {/* Email Subscription Checkbox */}
+                    <FormControl>
+                      <Checkbox
+                        isChecked={formData.subscribeToEmails}
+                        onChange={(e) => handleInputChange('subscribeToEmails', e.target.checked)}
+                        colorScheme="brand"
+                      >
+                        I would like to receive occasional emails from KolaboLab about events and projects (Optional)
+                      </Checkbox>
+                    </FormControl>
+
+                    {/* Terms and Conditions Checkbox */}
+                    <FormControl isInvalid={!!errors.agreeToTerms}>
+                      <Checkbox
+                        isChecked={formData.agreeToTerms}
+                        onChange={(e) => handleInputChange('agreeToTerms', e.target.checked)}
+                        colorScheme="brand"
+                      >
+                        I have read and accepted the{' '}
+                        <Link color="brand.500" href="/terms" target="_blank" textDecoration="underline">
+                          Terms of Volunteering
+                        </Link>{' '}
+                        and{' '}
+                        <Link color="brand.500" href="/privacy" target="_blank" textDecoration="underline">
+                          Privacy Policy
+                        </Link>
+                      </Checkbox>
+                      <FormErrorMessage>{errors.agreeToTerms}</FormErrorMessage>
                     </FormControl>
 
                     <Button
