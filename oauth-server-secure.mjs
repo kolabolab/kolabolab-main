@@ -64,14 +64,17 @@ app.get('/auth/google/callback', async (req, res) => {
     
     // CRITICAL: Check if user exists in our database
     const registeredUsers = [
-      // Add your registered users here - beryour@gmail.com is NOT included
       'your-email@gmail.com',
       'admin@kolabolab.com'
+      // beryour@gmail.com is EXPLICITLY NOT INCLUDED
     ];
+    
+    console.log(`🔍 Checking if ${userInfo.email} is in registered users:`, registeredUsers);
     
     if (!registeredUsers.includes(userInfo.email)) {
       // User not registered - REJECT and redirect to registration
-      console.log('❌ REJECTED: Unauthorized login attempt for:', userInfo.email);
+      console.log(`❌ REJECTED: ${userInfo.email} is NOT in registered users list`);
+      console.log('❌ Redirecting to registration page...');
       return res.redirect(`http://localhost:3000/register?error=not_registered&email=${encodeURIComponent(userInfo.email)}&message=${encodeURIComponent('Please register first before signing in with Google')}`);
     }
     
