@@ -87,7 +87,9 @@ const LoginPage: React.FC = () => {
 
     try {
       // SECURITY: Only allow registered users to login
-      const registeredUsers = {
+      // Check for saved user profiles first
+      const savedProfiles = localStorage.getItem('userProfiles');
+      let registeredUsers = {
         'your-email@gmail.com': {
           id: 'user_001',
           firstName: 'John',
@@ -111,6 +113,16 @@ const LoginPage: React.FC = () => {
           location: 'New York, NY'
         }
       };
+      
+      // Load saved profiles if they exist
+      if (savedProfiles) {
+        try {
+          const parsed = JSON.parse(savedProfiles);
+          registeredUsers = { ...registeredUsers, ...parsed };
+        } catch (error) {
+          console.error('Error parsing saved profiles:', error);
+        }
+      }
       
       const userProfile = registeredUsers[formData.email];
       if (!userProfile) {
