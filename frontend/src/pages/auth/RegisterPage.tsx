@@ -5,6 +5,7 @@ import {
   Heading,
   Text,
   VStack,
+  HStack,
   Card,
   CardBody,
   FormControl,
@@ -19,7 +20,11 @@ import {
   FormErrorMessage,
   Checkbox,
   FormHelperText,
+  Divider,
+  Icon,
 } from '@chakra-ui/react';
+import { FiGithub } from 'react-icons/fi';
+import { FaFacebook, FaLinkedin } from 'react-icons/fa';
 import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../hooks/useAuth';
@@ -181,6 +186,29 @@ const RegisterPage: React.FC = () => {
     }
   };
 
+  const handleSocialSignup = (provider: string) => {
+    // For now, show a message that social signup will redirect to OAuth
+    toast({
+      title: `${provider} Signup`,
+      description: `Redirecting to ${provider} for secure signup...`,
+      status: 'info',
+      duration: 3000,
+      isClosable: true,
+    });
+
+    // In a real implementation, this would redirect to the OAuth provider
+    // For demo purposes, we'll simulate the flow
+    setTimeout(() => {
+      if (provider === 'GitHub') {
+        window.location.href = 'http://localhost:3001/auth/github';
+      } else if (provider === 'LinkedIn') {
+        window.location.href = 'http://localhost:3001/auth/linkedin';
+      } else if (provider === 'Facebook') {
+        window.location.href = 'http://localhost:3001/auth/facebook';
+      }
+    }, 1000);
+  };
+
   return (
     <>
       <Helmet>
@@ -210,6 +238,56 @@ const RegisterPage: React.FC = () => {
 
             <Card bg={cardBg} w="full" shadow="xl">
               <CardBody p={8}>
+                <VStack spacing={6}>
+                  
+                  {/* Social Signup Buttons */}
+                  <VStack spacing={4} w="full">
+                    <Text color="gray.600" fontSize="sm" textAlign="center">
+                      Sign up with your social account
+                    </Text>
+                    
+                    <VStack spacing={3} w="full">
+                      <Button
+                        leftIcon={<Icon as={FiGithub} />}
+                        variant="outline"
+                        w="full"
+                        onClick={() => handleSocialSignup('GitHub')}
+                        _hover={{ bg: 'gray.50' }}
+                      >
+                        Continue with GitHub
+                      </Button>
+                      
+                      <Button
+                        leftIcon={<Icon as={FaLinkedin} color="#0077B5" />}
+                        variant="outline"
+                        w="full"
+                        onClick={() => handleSocialSignup('LinkedIn')}
+                        _hover={{ bg: 'blue.50' }}
+                      >
+                        Continue with LinkedIn
+                      </Button>
+                      
+                      <Button
+                        leftIcon={<Icon as={FaFacebook} color="#1877F2" />}
+                        variant="outline"
+                        w="full"
+                        onClick={() => handleSocialSignup('Facebook')}
+                        _hover={{ bg: 'blue.50' }}
+                      >
+                        Continue with Facebook
+                      </Button>
+                    </VStack>
+                  </VStack>
+
+                  {/* Divider */}
+                  <HStack w="full">
+                    <Divider />
+                    <Text fontSize="sm" color="gray.500" px={3} whiteSpace="nowrap">
+                      Or sign up with email
+                    </Text>
+                    <Divider />
+                  </HStack>
+
                 <form onSubmit={handleRegister}>
                   <VStack spacing={6}>
                     
@@ -329,6 +407,8 @@ const RegisterPage: React.FC = () => {
 
                   </VStack>
                 </form>
+                
+                </VStack>
               </CardBody>
             </Card>
 
