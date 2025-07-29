@@ -34,7 +34,7 @@ database_id = "108293bb-d093-4147-84b2-41aecf35179a"
 [[env.dev.d1_databases]]
 binding = "DB"
 database_name = "kolabolab-dev"
-database_id = "42a0ff21-2f4a-4bba-8935-2a8edf8af62b"
+database_id = "26627b7c-d2f0-49f7-a96b-40b7392136ae"
 
 [[env.staging.d1_databases]]
 binding = "DB"
