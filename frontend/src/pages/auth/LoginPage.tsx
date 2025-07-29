@@ -25,6 +25,7 @@ import {
 } from '@chakra-ui/react'
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { authAPI } from '../../services/apiClient'
 import { FiMail, FiLock, FiEye, FiEyeOff, FiGithub } from 'react-icons/fi'
 import { FaGoogle, FaLinkedin } from 'react-icons/fa'
 import { Helmet } from 'react-helmet-async'
@@ -86,80 +87,35 @@ const LoginPage: React.FC = () => {
     setErrors({});
 
     try {
-      // SECURITY: Only allow registered users to login
-      // Check for saved user profiles first
-      const savedProfiles = localStorage.getItem('userProfiles');
-      let registeredUsers = {
-        'your-email@gmail.com': {
-          id: 'user_001',
-          firstName: 'John',
-          lastName: 'Doe',
-          username: 'johndoe',
-          roles: ['entrepreneur', 'user'],
-          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-          bio: 'Passionate entrepreneur looking to build the next big thing in tech.',
-          company: 'TechStart Inc.',
-          location: 'San Francisco, CA'
-        },
-        'admin@kolabolab.com': {
-          id: 'admin_001',
-          firstName: 'Sarah',
-          lastName: 'Admin',
-          username: 'sarahadmin',
-          roles: ['admin', 'moderator', 'user'],
-          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-          bio: 'Platform administrator ensuring the best experience for all users.',
-          company: 'KolaboLab',
-          location: 'New York, NY'
-        }
-      };
-      
-      // Load saved profiles if they exist
-      if (savedProfiles) {
-        try {
-          const parsed = JSON.parse(savedProfiles);
-          registeredUsers = { ...registeredUsers, ...parsed };
-        } catch (error) {
-          console.error('Error parsing saved profiles:', error);
-        }
-      }
-      
-      const userProfile = registeredUsers[formData.email];
-      if (!userProfile) {
-        throw new Error(`Email ${formData.email} is not registered. Please register first.`);
-      }
 
-      // Check if email is verified
-      if (!userProfile.isEmailVerified) {
-        throw new Error(`Please verify your email address before signing in. Check your email for the verification link.`);
-      }
+      // Make actual API call to login
+      const response = await authAPI.login(formData.email, formData.password);
       
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+      // Extract user and tokens from response
+      const { user, accessToken, refreshToken } = response;
       
-      // Create personalized user profile
-      const mockUser = {
-        id: userProfile.id,
-        email: formData.email,
-        username: userProfile.username,
-        firstName: userProfile.firstName,
-        lastName: userProfile.lastName,
-        roles: userProfile.roles,
-        avatar: userProfile.avatar,
-        bio: userProfile.bio,
-        company: userProfile.company,
-        location: userProfile.location,
-        isEmailVerified: userProfile.isEmailVerified,
-        emailVerifiedAt: userProfile.emailVerifiedAt,
+      // Create user profile from API response
+      const authenticatedUser = {
+        id: user.id,
+        email: user.email,
+        username: user.username || user.email.split('@')[0], // Fallback to email prefix
+        firstName: user.firstName,
+        lastName: user.lastName,
+        roles: user.roles || ['entrepreneur'],
+        avatar: user.avatar,
+        bio: user.bio,
+        company: user.company,
+        location: user.location,
+        isEmailVerified: true, // If login succeeds, email is verified
       };
 
-      const mockTokens = {
-        accessToken: 'mock-access-token-' + Date.now(),
-        refreshToken: 'mock-refresh-token-' + Date.now(),
+      const tokens = {
+        accessToken,
+        refreshToken,
       };
 
       // Set authentication state
-      setAuth(mockUser, mockTokens);
+      setAuth(authenticatedUser, tokens);
       
       toast({
         title: 'Welcome back!',
@@ -171,11 +127,20 @@ const LoginPage: React.FC = () => {
       
       // Navigate to dashboard or intended page
       navigate(from, { replace: true });
-    } catch (error) {
-      setErrors({ general: 'Invalid email or password. Please try again.' });
+    } catch (error: any) {
+      let errorMessage = 'Invalid email or password. Please try again.';
+      
+      // Handle specific API errors
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setErrors({ general: errorMessage });
       toast({
         title: 'Login failed',
-        description: 'Please check your credentials and try again.',
+        description: errorMessage,
         status: 'error',
         duration: 5000,
         isClosable: true,
