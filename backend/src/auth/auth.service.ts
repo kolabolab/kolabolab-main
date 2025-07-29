@@ -81,6 +81,7 @@ export class AuthService {
     try {
       await this.emailService.sendVerificationEmail(
         user.email,
+        user.firstName,
         user.emailVerificationToken
       );
     } catch (error) {
@@ -295,6 +296,7 @@ export class AuthService {
     try {
       await this.emailService.sendVerificationEmail(
         user.email,
+        user.firstName,
         user.emailVerificationToken
       );
     } catch (error) {
