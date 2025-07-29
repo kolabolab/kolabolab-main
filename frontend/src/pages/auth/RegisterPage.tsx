@@ -152,14 +152,48 @@ const RegisterPage: React.FC = () => {
       };
       localStorage.setItem('userProfiles', JSON.stringify(updatedProfiles));
 
-      // Simulate sending verification email via Resend
-      const verificationLink = `${window.location.origin}/verify-email?token=${verificationToken}&email=${encodeURIComponent(formData.email)}`;
+      // Send verification email via backend API (Resend)
+      try {
+        const emailResponse = await fetch('http://localhost:3001/auth/send-verification-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            firstName: formData.firstName,
+            verificationToken: verificationToken,
+          }),
+        });
+
+        const emailResult = await emailResponse.json();
+        
+        if (!emailResult.success) {
+          console.error('Failed to send verification email:', emailResult.error);
+          // Continue with registration but show warning
+          toast({
+            title: 'Registration Successful',
+            description: 'Account created but verification email failed to send. Please contact support.',
+            status: 'warning',
+            duration: 8000,
+            isClosable: true,
+          });
+        } else {
+          console.log('Verification email sent successfully via Resend');
+        }
+      } catch (emailError) {
+        console.error('Error sending verification email:', emailError);
+        // Continue with registration but show warning
+        toast({
+          title: 'Registration Successful',
+          description: 'Account created but verification email failed to send. Please contact support.',
+          status: 'warning',
+          duration: 8000,
+          isClosable: true,
+        });
+      }
       
-      // In a real implementation, this would call your backend API to send email via Resend
-      console.log('Verification email would be sent to:', formData.email);
-      console.log('Verification link:', verificationLink);
-      
-      // Store pending verification in localStorage for demo
+      // Store pending verification in localStorage for demo verification flow
       const pendingVerifications = JSON.parse(localStorage.getItem('pendingVerifications') || '{}');
       pendingVerifications[formData.email] = {
         token: verificationToken,

@@ -25,17 +25,40 @@ const VerifyEmailSentPage: React.FC = () => {
   const bgColor = useColorModeValue('gray.50', 'gray.900');
   const cardBg = useColorModeValue('white', 'gray.800');
 
-  const handleResendEmail = () => {
-    // In a real implementation, this would call your backend to resend via Resend
-    console.log('Resending verification email to:', email);
-    
-    // For demo, show the verification link in console
-    const pendingVerifications = JSON.parse(localStorage.getItem('pendingVerifications') || '{}');
-    const verification = pendingVerifications[email];
-    if (verification) {
-      const verificationLink = `${window.location.origin}/verify-email?token=${verification.token}&email=${encodeURIComponent(email)}`;
-      console.log('Demo verification link:', verificationLink);
-      alert(`Demo: Click this link to verify: ${verificationLink}`);
+  const handleResendEmail = async () => {
+    try {
+      // Call backend API to resend verification email via Resend
+      const response = await fetch('http://localhost:3001/auth/resend-verification-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          firstName: 'User', // You might want to store this in localStorage during registration
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Update localStorage with new token
+        const pendingVerifications = JSON.parse(localStorage.getItem('pendingVerifications') || '{}');
+        if (pendingVerifications[email]) {
+          pendingVerifications[email].token = result.verificationToken;
+          pendingVerifications[email].sentAt = new Date().toISOString();
+          localStorage.setItem('pendingVerifications', JSON.stringify(pendingVerifications));
+        }
+
+        alert('Verification email resent successfully! Please check your email.');
+        console.log('Verification email resent via Resend API');
+      } else {
+        alert(`Failed to resend email: ${result.error}`);
+        console.error('Failed to resend verification email:', result.error);
+      }
+    } catch (error) {
+      console.error('Error resending verification email:', error);
+      alert('Error resending verification email. Please try again later.');
     }
   };
 
