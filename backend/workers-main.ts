@@ -24,8 +24,16 @@ app.use('*', cors({
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }));
 
-// Health check
+// Health check (with and without /api prefix)
 app.get('/api/health', (c) => {
+  return c.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    environment: c.env.NODE_ENV || 'development'
+  });
+});
+
+app.get('/health', (c) => {
   return c.json({ 
     status: 'ok', 
     timestamp: new Date().toISOString(),
@@ -107,6 +115,7 @@ app.get('/auth/google/callback', async (c) => {
 });
 
 // Auth routes
+// Registration endpoint (with and without /api prefix)
 app.post('/api/auth/register', async (c) => {
   try {
     const { email, password, firstName, lastName } = await c.req.json();
@@ -147,6 +156,105 @@ app.post('/api/auth/register', async (c) => {
     if (error instanceof HTTPException) throw error;
     console.error('Registration error:', error);
     throw new HTTPException(500, { message: 'Internal server error' });
+  }
+});
+
+// Add auth endpoints without /api prefix for frontend compatibility
+app.post('/auth/register', async (c) => {
+  try {
+    const { email, password, firstName, lastName } = await c.req.json();
+    
+    if (!email || !password || !firstName || !lastName) {
+      return c.json({ error: 'Missing required fields' }, 400);
+    }
+
+    // Check if user already exists
+    const existingUser = await c.env.DB.prepare(
+      'SELECT id FROM users WHERE email = ?'
+    ).bind(email).first();
+
+    if (existingUser) {
+      return c.json({ error: 'An account with this email already exists. Please login instead.' }, 409);
+    }
+
+    // Hash password (simplified for demo - use proper bcrypt in production)
+    const hashedPassword = await crypto.subtle.digest(
+      'SHA-256',
+      new TextEncoder().encode(password + 'salt')
+    );
+    const passwordHash = Array.from(new Uint8Array(hashedPassword))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    // Generate user ID
+    const userId = crypto.randomUUID();
+
+    // Insert user
+    await c.env.DB.prepare(`
+      INSERT INTO users (id, email, password, firstName, lastName, isVerified, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, 0, datetime('now'), datetime('now'))
+    `).bind(userId, email, passwordHash, firstName, lastName).run();
+
+    return c.json({
+      message: 'User registered successfully. Please check your email for verification.',
+      userId: userId
+    });
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+app.post('/auth/login', async (c) => {
+  try {
+    const { email, password } = await c.req.json();
+    
+    if (!email || !password) {
+      return c.json({ error: 'Email and password are required' }, 400);
+    }
+
+    // Get user from database
+    const user = await c.env.DB.prepare(
+      'SELECT * FROM users WHERE email = ?'
+    ).bind(email).first();
+
+    if (!user) {
+      return c.json({ error: 'Invalid credentials' }, 401);
+    }
+
+    // Hash provided password and compare
+    const hashedPassword = await crypto.subtle.digest(
+      'SHA-256',
+      new TextEncoder().encode(password + 'salt')
+    );
+    const passwordHash = Array.from(new Uint8Array(hashedPassword))
+      .map(b => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    if (passwordHash !== user.password) {
+      return c.json({ error: 'Invalid credentials' }, 401);
+    }
+
+    // Generate JWT tokens (simplified - use proper JWT library in production)
+    const accessToken = `access_${Date.now()}_${user.id}`;
+    const refreshToken = `refresh_${Date.now()}_${user.id}`;
+
+    return c.json({
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        roles: ['entrepreneur']
+      }
+    });
+
+  } catch (error) {
+    console.error('Login error:', error);
+    return c.json({ error: 'Internal server error' }, 500);
   }
 });
 
