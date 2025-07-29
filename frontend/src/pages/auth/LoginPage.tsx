@@ -128,6 +128,11 @@ const LoginPage: React.FC = () => {
       if (!userProfile) {
         throw new Error(`Email ${formData.email} is not registered. Please register first.`);
       }
+
+      // Check if email is verified
+      if (!userProfile.isEmailVerified) {
+        throw new Error(`Please verify your email address before signing in. Check your email for the verification link.`);
+      }
       
       // TODO: Replace with actual API call
       await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
@@ -144,7 +149,8 @@ const LoginPage: React.FC = () => {
         bio: userProfile.bio,
         company: userProfile.company,
         location: userProfile.location,
-        isEmailVerified: true,
+        isEmailVerified: userProfile.isEmailVerified,
+        emailVerifiedAt: userProfile.emailVerifiedAt,
       };
 
       const mockTokens = {

@@ -125,7 +125,8 @@ const RegisterPage: React.FC = () => {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Create new user profile
+      // Create new user profile (unverified initially)
+      const verificationToken = `verify_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const newUser = {
         id: `user_${Date.now()}`,
         email: formData.email,
@@ -137,9 +138,11 @@ const RegisterPage: React.FC = () => {
         bio: 'New member passionate about innovation and collaboration.',
         company: 'Startup Enthusiast',
         location: 'Global',
-        isEmailVerified: true,
+        isEmailVerified: false,
+        emailVerificationToken: verificationToken,
         subscribeToEmails: formData.subscribeToEmails,
         agreedToTermsAt: new Date().toISOString(),
+        registeredAt: new Date().toISOString(),
       };
 
       // Save to localStorage
@@ -149,29 +152,32 @@ const RegisterPage: React.FC = () => {
       };
       localStorage.setItem('userProfiles', JSON.stringify(updatedProfiles));
 
-      // Create mock tokens
-      const mockTokens = {
-        accessToken: 'mock-access-token-' + Date.now(),
-        refreshToken: 'mock-refresh-token-' + Date.now(),
+      // Simulate sending verification email via Resend
+      const verificationLink = `${window.location.origin}/verify-email?token=${verificationToken}&email=${encodeURIComponent(formData.email)}`;
+      
+      // In a real implementation, this would call your backend API to send email via Resend
+      console.log('Verification email would be sent to:', formData.email);
+      console.log('Verification link:', verificationLink);
+      
+      // Store pending verification in localStorage for demo
+      const pendingVerifications = JSON.parse(localStorage.getItem('pendingVerifications') || '{}');
+      pendingVerifications[formData.email] = {
+        token: verificationToken,
+        user: newUser,
+        sentAt: new Date().toISOString()
       };
-
-      // Store tokens
-      localStorage.setItem('accessToken', mockTokens.accessToken);
-      localStorage.setItem('refreshToken', mockTokens.refreshToken);
-
-      // Set authentication state
-      setAuth(newUser, mockTokens);
+      localStorage.setItem('pendingVerifications', JSON.stringify(pendingVerifications));
 
       toast({
         title: 'Registration Successful!',
-        description: `Welcome to KolaboLab, ${formData.firstName}!`,
+        description: `Please check your email (${formData.email}) to verify your account before signing in.`,
         status: 'success',
-        duration: 5000,
+        duration: 8000,
         isClosable: true,
       });
 
-      // Redirect to dashboard
-      navigate('/dashboard');
+      // Redirect to email verification page instead of dashboard
+      navigate(`/verify-email-sent?email=${encodeURIComponent(formData.email)}`);
 
     } catch (error: any) {
       toast({
