@@ -144,8 +144,17 @@ app.post('/api/auth/register', async (c) => {
       VALUES (?, ?, ?, ?, ?, false, datetime('now'))
     `).bind(userId, email, hashedPassword, firstName, lastName).run();
     
-    // Send verification email (simplified)
-    await sendVerificationEmail(c.env.RESEND_API_KEY, email, firstName);
+    // Generate verification token
+    const verificationToken = crypto.randomUUID();
+    
+    // Store verification token in KV (expires in 24 hours)
+    await c.env.CACHE.put(`verify:${verificationToken}`, JSON.stringify({
+      email: email,
+      userId: userId
+    }), { expirationTtl: 24 * 60 * 60 });
+
+    // Send verification email
+    await sendVerificationEmail(c.env.RESEND_API_KEY, email, firstName, verificationToken, c.env.FRONTEND_URL);
     
     return c.json({ 
       message: 'User registered successfully. Please check your email for verification.',
@@ -177,23 +186,27 @@ app.post('/auth/register', async (c) => {
       return c.json({ error: 'An account with this email already exists. Please login instead.' }, 409);
     }
 
-    // Hash password (simplified for demo - use proper bcrypt in production)
-    const hashedPassword = await crypto.subtle.digest(
-      'SHA-256',
-      new TextEncoder().encode(password + 'salt')
-    );
-    const passwordHash = Array.from(new Uint8Array(hashedPassword))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
+    // Hash password using the same method as the /api endpoint
+    const hashedPassword = await hashPassword(password);
 
-    // Generate user ID
+    // Generate user ID and verification token
     const userId = crypto.randomUUID();
+    const verificationToken = crypto.randomUUID();
 
     // Insert user
     await c.env.DB.prepare(`
       INSERT INTO users (id, email, password, firstName, lastName, isVerified, createdAt, updatedAt)
       VALUES (?, ?, ?, ?, ?, 0, datetime('now'), datetime('now'))
-    `).bind(userId, email, passwordHash, firstName, lastName).run();
+    `).bind(userId, email, hashedPassword, firstName, lastName).run();
+
+    // Store verification token in KV (expires in 24 hours)
+    await c.env.CACHE.put(`verify:${verificationToken}`, JSON.stringify({
+      email: email,
+      userId: userId
+    }), { expirationTtl: 24 * 60 * 60 });
+
+    // Send verification email
+    await sendVerificationEmail(c.env.RESEND_API_KEY, email, firstName, verificationToken, c.env.FRONTEND_URL);
 
     return c.json({
       message: 'User registered successfully. Please check your email for verification.',
@@ -378,12 +391,7 @@ async function generateJWT(payload: any, secret: string, expiresIn: string): Pro
   return `${message}.${signatureB64}`;
 }
 
-async function sendVerificationEmail(apiKey: string, email: string, firstName: string): Promise<void> {
-  const verificationCode = Math.random().toString(36).substring(2, 15);
-  
-  // Store verification code in KV (expires in 1 hour)
-  // await c.env.CACHE.put(`verify:${email}`, verificationCode, { expirationTtl: 3600 });
-  
+async function sendVerificationEmail(apiKey: string, email: string, firstName: string, verificationToken: string, frontendUrl: string): Promise<void> {
   // Send email via Resend API
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -397,19 +405,106 @@ async function sendVerificationEmail(apiKey: string, email: string, firstName: s
       subject: 'Verify your KolaboLab account',
       html: `
         <h2>Welcome to KolaboLab, ${firstName}!</h2>
-        <p>Please verify your email address by clicking the link below:</p>
-        <a href="https://staging.kolabolab.com/verify?code=${verificationCode}&email=${email}">
+        <p>Thank you for registering! Please verify your email address by clicking the link below:</p>
+        <a href="${frontendUrl}/verify-email?token=${verificationToken}" style="background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
           Verify Email Address
         </a>
-        <p>This link will expire in 1 hour.</p>
+        <p>Or copy and paste this link into your browser:</p>
+        <p>${frontendUrl}/verify-email?token=${verificationToken}</p>
+        <p>This link will expire in 24 hours.</p>
+        <p>If you didn't create an account with KolaboLab, please ignore this email.</p>
       `
     })
   });
   
   if (!response.ok) {
-    console.error('Failed to send verification email:', await response.text());
+    const errorText = await response.text();
+    console.error('Failed to send verification email:', errorText);
+    throw new Error(`Email sending failed: ${errorText}`);
   }
 }
+
+// Email verification endpoint
+app.post('/api/auth/verify-email', async (c) => {
+  try {
+    const { token } = await c.req.json();
+    
+    if (!token) {
+      return c.json({ error: 'Verification token required' }, 400);
+    }
+    
+    // Get verification data from KV
+    const verificationData = await c.env.CACHE.get(`verify:${token}`);
+    
+    if (!verificationData) {
+      return c.json({ error: 'Invalid or expired verification token' }, 400);
+    }
+    
+    const { email, userId } = JSON.parse(verificationData);
+    
+    // Update user to verified
+    const result = await c.env.DB.prepare(
+      'UPDATE users SET isVerified = 1 WHERE id = ? AND email = ?'
+    ).bind(userId, email).run();
+    
+    if (result.changes === 0) {
+      return c.json({ error: 'User not found' }, 404);
+    }
+    
+    // Remove verification token from KV
+    await c.env.CACHE.delete(`verify:${token}`);
+    
+    return c.json({ 
+      message: 'Email verified successfully! You can now log in.',
+      email: email
+    });
+    
+  } catch (error) {
+    console.error('Email verification error:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+// Add endpoint without /api prefix
+app.post('/auth/verify-email', async (c) => {
+  try {
+    const { token } = await c.req.json();
+    
+    if (!token) {
+      return c.json({ error: 'Verification token required' }, 400);
+    }
+    
+    // Get verification data from KV
+    const verificationData = await c.env.CACHE.get(`verify:${token}`);
+    
+    if (!verificationData) {
+      return c.json({ error: 'Invalid or expired verification token' }, 400);
+    }
+    
+    const { email, userId } = JSON.parse(verificationData);
+    
+    // Update user to verified
+    const result = await c.env.DB.prepare(
+      'UPDATE users SET isVerified = 1 WHERE id = ? AND email = ?'
+    ).bind(userId, email).run();
+    
+    if (result.changes === 0) {
+      return c.json({ error: 'User not found' }, 404);
+    }
+    
+    // Remove verification token from KV
+    await c.env.CACHE.delete(`verify:${token}`);
+    
+    return c.json({ 
+      message: 'Email verified successfully! You can now log in.',
+      email: email
+    });
+    
+  } catch (error) {
+    console.error('Email verification error:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
 
 // Manual user verification (for testing)
 app.post('/api/auth/verify-manual', async (c) => {

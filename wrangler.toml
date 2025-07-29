@@ -75,11 +75,11 @@ GOOGLE_CALLBACK_URL = "https://api.kolabolab.com/auth/google/callback"
 
 [env.dev.vars]
 NODE_ENV = "development"
-FRONTEND_URL = "https://dev.kolabolab.com"
+FRONTEND_URL = "https://kolabolab-dev.pages.dev"
 
 [env.staging.vars]
 NODE_ENV = "staging"
-FRONTEND_URL = "https://staging.kolabolab.com"
+FRONTEND_URL = "https://kolabolab-dev.pages.dev"
 
 # Secrets (set via wrangler secret put)
 # wrangler secret put JWT_SECRET
