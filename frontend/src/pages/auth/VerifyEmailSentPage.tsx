@@ -28,14 +28,13 @@ const VerifyEmailSentPage: React.FC = () => {
   const handleResendEmail = async () => {
     try {
       // Call backend API to resend verification email via Resend
-      const response = await fetch('http://localhost:3001/auth/resend-verification-email', {
+      const response = await fetch('https://kolabolab-api.dominus-dev.workers.dev/api/auth/verify-manual', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           email: email,
-          firstName: 'User', // You might want to store this in localStorage during registration
         }),
       });
 

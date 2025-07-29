@@ -154,15 +154,16 @@ const RegisterPage: React.FC = () => {
 
       // Send verification email via backend API (Resend)
       try {
-        const emailResponse = await fetch('http://localhost:3001/auth/send-verification-email', {
+        const emailResponse = await fetch('https://kolabolab-api.dominus-dev.workers.dev/api/auth/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             email: formData.email,
+            password: formData.password,
             firstName: formData.firstName,
-            verificationToken: verificationToken,
+            lastName: formData.lastName,
           }),
         });
 
@@ -240,11 +241,11 @@ const RegisterPage: React.FC = () => {
     // For demo purposes, we'll simulate the flow
     setTimeout(() => {
       if (provider === 'GitHub') {
-        window.location.href = 'http://localhost:3001/auth/github';
+        window.location.href = 'https://kolabolab-api.dominus-dev.workers.dev/auth/github';
       } else if (provider === 'LinkedIn') {
-        window.location.href = 'http://localhost:3001/auth/linkedin';
+        window.location.href = 'https://kolabolab-api.dominus-dev.workers.dev/auth/linkedin';
       } else if (provider === 'Facebook') {
-        window.location.href = 'http://localhost:3001/auth/facebook';
+        window.location.href = 'https://kolabolab-api.dominus-dev.workers.dev/auth/facebook';
       }
     }, 1000);
   };

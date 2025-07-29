@@ -188,7 +188,7 @@ const LoginPage: React.FC = () => {
   const handleOAuthLogin = async (provider: 'google' | 'linkedin' | 'github') => {
     setIsLoading(true);
     try {
-      const backendUrl = 'http://localhost:3001';
+      const backendUrl = 'https://kolabolab-api.dominus-dev.workers.dev';
       const oauthUrl = `${backendUrl}/auth/${provider}`;
       
       // Redirect to backend OAuth endpoint
