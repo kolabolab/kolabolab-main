@@ -2,10 +2,14 @@ import { Controller, Post, Body, Get, UseGuards, Request, Res, HttpStatus } from
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
+import { EmailService } from '../email/email.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly emailService: EmailService,
+  ) {}
 
   @Post('register')
   async register(@Body() registerDto: any) {
@@ -122,6 +126,51 @@ export class AuthController {
     } catch (error) {
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
       return res.redirect(`${frontendUrl}/login?error=oauth_failed`);
+    }
+  }
+
+  @Post('send-verification-email')
+  async sendVerificationEmail(@Body() body: { email: string; firstName: string; verificationToken: string }) {
+    try {
+      const result = await this.emailService.sendVerificationEmail(
+        body.email,
+        body.firstName,
+        body.verificationToken
+      );
+      
+      if (result.success) {
+        return { success: true, message: 'Verification email sent successfully' };
+      } else {
+        return { success: false, error: result.error || 'Failed to send email' };
+      }
+    } catch (error) {
+      return { success: false, error: 'Internal server error' };
+    }
+  }
+
+  @Post('resend-verification-email')
+  async resendVerificationEmail(@Body() body: { email: string; firstName: string }) {
+    try {
+      // Generate new verification token
+      const verificationToken = `verify_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      const result = await this.emailService.sendVerificationEmail(
+        body.email,
+        body.firstName,
+        verificationToken
+      );
+      
+      if (result.success) {
+        return { 
+          success: true, 
+          message: 'Verification email resent successfully',
+          verificationToken // Return token so frontend can store it
+        };
+      } else {
+        return { success: false, error: result.error || 'Failed to resend email' };
+      }
+    } catch (error) {
+      return { success: false, error: 'Internal server error' };
     }
   }
 }
