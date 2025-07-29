@@ -1,13 +1,22 @@
 # Cloudflare Workers configuration for KolaboLab
 name = "kolabolab-api"
-main = "backend/workers-main.ts"
+main = "./backend/workers-main.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
+
+# Account ID (using Beryour@gmail.com's Account)
+account_id = "1bcdd5533e68547452b2eefda2366a77"
 
 [env.production]
 name = "kolabolab-api"
 routes = [
   { pattern = "api.kolabolab.com/*", zone_name = "kolabolab.com" }
+]
+
+[env.dev]
+name = "kolabolab-api-dev"
+routes = [
+  { pattern = "dev-api.kolabolab.com/*", zone_name = "kolabolab.com" }
 ]
 
 [env.staging]
@@ -22,6 +31,11 @@ binding = "DB"
 database_name = "kolabolab-production"
 database_id = "108293bb-d093-4147-84b2-41aecf35179a"
 
+[[env.dev.d1_databases]]
+binding = "DB"
+database_name = "kolabolab-dev"
+database_id = "42a0ff21-2f4a-4bba-8935-2a8edf8af62b"
+
 [[env.staging.d1_databases]]
 binding = "DB"
 database_name = "kolabolab-staging"
@@ -29,6 +43,10 @@ database_id = "42a0ff21-2f4a-4bba-8935-2a8edf8af62b"
 
 # KV storage for sessions and cache
 [[env.production.kv_namespaces]]
+binding = "CACHE"
+id = "2999eb454f6f4b729c706b1c056735a3"
+
+[[env.dev.kv_namespaces]]
 binding = "CACHE"
 id = "2999eb454f6f4b729c706b1c056735a3"
 
@@ -41,6 +59,10 @@ id = "2999eb454f6f4b729c706b1c056735a3"
 binding = "UPLOADS"
 bucket_name = "kolabolab-uploads"
 
+[[env.dev.r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "kolabolab-uploads-dev"
+
 [[env.staging.r2_buckets]]
 binding = "UPLOADS"
 bucket_name = "kolabolab-uploads-staging"
@@ -50,6 +72,10 @@ bucket_name = "kolabolab-uploads-staging"
 NODE_ENV = "production"
 FRONTEND_URL = "https://kolabolab.com"
 GOOGLE_CALLBACK_URL = "https://api.kolabolab.com/auth/google/callback"
+
+[env.dev.vars]
+NODE_ENV = "development"
+FRONTEND_URL = "https://dev.kolabolab.com"
 
 [env.staging.vars]
 NODE_ENV = "staging"
@@ -72,6 +98,7 @@ FRONTEND_URL = "https://staging.kolabolab.com"
 # cpu_ms = 50
 
 # Build configuration
-[build]
-command = "npm ci"
-cwd = "backend"
+# Build configuration disabled - using pre-built files
+# [build]
+# command = "npm ci"
+# cwd = "backend"

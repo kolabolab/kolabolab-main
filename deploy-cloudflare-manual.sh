@@ -38,7 +38,7 @@ if ! command -v wrangler &> /dev/null; then
 fi
 
 # Parse command line arguments
-ENVIRONMENT=${1:-staging}
+ENVIRONMENT=${1:-dev}
 DEPLOY_FRONTEND=${2:-true}
 DEPLOY_BACKEND=${3:-true}
 
@@ -64,6 +64,8 @@ if [ "$DEPLOY_FRONTEND" = "true" ]; then
     print_status "Building frontend..."
     if [ "$ENVIRONMENT" = "production" ]; then
         VITE_API_URL="https://api.kolabolab.com" VITE_APP_ENV="production" npm run build
+    elif [ "$ENVIRONMENT" = "dev" ]; then
+        VITE_API_URL="https://dev-api.kolabolab.com" VITE_APP_ENV="development" npm run build
     else
         VITE_API_URL="https://staging-api.kolabolab.com" VITE_APP_ENV="staging" npm run build
     fi
@@ -72,6 +74,8 @@ if [ "$DEPLOY_FRONTEND" = "true" ]; then
     print_status "Deploying frontend to Cloudflare Pages..."
     if [ "$ENVIRONMENT" = "production" ]; then
         wrangler pages deploy dist --project-name kolabolab --env production || print_warning "Frontend deployment had issues"
+    elif [ "$ENVIRONMENT" = "dev" ]; then
+        wrangler pages deploy dist --project-name kolabolab --env preview --compatibility-date 2024-09-23 || print_warning "Frontend deployment had issues"
     else
         wrangler pages deploy dist --project-name kolabolab --env preview || print_warning "Frontend deployment had issues"
     fi
@@ -104,6 +108,8 @@ if [ "$DEPLOY_BACKEND" = "true" ]; then
     print_status "Deploying backend to Cloudflare Workers..."
     if [ "$ENVIRONMENT" = "production" ]; then
         wrangler deploy --env production || print_warning "Backend deployment had issues"
+    elif [ "$ENVIRONMENT" = "dev" ]; then
+        wrangler deploy --env dev || print_warning "Backend deployment had issues"
     else
         wrangler deploy --env staging || print_warning "Backend deployment had issues"
     fi
@@ -124,6 +130,10 @@ if [ "$ENVIRONMENT" = "production" ]; then
     echo "🔗 Production URLs:"
     echo "  Frontend: https://kolabolab.com"
     echo "  Backend: https://api.kolabolab.com"
+elif [ "$ENVIRONMENT" = "dev" ]; then
+    echo "🔗 Dev URLs:"
+    echo "  Frontend: https://dev.kolabolab.com"
+    echo "  Backend: https://dev-api.kolabolab.com"
 else
     echo "🔗 Staging URLs:"
     echo "  Frontend: https://staging.kolabolab.com"
