@@ -246,15 +246,16 @@ const RegisterPage: React.FC = () => {
                       Sign up with your social account
                     </Text>
                     
-                    <HStack spacing={3} justify="center" align="stretch" w="full" flexWrap="wrap">
+                    <Box display="flex" justifyContent="center" alignItems="center" gap={3} w="full">
                       <Button
-                        leftIcon={<Icon as={FiGithub} boxSize={4} />}
+                        leftIcon={<Icon as={FiGithub} w={4} h={4} />}
                         variant="outline"
                         size="md"
-                        flex="1"
-                        maxW="140px"
-                        minW="120px"
+                        w="130px"
                         h="40px"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
                         onClick={() => handleSocialSignup('GitHub')}
                         _hover={{ bg: 'blue.50', borderColor: 'blue.400' }}
                         borderColor="blue.300"
@@ -264,13 +265,14 @@ const RegisterPage: React.FC = () => {
                       </Button>
                       
                       <Button
-                        leftIcon={<Icon as={FaLinkedin} color="#0077B5" boxSize={4} />}
+                        leftIcon={<Icon as={FaLinkedin} color="#0077B5" w={4} h={4} />}
                         variant="outline"
                         size="md"
-                        flex="1"
-                        maxW="140px"
-                        minW="120px"
+                        w="130px"
                         h="40px"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
                         onClick={() => handleSocialSignup('LinkedIn')}
                         _hover={{ bg: 'blue.50', borderColor: '#0077B5' }}
                         borderColor="blue.300"
@@ -280,13 +282,14 @@ const RegisterPage: React.FC = () => {
                       </Button>
                       
                       <Button
-                        leftIcon={<Icon as={FaFacebook} color="#1877F2" boxSize={4} />}
+                        leftIcon={<Icon as={FaFacebook} color="#1877F2" w={4} h={4} />}
                         variant="outline"
                         size="md"
-                        flex="1"
-                        maxW="140px"
-                        minW="120px"
+                        w="130px"
                         h="40px"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
                         onClick={() => handleSocialSignup('Facebook')}
                         _hover={{ bg: 'blue.50', borderColor: '#1877F2' }}
                         borderColor="blue.300"
@@ -294,7 +297,7 @@ const RegisterPage: React.FC = () => {
                       >
                         Facebook
                       </Button>
-                    </HStack>
+                    </Box>
                   </VStack>
 
                   {/* Divider */}
