@@ -65,7 +65,7 @@ if [ "$DEPLOY_FRONTEND" = "true" ]; then
     if [ "$ENVIRONMENT" = "production" ]; then
         VITE_API_URL="https://api.kolabolab.com" VITE_APP_ENV="production" npm run build
     elif [ "$ENVIRONMENT" = "dev" ]; then
-        VITE_API_URL="https://dev-api.kolabolab.com" VITE_APP_ENV="development" npm run build
+        VITE_API_URL="https://kolabolab-api-dev.beryour.workers.dev" VITE_APP_ENV="development" npm run build
     else
         VITE_API_URL="https://staging-api.kolabolab.com" VITE_APP_ENV="staging" npm run build
     fi

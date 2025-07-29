@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useAuthStore } from '../hooks/useAuth'
 
-const API_BASE_URL = 'https://kolabolab-api-staging.beryour.workers.dev';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://kolabolab-api-dev.beryour.workers.dev';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
