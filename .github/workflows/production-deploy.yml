@@ -94,7 +94,7 @@ jobs:
           cd ../../backend/dist && tar -czf ../backend-build.tar.gz .
 
       - name: 📸 Upload production artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: production-build-${{ github.sha }}
           path: |
