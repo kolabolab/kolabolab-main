@@ -1,0 +1,65 @@
+/* Navbar Layout Fixes */
+
+/* Prevent text wrapping in navbar */
+.nav-glass {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Ensure logo doesn't wrap */
+.gradient-text {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Fix navbar button alignment */
+.chakra-button {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Ensure proper spacing in navbar */
+.chakra-stack {
+  flex-wrap: nowrap !important;
+}
+
+/* Fix mobile menu button */
+.chakra-icon-button {
+  flex-shrink: 0;
+  min-width: 48px;
+  min-height: 48px;
+}
+
+/* Responsive navbar adjustments */
+@media (max-width: 768px) {
+  .gradient-text {
+    font-size: 1rem !important;
+  }
+}
+
+/* Prevent layout shift */
+.chakra-container {
+  max-width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 768px) {
+  .chakra-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Fix avatar menu alignment */
+.chakra-menu__menu-button {
+  flex-shrink: 0;
+}
+
+/* Ensure buttons don't break */
+.nav-link {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}

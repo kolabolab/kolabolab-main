@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { useAuthStore } from '../hooks/useAuth'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://kolabolab-api-staging.beryour.workers.dev';
+// Use environment variable or fallback to local development
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -67,7 +68,7 @@ apiClient.interceptors.response.use(
 // Auth API functions
 export const authAPI = {
   login: async (email: string, password: string) => {
-    const response = await apiClient.post('/api/auth/login', { email, password })
+    const response = await apiClient.post('/auth/login', { email, password })
     return response.data
   },
   
@@ -76,39 +77,39 @@ export const authAPI = {
     password: string
     firstName: string
     lastName: string
-    username: string
+    username?: string
   }) => {
-    const response = await apiClient.post('/api/auth/register', userData)
+    const response = await apiClient.post('/auth/register', userData)
     return response.data
   },
   
   refreshToken: async (refreshToken: string) => {
-    const response = await apiClient.post('/api/auth/refresh', { refreshToken })
+    const response = await apiClient.post('/auth/refresh', { refreshToken })
     return response.data
   },
   
   logout: async () => {
-    const response = await apiClient.post('/api/auth/logout')
+    const response = await apiClient.post('/auth/logout')
     return response.data
   },
   
   forgotPassword: async (email: string) => {
-    const response = await apiClient.post('/api/auth/forgot-password', { email })
+    const response = await apiClient.post('/auth/forgot-password', { email })
     return response.data
   },
   
   resetPassword: async (token: string, newPassword: string) => {
-    const response = await apiClient.post('/api/auth/reset-password', { token, newPassword })
+    const response = await apiClient.post('/auth/reset-password', { token, newPassword })
     return response.data
   },
   
   verifyEmail: async (token: string) => {
-    const response = await apiClient.post('/api/auth/verify-email', { token })
+    const response = await apiClient.post('/auth/verify-email', { token })
     return response.data
   },
   
   resendVerificationEmail: async (email: string) => {
-    const response = await apiClient.post('/api/auth/resend-verification-email', { email })
+    const response = await apiClient.post('/auth/resend-verification-email', { email })
     return response.data
   }
 }

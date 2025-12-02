@@ -15,6 +15,7 @@ import './styles/design-system.css';
 import './styles/globals.css';
 import './styles/accessibility.css';
 import './styles/touch-targets.css';
+import './styles/navbar-fixes.css';
 
 // React Query client configuration
 const queryClient = new QueryClient({

@@ -1,0 +1,312 @@
+/* Comprehensive Alignment Fix - KolaboLab */
+/* This file fixes ALL alignment issues across the entire application */
+
+/* ========================================
+   GLOBAL BUTTON ALIGNMENT
+   ======================================== */
+
+/* Reset all button styles to ensure consistent alignment */
+.chakra-button,
+button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  vertical-align: middle !important;
+  line-height: 1 !important;
+  min-height: 44px !important;
+  height: auto !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+}
+
+/* Navbar button specific alignment */
+.chakra-stack .chakra-button {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Hero section buttons - ensure equal height */
+.hero-button {
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  padding: 0 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* ========================================
+   NAVBAR ALIGNMENT
+   ======================================== */
+
+/* Fix navbar container */
+.nav-glass {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+/* Navbar flex container - ensure proper alignment */
+.nav-glass .chakra-container {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.nav-glass .chakra-container > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  gap: 16px;
+}
+
+/* Logo and brand alignment */
+.nav-glass .chakra-link {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+/* Navbar links - ensure they're all on same baseline */
+.nav-link,
+.chakra-stack .chakra-link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 44px !important;
+  min-height: 44px !important;
+  line-height: 1 !important;
+  padding: 0 16px !important;
+  margin: 0 !important;
+  vertical-align: middle !important;
+}
+
+/* Auth buttons in navbar */
+.nav-glass .chakra-button {
+  height: 44px !important;
+  min-height: 44px !important;
+  line-height: 1 !important;
+  padding: 0 20px !important;
+  margin: 0 !important;
+}
+
+/* ========================================
+   TEXT ALIGNMENT
+   ======================================== */
+
+/* Ensure all text elements have consistent line-height */
+.chakra-text,
+.chakra-heading {
+  line-height: 1.5 !important;
+}
+
+/* Gradient text should not affect alignment */
+.gradient-text,
+.secondary-gradient-text,
+.support-gradient-text {
+  display: inline;
+  vertical-align: baseline;
+  line-height: inherit;
+}
+
+/* ========================================
+   HSTACK / VSTACK ALIGNMENT
+   ======================================== */
+
+/* Ensure HStack items align properly */
+.chakra-stack[data-orientation="horizontal"] {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: inherit !important;
+  flex-wrap: nowrap !important;
+}
+
+/* Ensure VStack items align properly */
+.chakra-stack[data-orientation="vertical"] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  gap: inherit !important;
+}
+
+/* ========================================
+   HOMEPAGE HERO SECTION
+   ======================================== */
+
+/* Hero section button container */
+.chakra-stack.css-1mf5m5r,
+.chakra-stack.css-18vcv60 {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 24px !important;
+  flex-wrap: wrap !important;
+}
+
+/* Ensure hero buttons are same height */
+.chakra-stack .hero-button {
+  flex: 0 0 auto !important;
+  align-self: center !important;
+}
+
+/* ========================================
+   CARD ALIGNMENT
+   ======================================== */
+
+/* Ensure cards have consistent alignment */
+.chakra-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chakra-card__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* ========================================
+   FORM ELEMENTS
+   ======================================== */
+
+/* Input fields alignment */
+.chakra-input,
+.chakra-select,
+.chakra-textarea {
+  display: flex;
+  align-items: center;
+  height: auto;
+  min-height: 44px;
+  padding: 12px 16px;
+}
+
+/* Form labels */
+.chakra-form__label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+/* ========================================
+   ICON ALIGNMENT
+   ======================================== */
+
+/* Ensure icons align with text */
+.chakra-icon {
+  display: inline-flex;
+  align-self: center;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+/* Icons in buttons */
+.chakra-button .chakra-icon {
+  margin: 0;
+}
+
+/* ========================================
+   BADGE ALIGNMENT
+   ======================================== */
+
+.chakra-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  line-height: 1;
+  padding: 4px 12px;
+  height: auto;
+  min-height: 24px;
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* Stack buttons vertically on mobile if needed */
+  .hero-button {
+    width: 100%;
+    max-width: 320px;
+  }
+  
+  /* Adjust navbar height on mobile */
+  .nav-glass .chakra-container > div {
+    height: 64px;
+  }
+}
+
+/* ========================================
+   FLEXBOX UTILITIES
+   ======================================== */
+
+/* Utility class for perfect vertical centering */
+.flex-center {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Utility for horizontal layouts */
+.flex-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+}
+
+/* ========================================
+   OVERRIDE ANY CONFLICTING STYLES
+   ======================================== */
+
+/* Remove any transforms that might affect alignment */
+.chakra-button:not(:hover):not(:active) {
+  transform: none !important;
+}
+
+/* Ensure consistent box model */
+* {
+  box-sizing: border-box !important;
+}
+
+/* Reset any margins that might cause misalignment */
+.chakra-stack > * {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* ========================================
+   SPECIFIC COMPONENT FIXES
+   ======================================== */
+
+/* Fix Sign In / Sign Up button alignment in navbar */
+.header-auth-buttons,
+.header-auth-buttons .chakra-stack {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  height: 44px !important;
+}
+
+.header-auth-buttons .chakra-button {
+  height: 44px !important;
+  min-height: 44px !important;
+  max-height: 44px !important;
+  padding: 0 24px !important;
+  line-height: 1 !important;
+  align-self: center !important;
+}
+
+/* Fix Launch Your Startup / Discover Opportunities alignment */
+.primary-context .chakra-stack button {
+  align-self: center !important;
+  margin: 0 !important;
+}

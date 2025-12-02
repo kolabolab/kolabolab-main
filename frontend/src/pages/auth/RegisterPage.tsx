@@ -28,6 +28,7 @@ import { FaFacebook, FaLinkedin } from 'react-icons/fa';
 import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../hooks/useAuth';
+import { authAPI } from '../../services/apiClient';
 
 const RegisterPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -106,102 +107,14 @@ const RegisterPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Check if user already exists
-      const savedProfiles = localStorage.getItem('userProfiles');
-      let existingUsers: any = {};
-      
-      if (savedProfiles) {
-        try {
-          existingUsers = JSON.parse(savedProfiles);
-        } catch (error) {
-          console.error('Error parsing saved profiles:', error);
-        }
-      }
-
-      if (existingUsers[formData.email]) {
-        throw new Error('An account with this email already exists. Please login instead.');
-      }
-
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Create new user profile (unverified initially)
-      const verificationToken = `verify_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      const newUser = {
-        id: `user_${Date.now()}`,
+      // Call the centralized register API
+      const response = await authAPI.register({
         email: formData.email,
-        username: formData.username,
+        password: formData.password,
         firstName: formData.firstName,
         lastName: formData.lastName,
-        roles: ['entrepreneur', 'user'],
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-        bio: 'New member passionate about innovation and collaboration.',
-        company: 'Startup Enthusiast',
-        location: 'Global',
-        isEmailVerified: false,
-        emailVerificationToken: verificationToken,
-        subscribeToEmails: formData.subscribeToEmails,
-        agreedToTermsAt: new Date().toISOString(),
-        registeredAt: new Date().toISOString(),
-      };
-
-      // Save to localStorage
-      const updatedProfiles = {
-        ...existingUsers,
-        [formData.email]: newUser
-      };
-      localStorage.setItem('userProfiles', JSON.stringify(updatedProfiles));
-
-      // Send verification email via backend API (Resend)
-      try {
-        const emailResponse = await fetch('https://kolabolab-api.dominus-dev.workers.dev/api/auth/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-          }),
-        });
-
-        const emailResult = await emailResponse.json();
-        
-        if (!emailResult.success) {
-          console.error('Failed to send verification email:', emailResult.error);
-          // Continue with registration but show warning
-          toast({
-            title: 'Registration Successful',
-            description: 'Account created but verification email failed to send. Please contact support.',
-            status: 'warning',
-            duration: 8000,
-            isClosable: true,
-          });
-        } else {
-          console.log('Verification email sent successfully via Resend');
-        }
-      } catch (emailError) {
-        console.error('Error sending verification email:', emailError);
-        // Continue with registration but show warning
-        toast({
-          title: 'Registration Successful',
-          description: 'Account created but verification email failed to send. Please contact support.',
-          status: 'warning',
-          duration: 8000,
-          isClosable: true,
-        });
-      }
-      
-      // Store pending verification in localStorage for demo verification flow
-      const pendingVerifications = JSON.parse(localStorage.getItem('pendingVerifications') || '{}');
-      pendingVerifications[formData.email] = {
-        token: verificationToken,
-        user: newUser,
-        sentAt: new Date().toISOString()
-      };
-      localStorage.setItem('pendingVerifications', JSON.stringify(pendingVerifications));
+        username: formData.username,
+      });
 
       toast({
         title: 'Registration Successful!',
@@ -211,13 +124,22 @@ const RegisterPage: React.FC = () => {
         isClosable: true,
       });
 
-      // Redirect to email verification page instead of dashboard
+      // Redirect to email verification page
       navigate(`/verify-email-sent?email=${encodeURIComponent(formData.email)}`);
 
     } catch (error: any) {
+      let errorMessage = 'There was an error creating your account.';
+      
+      // Handle specific API errors
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: 'Registration Failed',
-        description: error.message || 'There was an error creating your account.',
+        description: errorMessage,
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -228,7 +150,9 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleSocialSignup = (provider: string) => {
-    // For now, show a message that social signup will redirect to OAuth
+    // Get API base URL from environment or use local development default
+    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    
     toast({
       title: `${provider} Signup`,
       description: `Redirecting to ${provider} for secure signup...`,
@@ -237,16 +161,10 @@ const RegisterPage: React.FC = () => {
       isClosable: true,
     });
 
-    // In a real implementation, this would redirect to the OAuth provider
-    // For demo purposes, we'll simulate the flow
+    // Redirect to OAuth provider
     setTimeout(() => {
-      if (provider === 'GitHub') {
-        window.location.href = 'https://kolabolab-api.dominus-dev.workers.dev/auth/github';
-      } else if (provider === 'LinkedIn') {
-        window.location.href = 'https://kolabolab-api.dominus-dev.workers.dev/auth/linkedin';
-      } else if (provider === 'Facebook') {
-        window.location.href = 'https://kolabolab-api.dominus-dev.workers.dev/auth/facebook';
-      }
+      const providerPath = provider.toLowerCase();
+      window.location.href = `${apiBaseUrl}/auth/${providerPath}`;
     }, 1000);
   };
 

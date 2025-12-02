@@ -1,13 +1,10 @@
 /* Global styles for KolaboLab */
 @import './professional.css';
 @import './hero-animations.css';
-@import './button-alignment.css';
 @import './footer-styles.css';
-@import './global-alignment-fixes.css';
-@import './final-alignment-fixes.css';
-@import './comprehensive-ui-fixes.css';
-@import './button-alignment-fix.css';
-@import './mobile-navbar-fix.css';
+
+/* IMPORTANT: This must be imported LAST to override all other alignment styles */
+@import './comprehensive-alignment-fix.css';
 
 /* Reset and base styles */
 * {

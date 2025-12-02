@@ -89,8 +89,8 @@ export const Navbar: React.FC = () => {
         top={0}
         zIndex={1000}
       >
-        <Container maxW="100%" className="navbar-full-width">
-          <Flex h={20} alignItems="center" justifyContent="space-between" className="navbar-content" display="flex">
+        <Container maxW="container.xl" px={{ base: 4, md: 6 }}>
+          <Flex h={20} alignItems="center" justifyContent="space-between" gap={4}>
             <IconButton
               size="lg"
               width="48px"
@@ -104,23 +104,23 @@ export const Navbar: React.FC = () => {
               className="interactive-element"
             />
 
-            <HStack spacing={8} alignItems="center" height="100%" className="navbar-left">
+            <HStack spacing={{ base: 4, md: 8 }} alignItems="center" flex="1" minW="0">
               {/* Logo */}
               <ChakraLink
                 as={RouterLink}
                 to="/"
-                className="navbar-element"
-                px={2}
+                flexShrink={0}
                 _hover={{ textDecoration: 'none' }}
               >
                 <HStack spacing={2} alignItems="center">
                   <Icon as={FiZap} color="brand.500" boxSize={6} />
                   <Text
-                    fontSize="xl"
+                    fontSize={{ base: "lg", md: "xl" }}
                     fontWeight="800"
                     className="gradient-text"
                     fontFamily="heading"
                     lineHeight="1"
+                    whiteSpace="nowrap"
                   >
                     KolaboLab
                   </Text>
@@ -130,28 +130,18 @@ export const Navbar: React.FC = () => {
               {/* Desktop Navigation */}
               <HStack
                 as="nav"
-                spacing={0}
-                display={{ base: 'none', md: 'flex' }}
-                className="navbar-center"
+                spacing={1}
+                display={{ base: 'none', lg: 'flex' }}
+                flexShrink={0}
               >
-                <Box className="navbar-element">
-                  <NavLink to="/startups" variant="startup">Startups</NavLink>
-                </Box>
-                <Box className="navbar-element">
-                  <NavLink to="/search">Search</NavLink>
-                </Box>
+                <NavLink to="/startups" variant="startup">Startups</NavLink>
+                <NavLink to="/search">Search</NavLink>
                 {isAuthenticated && (
                   <>
-                    <Box className="navbar-element">
-                      <NavLink to="/dashboard">Dashboard</NavLink>
-                    </Box>
-                    <Box className="navbar-element">
-                      <NavLink to="/collaborations">Collaborations</NavLink>
-                    </Box>
+                    <NavLink to="/dashboard">Dashboard</NavLink>
+                    <NavLink to="/collaborations">Collaborations</NavLink>
                     {user?.roles?.includes('investor') && (
-                      <Box className="navbar-element">
-                        <NavLink to="/investments" variant="investor">Investments</NavLink>
-                      </Box>
+                      <NavLink to="/investments" variant="investor">Investments</NavLink>
                     )}
                   </>
                 )}
@@ -159,18 +149,17 @@ export const Navbar: React.FC = () => {
             </HStack>
 
             {/* Right side actions */}
-            <Flex alignItems="center" height="100%" className="navbar-right">
+            <Flex alignItems="center" flexShrink={0}>
               {isAuthenticated ? (
-                <HStack spacing={4} alignItems="center" height="100%">
+                <HStack spacing={{ base: 2, md: 4 }} alignItems="center">
                   <Button
                     as={RouterLink}
                     to="/create-startup"
                     variant="startup"
                     size="md"
                     leftIcon={<AddIcon />}
-                    display={{ base: 'none', lg: 'flex' }}
-                    className="navbar-element"
-                    px={4}
+                    display={{ base: 'none', xl: 'flex' }}
+                    whiteSpace="nowrap"
                   >
                     Create Startup
                   </Button>
@@ -294,10 +283,8 @@ export const Navbar: React.FC = () => {
                 </HStack>
               ) : (
                 <HStack 
-                  spacing={{ base: 2, md: 3 }} 
-                  alignItems="center" 
-                  height="100%" 
-                  className="header-auth-buttons"
+                  spacing={3}
+                  alignItems="center"
                   display={{ base: 'none', sm: 'flex' }}
                   flexShrink={0}
                 >
@@ -305,12 +292,8 @@ export const Navbar: React.FC = () => {
                     as={RouterLink}
                     to="/login"
                     variant="ghost"
-                    className="navbar-element"
-                    size={{ base: 'sm', md: 'md' }}
-                    px={{ base: 2, md: 4 }}
-                    fontSize={{ base: 'sm', md: 'md' }}
-                    minW="auto"
-                    flexShrink={0}
+                    size="md"
+                    whiteSpace="nowrap"
                   >
                     Sign In
                   </Button>
@@ -318,12 +301,8 @@ export const Navbar: React.FC = () => {
                     as={RouterLink}
                     to="/register"
                     variant="asymmetric"
-                    className="navbar-element"
-                    size={{ base: 'sm', md: 'md' }}
-                    px={{ base: 2, md: 4 }}
-                    fontSize={{ base: 'sm', md: 'md' }}
-                    minW="auto"
-                    flexShrink={0}
+                    size="md"
+                    whiteSpace="nowrap"
                   >
                     Sign Up
                   </Button>

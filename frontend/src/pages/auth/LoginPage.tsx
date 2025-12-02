@@ -153,8 +153,9 @@ const LoginPage: React.FC = () => {
   const handleOAuthLogin = async (provider: 'google' | 'linkedin' | 'github') => {
     setIsLoading(true);
     try {
-      const backendUrl = 'https://kolabolab-api.dominus-dev.workers.dev';
-      const oauthUrl = `${backendUrl}/auth/${provider}`;
+      // Get API base URL from environment or use local development default
+      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      const oauthUrl = `${apiBaseUrl}/auth/${provider}`;
       
       // Redirect to backend OAuth endpoint
       window.location.href = oauthUrl;
