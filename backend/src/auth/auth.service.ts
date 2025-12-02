@@ -132,7 +132,7 @@ export class AuthService {
     // Update login statistics
     await this.userRepository.update(user.id, {
       lastLoginAt: new Date(),
-      loginCount: () => 'login_count + 1',
+      loginCount: () => '"loginCount" + 1',
     });
 
     const tokens = await this.generateTokens(user);

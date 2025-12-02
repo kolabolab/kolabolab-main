@@ -10,6 +10,7 @@ import { CollaborationsModule } from './collaborations/collaborations.module';
 import { InvestmentsModule } from './investments/investments.module';
 import { AppController } from './app.controller';
 import { DatabaseConfig } from './config/database.config';
+import { JwtConfig } from './config/jwt.config';
 import { User } from './users/entities/user.entity';
 import { Startup } from './startups/entities/startup.entity';
 import { Collaboration } from './collaborations/entities/collaboration.entity';
@@ -20,7 +21,7 @@ import { Investment } from './investments/entities/investment.entity';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: [DatabaseConfig],
+      load: [DatabaseConfig, JwtConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -39,9 +40,13 @@ import { Investment } from './investments/entities/investment.entity';
       inject: [ConfigService],
     }),
     PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'fallback-secret',
-      signOptions: { expiresIn: '1h' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET', 'fallback-secret'),
+        signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN', '7d') },
+      }),
+      inject: [ConfigService],
     }),
     AuthModule,
     UsersModule,
