@@ -277,7 +277,7 @@ const StartupCard: React.FC<{ startup: Startup }> = ({ startup }) => {
             </Text>
             <HStack spacing={1} flexWrap="wrap">
               {startup.lookingFor.slice(0, 2).map((role) => (
-                <Badge key={role} colorScheme="green" size="sm" borderRadius="md">
+                <Badge key={role} colorScheme="accent" size="sm" borderRadius="md">
                   {role}
                 </Badge>
               ))}
@@ -450,7 +450,7 @@ const StartupListPage: React.FC = () => {
                     borderColor={useColorModeValue('gray.200', 'gray.600')}
                     _focus={{
                       borderColor: 'brand.500',
-                      boxShadow: '0 0 0 1px var(--primary-blue)',
+                      boxShadow: '0 0 0 1px var(--primary-navy, #1B2A4A)',
                     }}
                   />
                 </InputGroup>

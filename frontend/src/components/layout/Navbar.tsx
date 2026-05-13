@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Flex,
@@ -21,10 +21,12 @@ import {
   Badge,
   Icon,
   Container,
+  Portal,
+  Image,
 } from '@chakra-ui/react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons'
-import { FiZap, FiTrendingUp, FiUsers, FiSettings, FiLogOut, FiFolderPlus, FiUser, FiChevronDown } from 'react-icons/fi'
+import { FiTrendingUp, FiUsers, FiLogOut, FiFolderPlus, FiUser, FiChevronDown } from 'react-icons/fi'
 import { useAuth } from '../../hooks/useAuth'
 
 const NavLink = ({ children, to, variant = 'default' }: { 
@@ -36,7 +38,7 @@ const NavLink = ({ children, to, variant = 'default' }: {
     switch (variant) {
       case 'startup': return 'rgba(255, 149, 0, 0.08)';
       case 'investor': return 'rgba(82, 196, 26, 0.08)';
-      default: return 'rgba(24, 144, 255, 0.08)';
+      default: return 'rgba(27, 42, 74, 0.08)';
     }
   };
 
@@ -69,18 +71,44 @@ const NavLink = ({ children, to, variant = 'default' }: {
   );
 };
 
-export const Navbar: React.FC = () => {
+export const Navbar: React.FC = React.memo(() => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { user, isAuthenticated, clearAuth } = useAuth()
   const navigate = useNavigate()
+  const [logoError, setLogoError] = useState(false)
+  
+  // No custom dropdown state needed - using Chakra UI Menu
 
   const handleLogout = () => {
-    clearAuth()
-    navigate('/')
+    try {
+      clearAuth()
+      // Clear any cached data
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      // Force navigation to home
+      navigate('/', { replace: true })
+      // Optional: Show success message
+      console.log('Logged out successfully')
+    } catch (error) {
+      console.error('Logout error:', error)
+    }
+  }
+
+  // Keyboard navigation handler
+  const handleKeyDown = (event: React.KeyboardEvent, action: () => void) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      action()
+    }
   }
 
   return (
     <>
+      {/* Skip to main content link for screen readers */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      
       <Box 
         className="nav-glass"
         px={0}
@@ -88,18 +116,34 @@ export const Navbar: React.FC = () => {
         position="sticky"
         top={0}
         zIndex={1000}
+        role="banner"
+        aria-label="Site header"
+        overflow="visible"
       >
-        <Container maxW="container.xl" px={{ base: 4, md: 6 }}>
-          <Flex h={20} alignItems="center" justifyContent="space-between" gap={4}>
+        <Container 
+          maxW={{ base: "container.xl", "2xl": "90%" }} 
+          px={{ base: 4, md: 6 }}
+          overflow="visible"
+        >
+          <Flex 
+            h={28} 
+            alignItems="center" 
+            justifyContent="space-between" 
+            gap={4} 
+            position="relative"
+            overflow="visible"
+          >
             <IconButton
               size="lg"
               width="48px"
               height="48px"
               aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
               icon={isOpen ? <CloseIcon boxSize={5} /> : <HamburgerIcon boxSize={6} />}
-              aria-label="Toggle Navigation Menu"
+              aria-label={isOpen ? "Close navigation menu" : "Toggle navigation menu"}
               display={{ md: 'none' }}
               onClick={isOpen ? onClose : onOpen}
+              onKeyDown={(e) => handleKeyDown(e, isOpen ? onClose : onOpen)}
               variant="glass"
               className="interactive-element"
             />
@@ -112,8 +156,7 @@ export const Navbar: React.FC = () => {
                 flexShrink={0}
                 _hover={{ textDecoration: 'none' }}
               >
-                <HStack spacing={2} alignItems="center">
-                  <Icon as={FiZap} color="brand.500" boxSize={6} />
+                {logoError ? (
                   <Text
                     fontSize={{ base: "lg", md: "xl" }}
                     fontWeight="800"
@@ -124,15 +167,28 @@ export const Navbar: React.FC = () => {
                   >
                     KolaboLab
                   </Text>
-                </HStack>
+                ) : (
+                  <Image
+                    src="/kolabolab-logo.png"
+                    alt="KolaboLab - Connect, Collaborate, Grow"
+                    height={{ base: "72px", md: "96px" }}
+                    maxH={{ base: "72px", md: "96px" }}
+                    objectFit="contain"
+                    mixBlendMode="multiply"
+                    onError={() => setLogoError(true)}
+                  />
+                )}
               </ChakraLink>
 
               {/* Desktop Navigation */}
               <HStack
                 as="nav"
                 spacing={1}
-                display={{ base: 'none', lg: 'flex' }}
+                display={{ base: 'none', md: 'none', lg: 'flex' }}
+              className="responsive-nav base-hidden md-hidden lg-flex"
                 flexShrink={0}
+                role="navigation"
+                aria-label="Main navigation"
               >
                 <NavLink to="/startups" variant="startup">Startups</NavLink>
                 <NavLink to="/search">Search</NavLink>
@@ -158,12 +214,14 @@ export const Navbar: React.FC = () => {
                     variant="startup"
                     size="md"
                     leftIcon={<AddIcon />}
-                    display={{ base: 'none', xl: 'flex' }}
+                    display={{ base: 'none', md: 'none', xl: 'flex' }}
+                  className="responsive-button base-hidden md-hidden xl-flex"
                     whiteSpace="nowrap"
                   >
                     Create Startup
                   </Button>
                   
+                  {/* Proper Chakra UI Menu */}
                   <Menu>
                     <MenuButton
                       as={Button}
@@ -177,13 +235,16 @@ export const Navbar: React.FC = () => {
                       alignItems="center"
                       justifyContent="center"
                       _hover={{
-                        bg: 'rgba(24, 144, 255, 0.08)',
+                        bg: 'rgba(27, 42, 74, 0.08)',
                         transform: 'translateY(-1px)',
                       }}
                       _active={{
-                        bg: 'rgba(24, 144, 255, 0.12)',
+                        bg: 'rgba(27, 42, 74, 0.12)',
                       }}
                       transition="all 0.2s"
+                      aria-label={`${user?.firstName} ${user?.lastName} user menu`}
+                      aria-haspopup="menu"
+                      aria-describedby="user-menu-description"
                     >
                       <HStack spacing={3}>
                         <Avatar
@@ -191,9 +252,9 @@ export const Navbar: React.FC = () => {
                           src={user?.avatar}
                           name={`${user?.firstName} ${user?.lastName}`}
                           border="2px solid"
-                          borderColor="brand.100"
+                          borderColor="accent.200"
                         />
-                        <VStack spacing={0} align="start" display={{ base: 'none', lg: 'flex' }}>
+                        <VStack spacing={0} align="start" display={{ base: 'none', md: 'none', lg: 'flex' }} className="responsive-user-info base-hidden md-hidden lg-flex">
                           <Text fontWeight="600" fontSize="sm" lineHeight="1.2">
                             {user?.firstName} {user?.lastName}
                           </Text>
@@ -212,73 +273,71 @@ export const Navbar: React.FC = () => {
                         <Icon as={FiChevronDown} w={4} h={4} color="gray.500" />
                       </HStack>
                     </MenuButton>
-                    <MenuList 
-                      className="glass-panel" 
-                      border="1px solid"
-                      borderColor="gray.200"
-                      shadow="xl"
-                      borderRadius="xl"
-                      py={2}
-                      minW="220px"
-                    >
+                    
+                    <Portal>
+                      <MenuList
+                        bg="white"
+                        border="2px solid"
+                        borderColor="brand.100"
+                        borderRadius="xl"
+                        p={2}
+                        minW="220px"
+                        shadow="xl"
+                        zIndex={1500}
+                        position="relative"
+                        data-chakra-component="MenuList"
+                        role="menu"
+                        aria-labelledby="user-menu-button"
+                      >
+                      {/* Hidden description for screen readers */}
+                      <div id="user-menu-description" className="sr-only">
+                        User account menu with profile options and logout
+                      </div>
                       {/* User Info Header */}
-                      <Box px={4} py={3} borderBottom="1px solid" borderColor="gray.100">
-                        <VStack spacing={1} align="start">
-                          <Text fontWeight="700" fontSize="md">
-                            {user?.firstName} {user?.lastName}
-                          </Text>
-                          {user?.roles?.includes('investor') && (
-                            <Badge
-                              variant="subtle"
-                              colorScheme="green"
-                              fontSize="xs"
-                              mt={1}
-                            >
-                              <Icon as={FiTrendingUp} mr={1} w={3} h={3} />
-                              Investor Account
-                            </Badge>
-                          )}
-                        </VStack>
+                      <Box px={3} py={2} borderBottom="1px solid" borderColor="gray.100" mb={2}>
+                        <Text fontWeight="600" fontSize="sm" color="gray.900">
+                          {user?.firstName} {user?.lastName}
+                        </Text>
+                        <Text fontSize="xs" color="gray.500">
+                          User Menu
+                        </Text>
                       </Box>
 
                       {/* Menu Items */}
-                      <Box py={1}>
-                        <MenuItem 
-                          as={RouterLink} 
-                          to="/startups?filter=my-projects" 
-                          icon={<FiFolderPlus />}
-                          fontSize="sm"
-                          fontWeight="500"
-                          py={3}
-                          _hover={{ bg: 'brand.50' }}
-                        >
-                          My Projects
-                        </MenuItem>
-                        <MenuItem 
-                          as={RouterLink} 
-                          to="/profile" 
-                          icon={<FiUser />}
-                          fontSize="sm"
-                          fontWeight="500"
-                          py={3}
-                          _hover={{ bg: 'brand.50' }}
-                        >
-                          My Profile
-                        </MenuItem>
-                        <MenuDivider my={2} />
-                        <MenuItem 
-                          onClick={handleLogout} 
-                          color="red.500" 
-                          icon={<FiLogOut />}
-                          fontSize="sm"
-                          fontWeight="500"
-                          py={3}
-                          _hover={{ bg: 'red.50', color: 'red.600' }}
-                        >
-                          Logout
-                        </MenuItem>
-                      </Box>
+                      <MenuItem
+                        icon={<Icon as={FiFolderPlus} />}
+                        onClick={() => navigate('/startups?filter=my-projects')}
+                        borderRadius="md"
+                        _hover={{ bg: 'brand.50' }}
+                        _focus={{ bg: 'brand.50' }}
+                      >
+                        My Projects
+                      </MenuItem>
+                      
+                      <MenuItem
+                        icon={<Icon as={FiUser} />}
+                        onClick={() => navigate('/profile')}
+                        borderRadius="md"
+                        _hover={{ bg: 'brand.50' }}
+                        _focus={{ bg: 'brand.50' }}
+                      >
+                        My Profile
+                      </MenuItem>
+                      
+                      <MenuDivider />
+                      
+                      <MenuItem
+                        icon={<Icon as={FiLogOut} />}
+                        onClick={handleLogout}
+                        borderRadius="md"
+                        color="red.600"
+                        _hover={{ bg: 'red.50', color: 'red.700' }}
+                        _focus={{ bg: 'red.50', color: 'red.700' }}
+                      >
+                        Logout
+                      </MenuItem>
                     </MenuList>
+                  </Portal>
                   </Menu>
                 </HStack>
               ) : (
@@ -322,17 +381,25 @@ export const Navbar: React.FC = () => {
         returnFocusOnClose={true}
       >
         <DrawerOverlay />
-        <DrawerContent className="glass-panel">
-          <Box as="nav" role="navigation" aria-label="Main Navigation" p={6}>
+        <DrawerContent className="glass-panel" id="mobile-navigation">
+          <Box as="nav" role="navigation" aria-label="Mobile Navigation" p={6}>
             <VStack spacing={6} align="stretch">
               <Box>
                 <HStack justify="space-between" align="center" mb={8}>
-                  <HStack spacing={2}>
-                    <Icon as={FiZap} color="brand.500" boxSize={6} />
+                  {logoError ? (
                     <Text fontSize="xl" fontWeight="800" className="gradient-text">
                       KolaboLab
                     </Text>
-                  </HStack>
+                  ) : (
+                    <Image
+                      src="/kolabolab-logo.png"
+                      alt="KolaboLab - Connect, Collaborate, Grow"
+                      height="72px"
+                      maxH="72px"
+                      objectFit="contain"
+                      onError={() => setLogoError(true)}
+                    />
+                  )}
                   <IconButton
                     size="md"
                     icon={<CloseIcon boxSize={4} />}
@@ -372,7 +439,7 @@ export const Navbar: React.FC = () => {
                   rounded="lg"
                   minH="48px"
                   fontWeight="500"
-                  _hover={{ bg: "rgba(24, 144, 255, 0.08)" }}
+                  _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
                   onClick={onClose}
                 >
                   <HStack>
@@ -399,7 +466,7 @@ export const Navbar: React.FC = () => {
                           src={user?.avatar}
                           name={`${user?.firstName} ${user?.lastName}`}
                           border="2px solid"
-                          borderColor="brand.200"
+                          borderColor="accent.200"
                         />
                         <VStack spacing={0} align="start" flex="1">
                           <Text fontWeight="700" fontSize="md">
@@ -466,7 +533,7 @@ export const Navbar: React.FC = () => {
                       rounded="lg"
                       minH="48px"
                       fontWeight="500"
-                      _hover={{ bg: "rgba(24, 144, 255, 0.08)" }}
+                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
                       onClick={onClose}
                     >
                       <HStack>
@@ -575,4 +642,4 @@ export const Navbar: React.FC = () => {
       </Drawer>
     </>
   )
-}
+})

@@ -1,0 +1,1 @@
+console.log('🔍 Checking for menu elements...'); const menus = document.querySelectorAll('[role="menu"], .chakra-menu__menu-list'); console.log('Found', menus.length, 'menu elements:', menus); menus.forEach((m, i) => { console.log('Menu', i, ':', m, 'Z-index:', getComputedStyle(m).zIndex, 'Position:', getComputedStyle(m).position); });

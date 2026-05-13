@@ -15,7 +15,7 @@ import { Link as RouterLink } from 'react-router-dom'
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import { FiHeart } from 'react-icons/fi'
 
-export const Footer: React.FC = () => {
+export const Footer: React.FC = React.memo(() => {
   return (
     <Box
       bg={useColorModeValue('gray.50', 'gray.900')}
@@ -220,4 +220,4 @@ export const Footer: React.FC = () => {
       </Container>
     </Box>
   )
-}
+})

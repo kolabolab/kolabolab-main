@@ -236,14 +236,8 @@ app.post('/auth/login', async (c) => {
       return c.json({ error: 'Invalid credentials' }, 401);
     }
 
-    // Hash provided password and compare
-    const hashedPassword = await crypto.subtle.digest(
-      'SHA-256',
-      new TextEncoder().encode(password + 'salt')
-    );
-    const passwordHash = Array.from(new Uint8Array(hashedPassword))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
+    // Hash provided password and compare using same method as registration
+    const passwordHash = await hashPassword(password);
 
     if (passwordHash !== user.password) {
       return c.json({ error: 'Invalid credentials' }, 401);
@@ -536,6 +530,52 @@ app.post('/api/auth/verify-manual', async (c) => {
   }
 });
 
+// Dev-only registration endpoint (bypasses email verification)
+app.post('/api/auth/register-dev', async (c) => {
+  try {
+    const { email, password, firstName, lastName } = await c.req.json();
+    
+    if (!email || !password || !firstName || !lastName) {
+      return c.json({ error: 'Missing required fields' }, 400);
+    }
+    
+    // Check if user exists
+    const existingUser = await c.env.DB.prepare(
+      'SELECT id FROM users WHERE email = ?'
+    ).bind(email).first();
+    
+    if (existingUser) {
+      return c.json({ error: 'User already exists' }, 409);
+    }
+    
+    // Hash password
+    const hashedPassword = await hashPassword(password);
+    
+    // Create user with verification already set to true
+    const userId = crypto.randomUUID();
+    await c.env.DB.prepare(`
+      INSERT INTO users (id, email, password, firstName, lastName, isVerified, createdAt, updatedAt)
+      VALUES (?, ?, ?, ?, ?, 1, datetime('now'), datetime('now'))
+    `).bind(userId, email, hashedPassword, firstName, lastName).run();
+    
+    return c.json({ 
+      message: 'User registered successfully (dev mode - auto-verified)',
+      userId,
+      user: {
+        id: userId,
+        email,
+        firstName,
+        lastName,
+        isVerified: true
+      }
+    });
+    
+  } catch (error) {
+    console.error('Dev registration error:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
 // Database initialization
 app.get('/api/init-db', async (c) => {
   try {
@@ -568,4 +608,7 @@ app.get('/api/init-db', async (c) => {
   }
 });
 
-export default app;
+// Export for Cloudflare Workers
+export default {
+  fetch: app.fetch.bind(app)
+};

@@ -153,8 +153,12 @@ const LoginPage: React.FC = () => {
   const handleOAuthLogin = async (provider: 'google' | 'linkedin' | 'github') => {
     setIsLoading(true);
     try {
-      // Get API base URL from environment or use local development default
-      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+      // Get API base URL from environment or detect from hostname
+      const apiBaseUrl = import.meta.env.VITE_API_URL || (
+        window.location.hostname.includes('kolabolab.com') 
+          ? 'https://kolabolab-api.beryour.workers.dev'
+          : 'https://kolabolab-api-dev.beryour.workers.dev'
+      );
       const oauthUrl = `${apiBaseUrl}/auth/${provider}`;
       
       // Redirect to backend OAuth endpoint

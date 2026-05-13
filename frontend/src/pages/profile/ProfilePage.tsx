@@ -351,12 +351,12 @@ const ProfilePage: React.FC = () => {
                 <SimpleGrid columns={{ base: 1, md: 2 }} spacing={6}>
                   <VStack align="start" spacing={2}>
                     <Text fontWeight="semibold">Account Status</Text>
-                    <Badge colorScheme="green" size="lg">Active</Badge>
+                    <Badge colorScheme="success" size="lg">Active</Badge>
                   </VStack>
                   
                   <VStack align="start" spacing={2}>
                     <Text fontWeight="semibold">Email Verified</Text>
-                    <Badge colorScheme="green" size="lg">Verified</Badge>
+                    <Badge colorScheme="success" size="lg">Verified</Badge>
                   </VStack>
                   
                   <VStack align="start" spacing={2}>

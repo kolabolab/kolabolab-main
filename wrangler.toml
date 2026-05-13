@@ -1,11 +1,18 @@
 # Cloudflare Workers configuration for KolaboLab
 name = "kolabolab-api"
-main = "./backend/workers-main.ts"
+main = "./backend/workers-native.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
+workers_dev = true
 
 # Account ID (using Beryour@gmail.com's Account)
 account_id = "1bcdd5533e68547452b2eefda2366a77"
+
+# Observability settings for better debugging
+[observability]
+[observability.logs]
+enabled = false
+invocation_logs = true
 
 [env.production]
 name = "kolabolab-api"
@@ -71,15 +78,21 @@ bucket_name = "kolabolab-uploads-staging"
 [env.production.vars]
 NODE_ENV = "production"
 FRONTEND_URL = "https://kolabolab.com"
-GOOGLE_CALLBACK_URL = "https://api.kolabolab.com/auth/google/callback"
+GOOGLE_CALLBACK_URL = "https://kolabolab-api.beryour.workers.dev/auth/google/callback"
+LINKEDIN_CALLBACK_URL = "https://kolabolab-api.beryour.workers.dev/auth/linkedin/callback"
+GITHUB_CALLBACK_URL = "https://kolabolab-api.beryour.workers.dev/auth/github/callback"
 
 [env.dev.vars]
 NODE_ENV = "development"
-FRONTEND_URL = "https://kolabolab-dev.pages.dev"
+FRONTEND_URL = "https://0fc93d16.kolabolab-dev.pages.dev"
+GOOGLE_CALLBACK_URL = "https://kolabolab-api-dev.beryour.workers.dev/auth/google/callback"
+LINKEDIN_CALLBACK_URL = "https://kolabolab-api-dev.beryour.workers.dev/auth/linkedin/callback"
+GITHUB_CALLBACK_URL = "https://kolabolab-api-dev.beryour.workers.dev/auth/github/callback"
 
 [env.staging.vars]
 NODE_ENV = "staging"
 FRONTEND_URL = "https://kolabolab-dev.pages.dev"
+GOOGLE_CALLBACK_URL = "https://kolabolab-api-staging.beryour.workers.dev/auth/google/callback"
 
 # Secrets (set via wrangler secret put)
 # wrangler secret put JWT_SECRET

@@ -1,16 +1,40 @@
-/* KolaboLab Design System - Revolutionary UI Implementation */
+/* KolaboLab Consolidated Styles - Single CSS Entry Point */
 
 /* Import Modern Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 /* CSS Custom Properties - Design Tokens */
 :root {
-  /* Core Brand Colors - Green Primary Theme */
-  --primary-green: #10B981;
+  /* Core Brand Colors - Navy/Cyan Theme */
+  --primary-navy: #1B2A4A;
+  --accent-cyan: #00BFFF;
   --accent-gray: #6B7280;
-  --support-blue: #3B82F6;
   
-  /* Green Palette - Primary Brand Color */
+  /* Navy Palette - Primary Brand Color */
+  --navy-50:  #E8EBF0;
+  --navy-100: #C5CCD9;
+  --navy-200: #9FADBF;
+  --navy-300: #7A8EA6;
+  --navy-400: #5E7793;
+  --navy-500: #1B2A4A;
+  --navy-600: #162240;
+  --navy-700: #111A33;
+  --navy-800: #0C1226;
+  --navy-900: #070B19;
+  
+  /* Cyan Palette - Accent Color */
+  --cyan-50:  #E0F7FF;
+  --cyan-100: #B3ECFF;
+  --cyan-200: #80E0FF;
+  --cyan-300: #4DD4FF;
+  --cyan-400: #26CAFF;
+  --cyan-500: #00BFFF;
+  --cyan-600: #00A3DB;
+  --cyan-700: #0087B8;
+  --cyan-800: #006B94;
+  --cyan-900: #004F70;
+  
+  /* Green Palette - Success Semantic Color */
   --green-50: #ECFDF5;
   --green-100: #D1FAE5;
   --green-200: #A7F3D0;
@@ -46,32 +70,20 @@
   --blue-800: #1E40AF;
   --blue-900: #1E3A8A;
   
-  /* Gradient System - Green Primary */
-  --gradient-primary: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  /* Gradient System - Navy/Cyan Primary */
+  --gradient-primary: linear-gradient(135deg, #1B2A4A 0%, #00BFFF 100%);
+  --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
   --gradient-secondary: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
   --gradient-support: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
-  --gradient-glass-dark: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
-  
-  /* Neutral System */
-  --neutral-0: #FFFFFF;
-  --neutral-50: #FAFAFA;
-  --neutral-100: #F5F5F5;
-  --neutral-200: #E8E8E8;
-  --neutral-300: #D9D9D9;
-  --neutral-400: #BFBFBF;
-  --neutral-500: #8C8C8C;
-  --neutral-600: #595959;
-  --neutral-700: #434343;
-  --neutral-800: #262626;
-  --neutral-900: #1F1F1F;
-  --neutral-950: #141414;
   
   /* Semantic System - Light Mode */
   --bg-base: #F8FAFF;
   --bg-surface: rgba(255, 255, 255, 0.8);
   --bg-elevated: rgba(255, 255, 255, 0.95);
   --bg-glass: rgba(255, 255, 255, 0.7);
+  --bg-surface-raised: #FFFFFF;
+  --bg-surface-overlay: #F9FAFB;
   --text-primary: rgba(0, 0, 0, 0.92);
   --text-secondary: rgba(0, 0, 0, 0.64);
   --text-tertiary: rgba(0, 0, 0, 0.38);
@@ -81,6 +93,9 @@
   --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+  /* Interactive elements */
+  --interactive-accent: #00BFFF;
+  --interactive-hover: rgba(27, 42, 74, 0.08);
   
   /* Typography System */
   --font-heading: 'Poppins', system-ui, -apple-system, sans-serif;
@@ -118,21 +133,37 @@
   --duration-slow: 0.6s;
 }
 
-/* Dark Mode Overrides */
-.dark-mode {
+/* Dark Mode Overrides - supports .dark-mode class, Chakra UI dark mode, and system preference */
+.dark-mode,
+.chakra-ui-dark,
+[data-theme="dark"] {
   --bg-base: #0A0A0B;
-  --bg-surface: rgba(18, 18, 19, 0.8);
-  --bg-elevated: rgba(26, 26, 28, 0.95);
-  --bg-glass: rgba(18, 18, 19, 0.7);
+  --bg-surface: rgba(17, 26, 51, 0.8);
+  --bg-elevated: rgba(22, 34, 64, 0.95);
+  --bg-glass: rgba(17, 26, 51, 0.7);
+  --bg-surface-raised: #162240;
+  --bg-surface-overlay: #111A33;
   --text-primary: rgba(255, 255, 255, 0.92);
   --text-secondary: rgba(255, 255, 255, 0.64);
   --text-tertiary: rgba(255, 255, 255, 0.38);
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.12);
+  --border-subtle: rgba(0, 191, 255, 0.06);
+  --border-default: rgba(0, 191, 255, 0.12);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.4);
   --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
+  /* Interactive elements use lighter navy and brighter cyan in dark mode */
+  --primary-navy: #9FADBF;
+  --accent-cyan: #4DD4FF;
+  --interactive-accent: #4DD4FF;
+  --interactive-hover: rgba(0, 191, 255, 0.12);
+  --interactive-active: rgba(0, 191, 255, 0.2);
+}
+
+.dark-mode .gradient-text,
+.chakra-ui-dark .gradient-text,
+[data-theme="dark"] .gradient-text {
+  opacity: 0.8;
 }
 
 /* Base Reset & Typography */
@@ -140,6 +171,10 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -153,6 +188,16 @@ body {
               color var(--duration-normal) var(--ease-out);
 }
 
+/* Focus styles for better accessibility */
+*:focus {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 2px;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
 /* Typography Scale */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
@@ -160,6 +205,7 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
   line-height: 1.2;
   color: var(--text-primary);
+  overflow-wrap: break-word;
 }
 
 h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
@@ -172,41 +218,69 @@ h6 { font-size: 1rem; }
 p {
   color: var(--text-secondary);
   margin-bottom: var(--space-4);
+  overflow-wrap: break-word;
 }
 
-/* Professional Button System - Uniform Alignment */
+/* Image optimization */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Selection styles */
+::selection {
+  background-color: #00BFFF;
+  color: white;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Professional Button System - Uniform 44px Height */
 .btn {
-  /* Base Properties - Uniform Sizing */
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 44px; /* WCAG Compliance - Consistent Height */
-  height: 44px; /* Fixed height for uniform alignment */
-  padding: 0 var(--space-6); /* Horizontal padding only */
+  min-height: 44px;
+  height: 44px;
+  padding: 0 var(--space-6);
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 0.875rem;
-  line-height: 1; /* Consistent line height */
+  line-height: 1;
   text-decoration: none;
   border: none;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  vertical-align: middle; /* Align buttons on same baseline */
+  vertical-align: middle;
   transition: all var(--duration-normal) var(--ease-bounce);
-  
-  /* Default Styling */
   background: var(--gradient-primary);
   color: white;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
 }
 
-/* Button Variants - Green Primary Professional Design */
+/* Button Variants */
 .btn-primary {
   background: var(--gradient-primary);
-  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.25);
+  box-shadow: 0 4px 20px rgba(27, 42, 74, 0.25);
 }
 
 .btn-secondary {
@@ -221,22 +295,8 @@ p {
 
 .btn-outline {
   background: transparent;
-  border: 2px solid var(--primary-green);
-  color: var(--primary-green);
-  box-shadow: none;
-}
-
-.btn-outline-secondary {
-  background: transparent;
-  border: 2px solid var(--accent-gray);
-  color: var(--accent-gray);
-  box-shadow: none;
-}
-
-.btn-outline-support {
-  background: transparent;
-  border: 2px solid var(--support-blue);
-  color: var(--support-blue);
+  border: 2px solid var(--primary-navy);
+  color: var(--primary-navy);
   box-shadow: none;
 }
 
@@ -255,29 +315,7 @@ p {
   box-shadow: var(--shadow-sm);
 }
 
-/* Button Sizes - Uniform Heights */
-.btn-sm {
-  height: 36px;
-  min-height: 36px;
-  padding: 0 var(--space-4);
-  font-size: 0.75rem;
-}
-
-.btn-lg {
-  height: 52px;
-  min-height: 52px;
-  padding: 0 var(--space-8);
-  font-size: 1rem;
-}
-
-.btn-xl {
-  height: 60px;
-  min-height: 60px;
-  padding: 0 var(--space-10);
-  font-size: 1.125rem;
-}
-
-/* Button States - Professional and Subtle */
+/* Button States */
 .btn:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-lg);
@@ -289,7 +327,7 @@ p {
 }
 
 .btn:focus-visible {
-  outline: 3px solid rgba(16, 185, 129, 0.5);
+  outline: 3px solid rgba(0, 191, 255, 0.5);
   outline-offset: 2px;
 }
 
@@ -297,23 +335,6 @@ p {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
-}
-
-/* Floating Action Button */
-.btn-fab {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  padding: 0;
-  box-shadow: var(--shadow-lg);
-  position: fixed;
-  bottom: var(--space-6);
-  right: var(--space-6);
-  z-index: 1000;
-}
-
-.btn-fab:hover {
-  transform: scale(1.1) rotate(5deg);
 }
 
 /* Glass Card System */
@@ -338,37 +359,6 @@ p {
   box-shadow: var(--shadow-lg);
 }
 
-/* Professional Card Variants */
-.card-primary {
-  border-left: 4px solid var(--primary-green);
-}
-
-.card-secondary {
-  border-left: 4px solid var(--accent-gray);
-}
-
-.card-support {
-  border-left: 4px solid var(--support-blue);
-}
-
-/* Grid System */
-.grid-system {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: var(--space-6);
-  grid-auto-flow: dense;
-}
-
-.grid-item:nth-child(3n+1) {
-  grid-column: span 2;
-}
-
-@media (max-width: 768px) {
-  .grid-item:nth-child(3n+1) {
-    grid-column: span 1;
-  }
-}
-
 /* Navigation Glass Effect */
 .nav-glass {
   background: var(--bg-glass);
@@ -378,6 +368,50 @@ p {
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;
+  overflow-x: hidden;
+  /* Allow dropdowns to extend beyond navbar */
+  overflow-y: visible;
+}
+
+/* Fix for Chakra UI Menu positioning in sticky navbar */
+[data-chakra-component="MenuList"] {
+  z-index: 1500;
+  position: fixed;
+}
+
+/* Ensure menu button has proper stacking context */
+[data-chakra-component="Menu"] {
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure menu portal renders above everything */
+.chakra-portal {
+  z-index: 1500;
+}
+
+/* Fix for menu positioning in sticky containers */
+.nav-glass .chakra-menu__menu-list {
+  z-index: 1500;
+  position: fixed;
+}
+
+/* Navbar Specific Fixes */
+.gradient-text {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-link {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 /* Utility Classes */
@@ -390,25 +424,12 @@ p {
   box-shadow: var(--shadow-md);
 }
 
-.gradient-text {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.interactive-element {
+  transition: all var(--duration-normal) var(--ease-bounce);
 }
 
-.secondary-gradient-text {
-  background: var(--gradient-secondary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.support-gradient-text {
-  background: var(--gradient-support);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.interactive-element:hover {
+  transform: scale(1.02);
 }
 
 /* Animation Classes */
@@ -434,13 +455,112 @@ p {
   transform: translateY(0);
 }
 
-/* Interactive Feedback */
-.interactive-element {
-  transition: all var(--duration-normal) var(--ease-bounce);
+/* Accessibility Features */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--primary-navy);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  z-index: 10000;
+  transition: top var(--duration-fast) var(--ease-out);
 }
 
-.interactive-element:hover {
-  transform: scale(1.02);
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Wide screen responsive utilities */
+.wide-screen-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 1536px) {
+  .wide-screen-container {
+    max-width: 85%;
+  }
+}
+
+@media (min-width: 1920px) {
+  .wide-screen-container {
+    max-width: 80%;
+  }
+}
+
+@media (min-width: 2560px) {
+  .wide-screen-container {
+    max-width: 75%;
+  }
+}
+
+/* Responsive grid utilities for wide screens */
+.responsive-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+@media (min-width: 1536px) {
+  .responsive-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .responsive-grid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2.5rem;
+  }
+}
+
+/* Flexible content areas for wide screens */
+.content-area {
+  max-width: 100%;
+}
+
+@media (min-width: 1536px) {
+  .content-area {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 3rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .content-area {
+    grid-template-columns: 1fr 350px;
+    gap: 4rem;
+  }
+}
+
+/* Touch Targets - WCAG Compliance */
+button, 
+.btn,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+  min-height: 44px;
+  min-width: 44px;
 }
 
 /* Responsive Design */
@@ -452,13 +572,13 @@ p {
     --space-12: 40px;
   }
   
-  .btn {
-    min-height: 48px; /* Enhanced touch targets on mobile */
+  .gradient-text {
+    font-size: 1rem;
   }
   
-  .btn-fab {
-    width: 64px;
-    height: 64px;
+  .btn {
+    min-height: 48px;
+    height: 48px;
   }
 }
 
@@ -478,9 +598,9 @@ p {
 /* Reduced Motion Support */
 @media (prefers-reduced-motion: reduce) {
   * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    transition-duration: 0.01ms;
   }
   
   .float-animation {
@@ -488,45 +608,20 @@ p {
   }
 }
 
-/* Focus Management */
-.skip-link {
-  position: absolute;
-  top: -40px;
-  left: 6px;
-  background: var(--primary-blue);
-  color: white;
-  padding: 8px;
-  text-decoration: none;
-  border-radius: var(--radius-sm);
-  z-index: 10000;
-  transition: top var(--duration-fast) var(--ease-out);
-}
-
-.skip-link:focus {
-  top: 6px;
-}
-
-/* Contextual Background Classes - Green Primary */
-.primary-context {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
-}
-
-.secondary-context {
-  background: linear-gradient(135deg, rgba(107, 114, 128, 0.05) 0%, rgba(107, 114, 128, 0.02) 100%);
-}
-
-.support-context {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.02) 100%);
-}
-
-/* Button Group Alignment Utilities */
-.btn-group {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-}
-
-.btn-group .btn {
-  flex-shrink: 0; /* Prevent buttons from shrinking */
+/* Print styles */
+@media print {
+  * {
+    background: transparent;
+    color: black;
+    box-shadow: none;
+    text-shadow: none;
+  }
+  
+  a, a:visited {
+    text-decoration: underline;
+  }
+  
+  @page {
+    margin: 0.5in;
+  }
 }

@@ -757,7 +757,7 @@ Our mission is to democratize access to ${id === '1' ? 'clean technology' : id =
                       </HStack>
                       <Progress
                         value={startup.fundingProgress}
-                        colorScheme="green"
+                        colorScheme="success"
                         size="lg"
                         borderRadius="full"
                       />

@@ -130,7 +130,7 @@ const FeatureCard: React.FC<{ feature: Feature; index: number }> = ({ feature, i
   );
 };
 
-export const FeaturesSection: React.FC = () => {
+export const FeaturesSection: React.FC = React.memo(() => {
   return (
     <Box py={20} className="full-width-site">
       <Container maxW="100%" className="content-max-width">
@@ -177,4 +177,4 @@ export const FeaturesSection: React.FC = () => {
       </Container>
     </Box>
   );
-};
+});

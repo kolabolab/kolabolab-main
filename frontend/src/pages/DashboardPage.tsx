@@ -131,7 +131,7 @@ const DashboardPage: React.FC = () => {
       </Helmet>
 
       <Box minH="100vh" bg={bgColor}>
-        <Container maxW="7xl" py={8}>
+        <Container maxW={{ base: "7xl", "2xl": "90%", "3xl": "85%" }} py={8}>
           <VStack spacing={8} align="stretch">
             
             {/* Welcome Header */}
@@ -252,7 +252,7 @@ const DashboardPage: React.FC = () => {
                   <Button leftIcon={<FiTarget />} colorScheme="brand" variant="outline">
                     {isAdmin ? 'Review Startups' : 'Create Startup'}
                   </Button>
-                  <Button leftIcon={<FiUsers />} colorScheme="green" variant="outline">
+                  <Button leftIcon={<FiUsers />} colorScheme="accent" variant="outline">
                     {isAdmin ? 'Manage Users' : 'Find Collaborators'}
                   </Button>
                   <Button leftIcon={<FiDollarSign />} colorScheme="purple" variant="outline">

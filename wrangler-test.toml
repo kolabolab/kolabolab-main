@@ -1,0 +1,5 @@
+name = "test-api"
+main = "./backend/workers-native.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+account_id = "1bcdd5533e68547452b2eefda2366a77"

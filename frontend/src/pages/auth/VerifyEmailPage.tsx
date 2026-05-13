@@ -175,7 +175,7 @@ const VerifyEmailPage: React.FC = () => {
                       </Alert>
                       <Button
                         rightIcon={<FiArrowRight />}
-                        colorScheme="green"
+                        colorScheme="success"
                         size="lg"
                         onClick={handleGoToDashboard}
                       >

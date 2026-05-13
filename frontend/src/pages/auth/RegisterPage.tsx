@@ -24,7 +24,7 @@ import {
   Icon,
 } from '@chakra-ui/react';
 import { FiGithub } from 'react-icons/fi';
-import { FaFacebook, FaLinkedin } from 'react-icons/fa';
+import { FaGoogle, FaLinkedin } from 'react-icons/fa';
 import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../hooks/useAuth';
@@ -67,35 +67,35 @@ const RegisterPage: React.FC = () => {
   };
 
   const validateForm = (): boolean => {
-    const newErrors: any = {};
+      const newErrors: any = {};
 
-    if (!formData.firstName.trim()) newErrors.firstName = 'Please enter First Name';
-    if (!formData.lastName.trim()) newErrors.lastName = 'Please enter Last Name';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Please enter email address';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
-    }
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password must be at least 8 characters';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@$&])[A-Za-z\d!@$&]/.test(formData.password)) {
-      newErrors.password = 'Password must contain at least one letter, one number, and one special character (examples: !,@,$,&)';
-    }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = 'Agree to terms of service';
-    }
+      if (!formData.firstName.trim()) newErrors.firstName = 'Please enter First Name';
+      if (!formData.lastName.trim()) newErrors.lastName = 'Please enter Last Name';
+      if (!formData.email.trim()) {
+        newErrors.email = 'Please enter email address';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+      if (!formData.username.trim()) {
+        newErrors.username = 'Username is required';
+      }
+      if (!formData.password) {
+        newErrors.password = 'Password must be at least 8 characters';
+      } else if (formData.password.length < 8) {
+        newErrors.password = 'Password must be at least 8 characters';
+      } else if (!/^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]{8,}$/.test(formData.password)) {
+        newErrors.password = 'Password must contain at least one letter, one number, and one special character';
+      }
+      if (formData.password !== formData.confirmPassword) {
+        newErrors.confirmPassword = 'Passwords do not match';
+      }
+      if (!formData.agreeToTerms) {
+        newErrors.agreeToTerms = 'Agree to terms of service';
+      }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+      setErrors(newErrors);
+      return Object.keys(newErrors).length === 0;
+    };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -150,22 +150,16 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleSocialSignup = (provider: string) => {
-    // Get API base URL from environment or use local development default
-    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    // Get API base URL from environment or detect from hostname
+    const apiBaseUrl = import.meta.env.VITE_API_URL || (
+      window.location.hostname.includes('kolabolab.com')
+        ? 'https://kolabolab-api.beryour.workers.dev'
+        : 'https://kolabolab-api-dev.beryour.workers.dev'
+    );
     
-    toast({
-      title: `${provider} Signup`,
-      description: `Redirecting to ${provider} for secure signup...`,
-      status: 'info',
-      duration: 3000,
-      isClosable: true,
-    });
-
     // Redirect to OAuth provider
-    setTimeout(() => {
-      const providerPath = provider.toLowerCase();
-      window.location.href = `${apiBaseUrl}/auth/${providerPath}`;
-    }, 1000);
+    const providerPath = provider.toLowerCase();
+    window.location.href = `${apiBaseUrl}/auth/${providerPath}`;
   };
 
   return (
@@ -211,7 +205,7 @@ const RegisterPage: React.FC = () => {
                         variant="outline"
                         size="md"
                         w="130px"
-                        h="40px"
+                        h="44px"
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
@@ -228,7 +222,7 @@ const RegisterPage: React.FC = () => {
                         variant="outline"
                         size="md"
                         w="130px"
-                        h="40px"
+                        h="44px"
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
@@ -241,20 +235,20 @@ const RegisterPage: React.FC = () => {
                       </Button>
                       
                       <Button
-                        leftIcon={<Icon as={FaFacebook} color="#1877F2" w={4} h={4} />}
+                        leftIcon={<Icon as={FaGoogle} color="#DB4437" w={4} h={4} />}
                         variant="outline"
                         size="md"
                         w="130px"
-                        h="40px"
+                        h="44px"
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
-                        onClick={() => handleSocialSignup('Facebook')}
-                        _hover={{ bg: 'blue.50', borderColor: '#1877F2' }}
+                        onClick={() => handleSocialSignup('Google')}
+                        _hover={{ bg: 'blue.50', borderColor: '#DB4437' }}
                         borderColor="blue.300"
                         color="blue.600"
                       >
-                        Facebook
+                        Google
                       </Button>
                     </Box>
                   </VStack>

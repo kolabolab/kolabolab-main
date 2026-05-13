@@ -41,10 +41,10 @@ const stats = [
   },
 ];
 
-export const HeroSection: React.FC = () => {
+export const HeroSection: React.FC = React.memo(() => {
   const bgGradient = useColorModeValue(
-    'linear(to-br, white, gray.50, green.50)',
-    'linear(to-br, gray.900, gray.800, green.900)'
+    'linear(to-br, white, gray.50, brand.50)',
+    'linear(to-br, gray.900, gray.800, brand.900)'
   );
   
   const statBg = useColorModeValue('white', 'gray.800');
@@ -64,7 +64,7 @@ export const HeroSection: React.FC = () => {
             <VStack align="start" spacing={6}>
               {/* Platform Badge */}
               <Box
-                bg="green.50"
+                bg="brand.50"
                 color="gray.800"
                 px={6}
                 py={3}
@@ -72,7 +72,7 @@ export const HeroSection: React.FC = () => {
                 fontSize={{ base: "md", md: "lg" }}
                 fontWeight="700"
                 border="1px solid"
-                borderColor="green.100"
+                borderColor="brand.100"
                 display="inline-block"
                 letterSpacing="wide"
               >
@@ -131,11 +131,11 @@ export const HeroSection: React.FC = () => {
                 borderRadius="xl"
                 bg="brand.500"
                 color="white"
-                boxShadow="0 4px 14px 0 rgba(16, 185, 129, 0.25)"
+                boxShadow="0 4px 14px 0 rgba(27, 42, 74, 0.25)"
                 _hover={{
                   bg: "brand.600",
                   transform: 'translateY(-3px)',
-                  boxShadow: "0 8px 25px 0 rgba(16, 185, 129, 0.35)",
+                  boxShadow: "0 8px 25px 0 rgba(27, 42, 74, 0.35)",
                 }}
                 _active={{
                   transform: 'translateY(-1px)',
@@ -216,7 +216,7 @@ export const HeroSection: React.FC = () => {
             className="hero-right-card"
           >
             <Box
-              bg="linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%)"
+              bg="linear-gradient(135deg, rgba(27, 42, 74, 0.1) 0%, rgba(0, 191, 255, 0.1) 100%)"
               borderRadius="2xl"
               p={8}
               position="relative"
@@ -371,4 +371,4 @@ export const HeroSection: React.FC = () => {
       </Container>
     </Box>
   );
-};
+});

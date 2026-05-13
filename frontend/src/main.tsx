@@ -10,12 +10,8 @@ import { theme } from './theme'
 import { AuthProvider } from './providers/AuthProvider';
 import { SocketProvider } from './providers/SocketProvider';
 
-// Import design system and global styles
-import './styles/design-system.css';
-import './styles/globals.css';
-import './styles/accessibility.css';
-import './styles/touch-targets.css';
-import './styles/navbar-fixes.css';
+// Import consolidated styles
+import './styles/index.css';
 
 // React Query client configuration
 const queryClient = new QueryClient({

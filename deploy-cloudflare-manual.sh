@@ -58,14 +58,14 @@ if [ "$DEPLOY_FRONTEND" = "true" ]; then
     
     # Run tests
     print_status "Running frontend tests..."
-    npm test -- --watchAll=false --passWithNoTests || print_warning "Frontend tests had issues"
+    npm test -- --run --passWithNoTests || print_warning "Frontend tests had issues"
     
     # Build
     print_status "Building frontend..."
     if [ "$ENVIRONMENT" = "production" ]; then
         VITE_API_URL="https://api.kolabolab.com" VITE_APP_ENV="production" npm run build
     elif [ "$ENVIRONMENT" = "dev" ]; then
-        VITE_API_URL="https://kolabolab-api-dev.beryour.workers.dev" VITE_APP_ENV="development" npm run build
+        VITE_API_URL="https://kolabolab-api-dev.beryour.workers.dev" VITE_FALLBACK_MODE="true" VITE_APP_ENV="development" npm run build
     else
         VITE_API_URL="https://staging-api.kolabolab.com" VITE_APP_ENV="staging" npm run build
     fi
@@ -75,7 +75,7 @@ if [ "$DEPLOY_FRONTEND" = "true" ]; then
     if [ "$ENVIRONMENT" = "production" ]; then
         wrangler pages deploy dist --project-name kolabolab --env production || print_warning "Frontend deployment had issues"
     elif [ "$ENVIRONMENT" = "dev" ]; then
-        wrangler pages deploy dist --project-name kolabolab --env preview --compatibility-date 2024-09-23 || print_warning "Frontend deployment had issues"
+        wrangler pages deploy dist --project-name kolabolab-dev || print_warning "Frontend deployment had issues"
     else
         wrangler pages deploy dist --project-name kolabolab --env preview || print_warning "Frontend deployment had issues"
     fi

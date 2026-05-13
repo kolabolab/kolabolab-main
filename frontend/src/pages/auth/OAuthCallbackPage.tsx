@@ -32,26 +32,12 @@ const OAuthCallbackPage: React.FC = () => {
           // Decode and validate the token
           const userData = JSON.parse(atob(token));
           
-          // SECURITY: Validate user is in registered list
-          const registeredUsers = [
-            'your-email@gmail.com',
-            'admin@kolabolab.com'
-          ];
-          
-          if (!registeredUsers.includes(userData.email)) {
-            console.error('SECURITY BREACH: Unregistered user attempted login:', userData.email);
-            toast({
-              title: 'Access Denied',
-              description: `Email ${userData.email} is not registered. Please register first.`,
-              status: 'error',
-              duration: 5000,
-              isClosable: true,
-            });
-            navigate('/register?error=not_registered');
-            return;
+          // Basic validation of user data structure
+          if (!userData.email || !userData.id) {
+            throw new Error('Invalid user data received from OAuth provider');
           }
 
-          // Store tokens only for registered users
+          // Store tokens for authenticated user
           localStorage.setItem('accessToken', token);
           localStorage.setItem('refreshToken', refreshToken);
 
