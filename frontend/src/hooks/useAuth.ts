@@ -9,6 +9,9 @@ export interface User {
   lastName: string
   roles: string[]
   avatar?: string
+  bio?: string
+  company?: string
+  location?: string
   isEmailVerified: boolean
 }
 

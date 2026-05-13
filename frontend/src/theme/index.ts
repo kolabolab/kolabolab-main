@@ -3,12 +3,36 @@ import { mode } from '@chakra-ui/theme-tools';
 
 const colors = {
   brand: {
+    50: '#E8EBF0',
+    100: '#C5CCD9',
+    200: '#9FADBF',
+    300: '#7A8EA6',
+    400: '#5E7793',
+    500: '#1B2A4A', // Primary Navy - matches brand logo
+    600: '#162240',
+    700: '#111A33',
+    800: '#0C1226',
+    900: '#070B19',
+  },
+  accent: {
+    50: '#E0F7FF',
+    100: '#B3ECFF',
+    200: '#80E0FF',
+    300: '#4DD4FF',
+    400: '#26CAFF',
+    500: '#00BFFF', // Cyan accent
+    600: '#00A3DB',
+    700: '#0087B8',
+    800: '#006B94',
+    900: '#004F70',
+  },
+  success: {
     50: '#ECFDF5',
     100: '#D1FAE5',
     200: '#A7F3D0',
     300: '#6EE7B7',
     400: '#34D399',
-    500: '#10B981', // Primary Green - matches design system
+    500: '#10B981', // Green for success semantics only
     600: '#059669',
     700: '#047857',
     800: '#065F46',
@@ -59,15 +83,23 @@ const colors = {
     },
     surface: {
       light: 'rgba(255, 255, 255, 0.8)',
-      dark: 'rgba(18, 18, 19, 0.8)',
+      dark: 'rgba(17, 26, 51, 0.8)',
     },
     elevated: {
       light: 'rgba(255, 255, 255, 0.95)',
-      dark: 'rgba(26, 26, 28, 0.95)',
+      dark: 'rgba(22, 34, 64, 0.95)',
     },
     glass: {
       light: 'rgba(255, 255, 255, 0.7)',
-      dark: 'rgba(18, 18, 19, 0.7)',
+      dark: 'rgba(17, 26, 51, 0.7)',
+    },
+    raised: {
+      light: '#FFFFFF',
+      dark: '#162240',
+    },
+    overlay: {
+      light: '#F8FAFF',
+      dark: '#111A33',
     },
   },
   text: {
@@ -82,6 +114,20 @@ const colors = {
     tertiary: {
       light: 'rgba(0, 0, 0, 0.38)',
       dark: 'rgba(255, 255, 255, 0.38)',
+    },
+  },
+  interactive: {
+    accent: {
+      light: '#00BFFF',
+      dark: '#4DD4FF',
+    },
+    hover: {
+      light: 'rgba(27, 42, 74, 0.08)',
+      dark: 'rgba(0, 191, 255, 0.12)',
+    },
+    active: {
+      light: 'rgba(27, 42, 74, 0.12)',
+      dark: 'rgba(0, 191, 255, 0.2)',
     },
   },
 };
@@ -118,7 +164,7 @@ const components = {
         transform: 'translateY(1px) scale(0.98)',
       },
       _focusVisible: {
-        outline: '3px solid rgba(24, 144, 255, 0.5)',
+        outline: '3px solid rgba(0, 191, 255, 0.5)',
         outlineOffset: '2px',
       },
     },
@@ -129,7 +175,19 @@ const components = {
         boxShadow: mode(shadows.md, shadows['md-dark'])(props),
         _hover: {
           bg: `${props.colorScheme}.600`,
-          boxShadow: mode(shadows.lg, shadows['lg-dark'])(props),
+          boxShadow: props.colorScheme === 'brand'
+            ? '0 8px 25px rgba(0, 191, 255, 0.3)'
+            : mode(shadows.lg, shadows['lg-dark'])(props),
+        },
+      }),
+      asymmetric: () => ({
+        bgGradient: 'linear(to-r, brand.500, accent.500)',
+        color: 'white',
+        boxShadow: '0 4px 20px rgba(27, 42, 74, 0.25)',
+        _hover: {
+          bgGradient: 'linear(to-r, brand.600, accent.400)',
+          boxShadow: '0 8px 25px rgba(0, 191, 255, 0.3)',
+          transform: 'translateY(-3px) scale(1.02)',
         },
       }),
       secondary: () => ({
@@ -155,18 +213,18 @@ const components = {
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
         border: '1px solid',
-        borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(255, 255, 255, 0.06)')(props),
+        borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(0, 191, 255, 0.06)')(props),
         color: mode('text.primary.light', 'text.primary.dark')(props),
         boxShadow: mode(shadows.sm, shadows['sm-dark'])(props),
         _hover: {
-          bg: mode('rgba(255, 255, 255, 0.9)', 'rgba(18, 18, 19, 0.9)')(props),
+          bg: mode('rgba(255, 255, 255, 0.9)', 'rgba(17, 26, 51, 0.9)')(props),
         },
       }),
       ghost: (props: any) => ({
         bg: 'transparent',
         color: mode('text.secondary.light', 'text.secondary.dark')(props),
         _hover: {
-          bg: mode('rgba(24, 144, 255, 0.08)', 'rgba(24, 144, 255, 0.12)')(props),
+          bg: mode('rgba(27, 42, 74, 0.08)', 'rgba(0, 191, 255, 0.12)')(props),
         },
       }),
       outline: (props: any) => ({
@@ -198,8 +256,8 @@ const components = {
         lineHeight: 1,
       },
       md: {
-        h: '44px',
-        minH: '44px',
+        h: { base: '48px', md: '44px' },
+        minH: { base: '48px', md: '44px' },
         px: 6,
         py: 0,
         fontSize: 'sm',
@@ -223,6 +281,30 @@ const components = {
       },
     },
   },
+  Menu: {
+    baseStyle: {
+      list: {
+        zIndex: 'popover',
+        position: 'absolute',
+        minW: '220px',
+        py: 2,
+        borderRadius: 'xl',
+        border: '2px solid',
+        borderColor: 'accent.200',
+        bg: 'white',
+        boxShadow: 'xl',
+      },
+      item: {
+        borderRadius: 'md',
+        _hover: {
+          bg: 'brand.50',
+        },
+        _focus: {
+          bg: 'brand.50',
+        },
+      },
+    },
+  },
   Card: {
     baseStyle: (props: any) => ({
       container: {
@@ -231,7 +313,7 @@ const components = {
         WebkitBackdropFilter: 'blur(12px)',
         borderRadius: '24px',
         border: '1px solid',
-        borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(255, 255, 255, 0.06)')(props),
+        borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(0, 191, 255, 0.06)')(props),
         boxShadow: mode(shadows.md, shadows['md-dark'])(props),
         overflow: 'hidden',
         transition: 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
@@ -289,7 +371,7 @@ const components = {
         minH: '44px',
         transition: 'all 0.3s ease',
         _focusVisible: {
-          outline: '3px solid rgba(24, 144, 255, 0.5)',
+          outline: '3px solid rgba(0, 191, 255, 0.5)',
           outlineOffset: '2px',
         },
       },
@@ -301,7 +383,7 @@ const components = {
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
           border: '1px solid',
-          borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(255, 255, 255, 0.06)')(props),
+          borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(0, 191, 255, 0.06)')(props),
         },
       }),
     },
@@ -310,6 +392,25 @@ const components = {
     baseStyle: {
       maxW: '1200px',
       px: { base: 4, md: 6, lg: 8 },
+    },
+    sizes: {
+      sm: { maxW: '640px' },
+      md: { maxW: '768px' },
+      lg: { maxW: '1024px' },
+      xl: { maxW: '1280px' },
+      '2xl': { maxW: '1536px' },
+      '3xl': { maxW: '1920px' },
+      '4xl': { maxW: '2560px' },
+      full: { maxW: '100%' },
+      responsive: { 
+        maxW: { 
+          base: 'container.sm', 
+          md: 'container.md', 
+          lg: 'container.lg', 
+          xl: 'container.xl', 
+          '2xl': '90%' 
+        } 
+      },
     },
   },
 };
@@ -367,13 +468,86 @@ const config: ThemeConfig = {
   useSystemColorMode: true,
 };
 
+const semanticTokens = {
+  colors: {
+    // Base backgrounds
+    'bg-base': {
+      default: '#F8FAFF',
+      _dark: '#0A0A0B',
+    },
+    'bg-surface': {
+      default: 'rgba(255, 255, 255, 0.8)',
+      _dark: 'rgba(17, 26, 51, 0.8)',
+    },
+    'bg-elevated': {
+      default: 'rgba(255, 255, 255, 0.95)',
+      _dark: 'rgba(22, 34, 64, 0.95)',
+    },
+    'bg-glass': {
+      default: 'rgba(255, 255, 255, 0.7)',
+      _dark: 'rgba(17, 26, 51, 0.7)',
+    },
+    // Dark mode surface variants using lighter navy shades
+    'bg-surface-raised': {
+      default: 'white',
+      _dark: '#162240',
+    },
+    'bg-surface-overlay': {
+      default: 'gray.50',
+      _dark: '#111A33',
+    },
+    // Text colors
+    'text-primary': {
+      default: 'rgba(0, 0, 0, 0.92)',
+      _dark: 'rgba(255, 255, 255, 0.92)',
+    },
+    'text-secondary': {
+      default: 'rgba(0, 0, 0, 0.64)',
+      _dark: 'rgba(255, 255, 255, 0.64)',
+    },
+    'text-tertiary': {
+      default: 'rgba(0, 0, 0, 0.38)',
+      _dark: 'rgba(255, 255, 255, 0.38)',
+    },
+    // Interactive elements - brighter cyan in dark mode
+    'interactive-accent': {
+      default: 'accent.500',
+      _dark: 'accent.300',
+    },
+    'interactive-hover': {
+      default: 'rgba(27, 42, 74, 0.08)',
+      _dark: 'rgba(0, 191, 255, 0.12)',
+    },
+    // Border colors - cyan-tinted in dark mode
+    'border-subtle': {
+      default: 'rgba(0, 0, 0, 0.06)',
+      _dark: 'rgba(0, 191, 255, 0.06)',
+    },
+    'border-default': {
+      default: 'rgba(0, 0, 0, 0.12)',
+      _dark: 'rgba(0, 191, 255, 0.12)',
+    },
+  },
+};
+
 export const theme = extendTheme({
   config,
   colors,
   fonts,
   shadows,
+  semanticTokens,
   components,
   styles,
+  breakpoints: {
+    base: '0px',
+    sm: '480px',
+    md: '768px',
+    lg: '992px',
+    xl: '1280px',
+    '2xl': '1536px',
+    '3xl': '1920px',
+    '4xl': '2560px',
+  },
   space: {
     0: '0',
     1: '4px',
@@ -396,6 +570,21 @@ export const theme = extendTheme({
     xl: '24px',
     '2xl': '32px',
     full: '9999px',
+  },
+  zIndices: {
+    hide: -1,
+    auto: 'auto',
+    base: 0,
+    docked: 10,
+    dropdown: 1000,
+    sticky: 1100,
+    banner: 1200,
+    overlay: 1300,
+    modal: 1400,
+    popover: 1500,
+    skipLink: 1600,
+    toast: 1700,
+    tooltip: 1800,
   },
 });
 

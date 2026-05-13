@@ -1,6 +1,4 @@
-import React, { createContext, useContext, useEffect, ReactNode } from 'react'
-import { useAuth } from '../hooks/useAuth'
-import { apiClient } from '../services/apiClient'
+import React, { createContext, useContext, ReactNode } from 'react'
 
 interface AuthContextType {
   // Context can be used for additional auth-related functions
@@ -14,39 +12,9 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { tokens, clearAuth } = useAuth()
-
-  useEffect(() => {
-    // Set up axios interceptors for authentication
-    const requestInterceptor = apiClient.interceptors.request.use(
-      (config) => {
-        if (tokens?.accessToken) {
-          config.headers.Authorization = `Bearer ${tokens.accessToken}`
-        }
-        return config
-      },
-      (error) => Promise.reject(error)
-    )
-
-    const responseInterceptor = apiClient.interceptors.response.use(
-      (response) => response,
-      async (error) => {
-        if (error.response?.status === 401) {
-          // Token expired or invalid
-          clearAuth()
-          window.location.href = '/login'
-        }
-        return Promise.reject(error)
-      }
-    )
-
-    // Cleanup interceptors on unmount
-    return () => {
-      apiClient.interceptors.request.eject(requestInterceptor)
-      apiClient.interceptors.response.eject(responseInterceptor)
-    }
-  }, [tokens, clearAuth])
-
+  // Interceptors are now handled in apiClient.ts directly
+  // No need to duplicate them here
+  
   return (
     <AuthContext.Provider value={{}}>
       {children}

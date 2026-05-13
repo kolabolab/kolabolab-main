@@ -63,7 +63,7 @@ const Feature: React.FC<FeatureProps> = ({ title, text, icon, variant = 'primary
     switch (variant) {
       case 'primary': return 'brand.500';
       case 'secondary': return 'gray.500';
-      case 'success': return 'blue.500';
+      case 'success': return 'success.500';
       default: return 'brand.500';
     }
   };
@@ -174,7 +174,7 @@ const HomePage: React.FC = () => {
             w="100px"
             h="100px"
             borderRadius="full"
-            bg="linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)"
+            bg="linear-gradient(135deg, rgba(27, 42, 74, 0.1) 0%, rgba(27, 42, 74, 0.05) 100%)"
             className="float-animation"
             style={{ animationDelay: '0s' }}
           />
@@ -201,7 +201,7 @@ const HomePage: React.FC = () => {
             style={{ animationDelay: '4s' }}
           />
 
-          <Container maxW="6xl" py={20}>
+          <Container maxW={{ base: "6xl", "2xl": "85%", "3xl": "80%" }} py={20}>
             <VStack
               ref={heroRef}
               spacing={10}
@@ -253,18 +253,20 @@ const HomePage: React.FC = () => {
 
               <HStack
                 spacing={6}
-                wrap="wrap"
                 justify="center"
+                align="center"
                 pt={4}
+                w="full"
+                flexWrap="wrap"
               >
                 <Button
                   as={RouterLink}
                   to="/register"
                   variant="solid"
                   colorScheme="brand"
-                  size="xl"
+                  size="lg"
                   rightIcon={<FiArrowRight />}
-                  
+                  className="hero-button"
                 >
                   Launch Your Startup
                 </Button>
@@ -273,7 +275,8 @@ const HomePage: React.FC = () => {
                   to="/startups"
                   variant="solid"
                   colorScheme="blue"
-                  size="xl"
+                  size="lg"
+                  className="hero-button"
                 >
                   Discover Opportunities
                 </Button>
@@ -298,7 +301,7 @@ const HomePage: React.FC = () => {
 
         {/* Features Section */}
         <Box py={24} className="primary-context">
-          <Container maxW="6xl">
+          <Container maxW={{ base: "6xl", "2xl": "85%", "3xl": "80%" }}>
             <VStack spacing={6} mb={16} textAlign="center">
               <Badge
                 px={4}
@@ -348,7 +351,7 @@ const HomePage: React.FC = () => {
 
         {/* Innovation Section */}
         <Box py={24} className="success-context">
-          <Container maxW="6xl">
+          <Container maxW={{ base: "6xl", "2xl": "85%", "3xl": "80%" }}>
             <Card variant="glass" size="lg" className="card-hover">
               <CardBody p={12}>
                 <Flex
@@ -362,7 +365,7 @@ const HomePage: React.FC = () => {
                       py={2}
                       borderRadius="full"
                       variant="subtle"
-                      colorScheme="green"
+                      colorScheme="success"
                       fontSize="sm"
                     >
                       Professional Technology
@@ -436,7 +439,7 @@ const HomePage: React.FC = () => {
 
         {/* CTA Section */}
         <Box py={24}>
-          <Container maxW="4xl">
+          <Container maxW={{ base: "4xl", "2xl": "70%", "3xl": "60%" }}>
             <Card variant="glass" className="card-hover">
               <CardBody p={12}>
                 <VStack spacing={8} textAlign="center">

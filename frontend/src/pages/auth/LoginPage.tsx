@@ -24,6 +24,8 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../../hooks/useAuth'
+import { authAPI } from '../../services/apiClient'
 import { FiMail, FiLock, FiEye, FiEyeOff, FiGithub } from 'react-icons/fi'
 import { FaGoogle, FaLinkedin } from 'react-icons/fa'
 import { Helmet } from 'react-helmet-async'
@@ -47,8 +49,16 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const toast = useToast();
+  const { setAuth, isAuthenticated } = useAuth();
 
   const from = (location.state as any)?.from?.pathname || '/dashboard';
+
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  }, [isAuthenticated, navigate, from]);
 
   const validateForm = (): boolean => {
     const newErrors: LoginErrors = {};
@@ -77,10 +87,36 @@ const LoginPage: React.FC = () => {
     setErrors({});
 
     try {
-      // TODO: Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+
+      // Make actual API call to login
+      const response = await authAPI.login(formData.email, formData.password);
       
-      // Mock successful login
+      // Extract user and tokens from response
+      const { user, accessToken, refreshToken } = response;
+      
+      // Create user profile from API response
+      const authenticatedUser = {
+        id: user.id,
+        email: user.email,
+        username: user.username || user.email.split('@')[0], // Fallback to email prefix
+        firstName: user.firstName,
+        lastName: user.lastName,
+        roles: user.roles || ['entrepreneur'],
+        avatar: user.avatar,
+        bio: user.bio,
+        company: user.company,
+        location: user.location,
+        isEmailVerified: true, // If login succeeds, email is verified
+      };
+
+      const tokens = {
+        accessToken,
+        refreshToken,
+      };
+
+      // Set authentication state
+      setAuth(authenticatedUser, tokens);
+      
       toast({
         title: 'Welcome back!',
         description: 'You have successfully logged in.',
@@ -89,12 +125,22 @@ const LoginPage: React.FC = () => {
         isClosable: true,
       });
       
+      // Navigate to dashboard or intended page
       navigate(from, { replace: true });
-    } catch (error) {
-      setErrors({ general: 'Invalid email or password. Please try again.' });
+    } catch (error: any) {
+      let errorMessage = 'Invalid email or password. Please try again.';
+      
+      // Handle specific API errors
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      setErrors({ general: errorMessage });
       toast({
         title: 'Login failed',
-        description: 'Please check your credentials and try again.',
+        description: errorMessage,
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -107,23 +153,25 @@ const LoginPage: React.FC = () => {
   const handleOAuthLogin = async (provider: 'google' | 'linkedin' | 'github') => {
     setIsLoading(true);
     try {
-      // TODO: Replace with actual OAuth implementation
-      toast({
-        title: `${provider.charAt(0).toUpperCase() + provider.slice(1)} Login`,
-        description: 'OAuth integration coming soon!',
-        status: 'info',
-        duration: 3000,
-        isClosable: true,
-      });
+      // Get API base URL from environment or detect from hostname
+      const apiBaseUrl = import.meta.env.VITE_API_URL || (
+        window.location.hostname.includes('kolabolab.com') 
+          ? 'https://kolabolab-api.beryour.workers.dev'
+          : 'https://kolabolab-api-dev.beryour.workers.dev'
+      );
+      const oauthUrl = `${apiBaseUrl}/auth/${provider}`;
+      
+      // Redirect to backend OAuth endpoint
+      window.location.href = oauthUrl;
     } catch (error) {
+      console.error(`${provider} OAuth error:`, error);
       toast({
-        title: 'OAuth Error',
-        description: 'Something went wrong with OAuth login.',
+        title: 'Authentication Error',
+        description: `Failed to initiate ${provider} login. Please try again.`,
         status: 'error',
         duration: 5000,
         isClosable: true,
       });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -145,7 +193,7 @@ const LoginPage: React.FC = () => {
         />
       </Helmet>
 
-      <Box className="primary-context" minH="100vh" display="flex" alignItems="center" py={12}>
+      <Box className="primary-context alignment-fix" minH="100vh" py={12}>
         <Container maxW="md">
           <VStack spacing={8}>
             {/* Header */}

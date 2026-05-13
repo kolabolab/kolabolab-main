@@ -1,13 +1,28 @@
-import { Component, ErrorInfo, ReactNode } from 'react'
-import { Box, Button, Heading, Text, VStack, Alert, AlertIcon } from '@chakra-ui/react'
+import React, { Component, ErrorInfo, ReactNode } from 'react'
+import {
+  Box,
+  Button,
+  Heading,
+  Text,
+  VStack,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+  Code,
+  Collapse,
+  useDisclosure
+} from '@chakra-ui/react'
 
 interface Props {
   children: ReactNode
+  fallback?: ReactNode
 }
 
 interface State {
   hasError: boolean
   error?: Error
+  errorInfo?: ErrorInfo
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -21,70 +36,103 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo)
+    this.setState({
+      error,
+      errorInfo
+    })
+    
+    // Log error to monitoring service
+    console.error('ErrorBoundary caught an error:', error, errorInfo)
+  }
+
+  handleReset = () => {
+    this.setState({ hasError: false, error: undefined, errorInfo: undefined })
   }
 
   render() {
     if (this.state.hasError) {
-      return (
-        <Box 
-          minH="100vh" 
-          display="flex" 
-          alignItems="center" 
-          justifyContent="center"
-          p={8}
-          bg="gray.50"
-        >
-          <VStack spacing={6} maxW="md" textAlign="center">
-            <Alert status="error" borderRadius="lg">
-              <AlertIcon />
-              Something went wrong
-            </Alert>
-            
-            <Heading size="lg" color="gray.800">
-              Oops! Something went wrong
-            </Heading>
-            
-            <Text color="gray.600" fontSize="md">
-              We're sorry for the inconvenience. Please try refreshing the page or contact support if the problem persists.
-            </Text>
-            
-            {import.meta.env.DEV && this.state.error && (
-              <Box 
-                p={4} 
-                bg="red.50" 
-                borderRadius="md" 
-                border="1px solid" 
-                borderColor="red.200"
-                fontSize="sm"
-                fontFamily="mono"
-                color="red.800"
-                textAlign="left"
-                overflowX="auto"
-                maxW="100%"
-              >
-                <Text fontWeight="bold" mb={2}>Error Details:</Text>
-                <Text>{this.state.error.message}</Text>
-                {this.state.error.stack && (
-                  <Text mt={2} fontSize="xs" opacity={0.8}>
-                    {this.state.error.stack}
-                  </Text>
-                )}
-              </Box>
-            )}
-            
-            <Button 
-              colorScheme="brand" 
-              onClick={() => window.location.reload()}
-              size="lg"
-            >
-              Refresh Page
-            </Button>
-          </VStack>
-        </Box>
-      )
+      if (this.props.fallback) {
+        return this.props.fallback
+      }
+
+      return <ErrorFallback error={this.state.error} onReset={this.handleReset} />
     }
 
     return this.props.children
   }
 }
+
+interface ErrorFallbackProps {
+  error?: Error
+  onReset: () => void
+}
+
+const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onReset }) => {
+  const { isOpen, onToggle } = useDisclosure()
+
+  return (
+    <Box
+      minH="400px"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      p={8}
+    >
+      <VStack spacing={6} maxW="md" textAlign="center">
+        <Alert status="error" borderRadius="lg">
+          <AlertIcon />
+          <Box>
+            <AlertTitle>Something went wrong</AlertTitle>
+            <AlertDescription>
+              {error?.message || 'An unexpected error occurred. Please try refreshing the page or contact support if the problem persists.'}
+            </AlertDescription>
+          </Box>
+        </Alert>
+
+        <VStack spacing={4}>
+          <Button colorScheme="brand" onClick={onReset}>
+            Try Again
+          </Button>
+          
+          <Button variant="ghost" size="sm" onClick={onToggle}>
+            {isOpen ? 'Hide' : 'Show'} Error Details
+          </Button>
+        </VStack>
+
+        <Collapse in={isOpen}>
+          <Box
+            p={4}
+            bg="gray.50"
+            borderRadius="md"
+            border="1px solid"
+            borderColor="gray.200"
+            textAlign="left"
+            maxW="full"
+            overflow="auto"
+          >
+            <Heading size="sm" mb={2}>Error Details:</Heading>
+            {error && (
+              <VStack spacing={2} align="stretch">
+                <Text fontSize="sm" fontWeight="semibold">Message:</Text>
+                <Code p={2} borderRadius="md" fontSize="xs">
+                  {error.message}
+                </Code>
+                
+                {error.stack && (
+                  <>
+                    <Text fontSize="sm" fontWeight="semibold" mt={2}>Stack Trace:</Text>
+                    <Code p={2} borderRadius="md" fontSize="xs" whiteSpace="pre-wrap">
+                      {error.stack}
+                    </Code>
+                  </>
+                )}
+              </VStack>
+            )}
+          </Box>
+        </Collapse>
+      </VStack>
+    </Box>
+  )
+}
+
+export default ErrorBoundary

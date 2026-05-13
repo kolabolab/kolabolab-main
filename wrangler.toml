@@ -1,13 +1,29 @@
 # Cloudflare Workers configuration for KolaboLab
 name = "kolabolab-api"
-main = "backend/dist/main.js"
-compatibility_date = "2024-01-01"
+main = "./backend/workers-native.ts"
+compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+# Account ID (using Beryour@gmail.com's Account)
+account_id = "1bcdd5533e68547452b2eefda2366a77"
+
+# Observability settings for better debugging
+[observability]
+[observability.logs]
+enabled = false
+invocation_logs = true
 
 [env.production]
 name = "kolabolab-api"
 routes = [
   { pattern = "api.kolabolab.com/*", zone_name = "kolabolab.com" }
+]
+
+[env.dev]
+name = "kolabolab-api-dev"
+routes = [
+  { pattern = "dev-api.kolabolab.com/*", zone_name = "kolabolab.com" }
 ]
 
 [env.staging]
@@ -20,26 +36,39 @@ routes = [
 [[env.production.d1_databases]]
 binding = "DB"
 database_name = "kolabolab-production"
-database_id = "your-d1-database-id"
+database_id = "108293bb-d093-4147-84b2-41aecf35179a"
+
+[[env.dev.d1_databases]]
+binding = "DB"
+database_name = "kolabolab-dev"
+database_id = "26627b7c-d2f0-49f7-a96b-40b7392136ae"
 
 [[env.staging.d1_databases]]
 binding = "DB"
 database_name = "kolabolab-staging"
-database_id = "your-d1-staging-database-id"
+database_id = "42a0ff21-2f4a-4bba-8935-2a8edf8af62b"
 
 # KV storage for sessions and cache
 [[env.production.kv_namespaces]]
 binding = "CACHE"
-id = "your-kv-namespace-id"
+id = "2999eb454f6f4b729c706b1c056735a3"
+
+[[env.dev.kv_namespaces]]
+binding = "CACHE"
+id = "2999eb454f6f4b729c706b1c056735a3"
 
 [[env.staging.kv_namespaces]]
 binding = "CACHE"
-id = "your-kv-staging-namespace-id"
+id = "2999eb454f6f4b729c706b1c056735a3"
 
 # R2 bucket for file uploads
 [[env.production.r2_buckets]]
 binding = "UPLOADS"
 bucket_name = "kolabolab-uploads"
+
+[[env.dev.r2_buckets]]
+binding = "UPLOADS"
+bucket_name = "kolabolab-uploads-dev"
 
 [[env.staging.r2_buckets]]
 binding = "UPLOADS"
@@ -49,27 +78,40 @@ bucket_name = "kolabolab-uploads-staging"
 [env.production.vars]
 NODE_ENV = "production"
 FRONTEND_URL = "https://kolabolab.com"
+GOOGLE_CALLBACK_URL = "https://kolabolab-api.beryour.workers.dev/auth/google/callback"
+LINKEDIN_CALLBACK_URL = "https://kolabolab-api.beryour.workers.dev/auth/linkedin/callback"
+GITHUB_CALLBACK_URL = "https://kolabolab-api.beryour.workers.dev/auth/github/callback"
+
+[env.dev.vars]
+NODE_ENV = "development"
+FRONTEND_URL = "https://0fc93d16.kolabolab-dev.pages.dev"
+GOOGLE_CALLBACK_URL = "https://kolabolab-api-dev.beryour.workers.dev/auth/google/callback"
+LINKEDIN_CALLBACK_URL = "https://kolabolab-api-dev.beryour.workers.dev/auth/linkedin/callback"
+GITHUB_CALLBACK_URL = "https://kolabolab-api-dev.beryour.workers.dev/auth/github/callback"
 
 [env.staging.vars]
 NODE_ENV = "staging"
-FRONTEND_URL = "https://staging.kolabolab.com"
+FRONTEND_URL = "https://kolabolab-dev.pages.dev"
+GOOGLE_CALLBACK_URL = "https://kolabolab-api-staging.beryour.workers.dev/auth/google/callback"
 
 # Secrets (set via wrangler secret put)
 # wrangler secret put JWT_SECRET
 # wrangler secret put JWT_REFRESH_SECRET
 # wrangler secret put DB_PASSWORD
-# wrangler secret put GOOGLE_CLIENT_SECRET
+# wrangler secret put GOOGLE_CLIENT_SECRET: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
+# wrangler secret put GOOGLE_CLIENT_ID:361419093704-i6mig7fi7jtkhm525990u7llm02tbald.apps.googleusercontent.com
 # wrangler secret put LINKEDIN_CLIENT_SECRET
 # wrangler secret put GITHUB_CLIENT_SECRET
 # wrangler secret put SMTP_PASSWORD
 # wrangler secret put CLOUDINARY_API_SECRET
+# wrangler secret put FRONTEND_URL:https://kolabolab.com
 
-# Worker limits
-[limits]
-cpu_ms = 50
+# Worker limits - removed for free plan compatibility
+# [limits]
+# cpu_ms = 50
 
 # Build configuration
-[build]
-command = "npm run build"
-cwd = "backend"
-
+# Build configuration disabled - using pre-built files
+# [build]
+# command = "npm ci"
+# cwd = "backend"

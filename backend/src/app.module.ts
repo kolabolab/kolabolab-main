@@ -1,104 +1,60 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ThrottlerModule } from '@nestjs/throttler';
-import { ScheduleModule } from '@nestjs/schedule';
-import { EventEmitterModule } from '@nestjs/event-emitter';
-
-// Modules
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { StartupsModule } from './startups/startups.module';
 import { CollaborationsModule } from './collaborations/collaborations.module';
 import { InvestmentsModule } from './investments/investments.module';
-import { SearchModule } from './search/search.module';
-import { NotificationsModule } from './notifications/notifications.module';
-import { ChatModule } from './chat/chat.module';
-
-// Configuration
+import { AppController } from './app.controller';
 import { DatabaseConfig } from './config/database.config';
 import { JwtConfig } from './config/jwt.config';
-import { RedisConfig } from './config/redis.config';
-import { ElasticsearchConfig } from './config/elasticsearch.config';
-
-// Controllers
-import { AppController } from './app.controller';
+import { User } from './users/entities/user.entity';
+import { Startup } from './startups/entities/startup.entity';
+import { Collaboration } from './collaborations/entities/collaboration.entity';
+import { Investment } from './investments/entities/investment.entity';
 
 @Module({
   imports: [
-    // Configuration
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.local', '.env'],
-      load: [DatabaseConfig, JwtConfig, RedisConfig, ElasticsearchConfig],
+      envFilePath: '.env',
+      load: [DatabaseConfig, JwtConfig],
     }),
-
-    // Database
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService): any => {
-        const baseConfig = {
-          type: 'postgres' as const,
-          entities: [__dirname + '/**/*.entity{.ts,.js}'],
-          synchronize: configService.get('database.synchronize'),
-          logging: configService.get('database.logging'),
-          ssl: configService.get('database.ssl'),
-          retryAttempts: 3,
-          retryDelay: 3000,
-        };
-
-        // Support connection string (for cloud providers like Neon)
-        const databaseUrl = configService.get('database.url');
-        if (databaseUrl) {
-          return {
-            ...baseConfig,
-            url: databaseUrl as string,
-          };
-        }
-
-        // Fall back to individual parameters
-        return {
-          ...baseConfig,
-          host: configService.get<string>('database.host'),
-          port: configService.get<number>('database.port'),
-          username: configService.get<string>('database.username'),
-          password: configService.get<string>('database.password'),
-          database: configService.get<string>('database.name'),
-        };
-      },
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get('DB_HOST', 'localhost'),
+        port: configService.get('DB_PORT', 5432),
+        username: configService.get('DB_USERNAME', 'kolabolab'),
+        password: configService.get('DB_PASSWORD', 'kolabolab_password'),
+        database: configService.get('DB_NAME', 'kolabolab'),
+        entities: [User, Startup, Collaboration, Investment],
+        synchronize: configService.get('NODE_ENV') === 'development',
+        logging: configService.get('NODE_ENV') === 'development',
+        ssl: configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false,
+      }),
       inject: [ConfigService],
     }),
-
-    // Rate limiting
-    ThrottlerModule.forRoot([{
-      ttl: 60000, // 1 minute
-      limit: 100, // 100 requests per minute
-    }]),
-
-    // Scheduling
-    ScheduleModule.forRoot(),
-
-    // Event Emitter
-    EventEmitterModule.forRoot({
-      wildcard: false,
-      delimiter: '.',
-      newListener: false,
-      removeListener: false,
-      maxListeners: 20,
-      verboseMemoryLeak: false,
-      ignoreErrors: false,
+    PassportModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET', 'fallback-secret'),
+        signOptions: { expiresIn: configService.get('JWT_EXPIRES_IN', '7d') },
+      }),
+      inject: [ConfigService],
     }),
-
-    // Feature modules
     AuthModule,
     UsersModule,
     StartupsModule,
     CollaborationsModule,
     InvestmentsModule,
-    SearchModule,
-    NotificationsModule,
-    ChatModule,
   ],
   controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}

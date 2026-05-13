@@ -6,7 +6,7 @@ interface LoadingSpinnerProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 }
 
-export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ 
+export const LoadingSpinner: React.FC<LoadingSpinnerProps> = React.memo(({ 
   message = 'Loading...', 
   size = 'xl' 
 }) => {
@@ -37,4 +37,4 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       </VStack>
     </Flex>
   )
-}
+})
