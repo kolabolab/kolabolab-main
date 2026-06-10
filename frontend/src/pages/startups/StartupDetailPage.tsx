@@ -19,16 +19,7 @@ import {
   Skeleton,
   SkeletonText,
   useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
-  Textarea,
-  FormControl,
-  FormLabel,
   Tab,
   Tabs,
   TabList,
@@ -55,9 +46,15 @@ import {
   FiArrowLeft
 } from 'react-icons/fi'
 import { Helmet } from 'react-helmet-async'
+import { normalizeRole, isRichRole } from '@/utils/roleSerializer'
+import type { RoleEntry } from '@/types/roles'
+import { useAuthStore } from '@/hooks/useAuth'
+import ApplicationFormModal from './components/ApplicationFormModal'
+import UpdateFeed from './components/UpdateFeed'
 
 interface StartupDetail {
   id: string;
+  userId: string;
   name: string;
   tagline: string;
   description: string;
@@ -76,7 +73,7 @@ interface StartupDetail {
   fundingRaised: string;
   fundingProgress: number;
   tags: string[];
-  lookingFor: string[];
+  lookingFor: RoleEntry[];
   featured: boolean;
   socialImpact: string;
   founder: {
@@ -110,6 +107,7 @@ interface StartupDetail {
     description: string;
     skills: string[];
     commitment: string;
+    hasRichDetails: boolean;
   }>;
 }
 
@@ -117,128 +115,94 @@ const StartupDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const toast = useToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isOpen: isApplicationModalOpen, onOpen: onApplicationModalOpen, onClose: onApplicationModalClose } = useDisclosure();
+  const user = useAuthStore((state) => state.user);
   
   const [startup, setStartup] = useState<StartupDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
-  const [applicationMessage, setApplicationMessage] = useState('');
-  const [, setSelectedPosition] = useState<string | null>(null);
+  const [selectedRole, setSelectedRole] = useState<{ title: string; skills: string[] } | null>(null);
 
   useEffect(() => {
     const loadStartupDetails = async () => {
       setLoading(true);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      try {
+        const devHosts = ['kolabolab-api-dev', '0fc93d16', 'localhost', 'kolabolab-dev'];
+        const isDev = devHosts.some(h => window.location.hostname.indexOf(h) !== -1);
+        const apiBaseUrl = isDev
+          ? 'https://kolabolab-api-dev.beryour.workers.dev'
+          : 'https://kolabolab-api.beryour.workers.dev';
+        
+        const response = await fetch(`${apiBaseUrl}/api/startups/${id}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          const s = data.startup;
+          
+          setStartup({
+            id: s.id,
+            userId: s.userId || '',
+            name: s.name,
+            tagline: s.description ? s.description.substring(0, 100) : s.stage + ' stage startup',
+            description: s.description || '',
+            longDescription: s.pitch || s.description || '',
+            stage: s.stage,
+            industry: s.industry || 'Technology',
+            location: s.location || 'Global',
+            website: s.website || '',
+            logo: '',
+            coverImage: '',
+            foundedDate: s.createdAt?.split('T')[0]?.split('-')[0] || '2024',
+            teamSize: s.teamSize || 1,
+            views: 0,
+            followers: 0,
+            fundingGoal: '$' + ((s.fundingAmount || 0) / 100).toLocaleString(),
+            fundingRaised: '$0',
+            fundingProgress: 0,
+            tags: s.tags || [],
+            lookingFor: s.lookingFor || [],
+            featured: false,
+            socialImpact: s.socialImpact || '',
+            founder: {
+              name: s.founder ? `${s.founder.firstName} ${s.founder.lastName}` : 'Founder',
+              role: 'Founder',
+              avatar: s.founder?.avatar || '',
+              bio: '',
+              email: s.founder?.email || '',
+              linkedin: s.founderLinkedin || '',
+              experience: ''
+            },
+            team: [],
+            milestones: [],
+            openPositions: (s.lookingFor || []).map((entry: RoleEntry, i: number) => {
+              const role = normalizeRole(entry);
+              const hasRichDetails = isRichRole(entry);
+              return {
+                id: String(i + 1),
+                title: role.title,
+                type: s.compensationType || 'equity',
+                description: role.description || `Looking for a ${role.title} to join the team`,
+                skills: role.skills || [],
+                commitment: role.commitment ||
+                  (s.compensationType === 'paid' ? 'Paid (Salary)' :
+                   s.compensationType === 'equity_salary' ? 'Equity + Salary' :
+                   s.compensationType === 'volunteer' ? 'Volunteer' :
+                   s.compensationType === 'stipend' ? 'Stipend' :
+                   s.compensationType === 'mixed' ? 'Varies by role' :
+                   'Equity-based'),
+                hasRichDetails,
+              };
+            })
+          });
+        } else {
+          setStartup(null);
+        }
+      } catch (error) {
+        console.error('Failed to load startup:', error);
+        setStartup(null);
+      }
       
-      // Mock data based on ID
-      const mockData: StartupDetail = {
-        id: id || '1',
-        name: id === '1' ? 'EcoTech Solutions' : id === '2' ? 'HealthBridge' : 'EduFlow',
-        tagline: id === '1' ? 'Sustainable technology for a greener future' : 
-                 id === '2' ? 'Connecting rural communities with healthcare' : 
-                 'Personalized learning for every student',
-        description: id === '1' ? 'Revolutionary platform for sustainable technology solutions that reduce carbon footprint while increasing business efficiency.' :
-                     id === '2' ? 'Connecting rural communities with healthcare professionals through telemedicine and mobile health solutions.' :
-                     'Personalized learning platform that adapts to student needs and provides real-time feedback to educators.',
-        longDescription: `We're building the future of ${id === '1' ? 'sustainable technology' : id === '2' ? 'healthcare accessibility' : 'education technology'} by leveraging cutting-edge AI and machine learning to create solutions that not only solve real-world problems but also create positive social impact. Our platform has already helped thousands of users and we're just getting started.
-
-Our mission is to democratize access to ${id === '1' ? 'clean technology' : id === '2' ? 'quality healthcare' : 'personalized education'} while building a sustainable business model that can scale globally. We believe that technology should be a force for good, and we're committed to creating solutions that benefit both people and the planet.`,
-        stage: id === '1' ? 'Growth' : id === '2' ? 'Early Stage' : 'MVP',
-        industry: id === '1' ? 'CleanTech' : id === '2' ? 'HealthTech' : 'EdTech',
-        location: id === '1' ? 'San Francisco, CA' : id === '2' ? 'Austin, TX' : 'Boston, MA',
-        website: `https://${id === '1' ? 'ecotech' : id === '2' ? 'healthbridge' : 'eduflow'}.example.com`,
-        logo: `https://via.placeholder.com/120x120/${id === '1' ? '10B981' : id === '2' ? '3B82F6' : '6B7280'}/FFFFFF?text=${id === '1' ? 'ET' : id === '2' ? 'HB' : 'EF'}`,
-        coverImage: `https://via.placeholder.com/1200x400/${id === '1' ? '10B981' : id === '2' ? '3B82F6' : '6B7280'}/FFFFFF?text=Cover`,
-        foundedDate: '2023',
-        teamSize: id === '1' ? 12 : id === '2' ? 8 : 5,
-        views: id === '1' ? 2340 : id === '2' ? 1580 : 890,
-        followers: id === '1' ? 156 : id === '2' ? 89 : 67,
-        fundingGoal: id === '1' ? '$2M' : id === '2' ? '$1.5M' : '$800K',
-        fundingRaised: id === '1' ? '$1.5M' : id === '2' ? '$450K' : '$240K',
-        fundingProgress: id === '1' ? 75 : id === '2' ? 30 : 30,
-        tags: id === '1' ? ['Sustainability', 'AI', 'IoT', 'CleanTech'] :
-              id === '2' ? ['Healthcare', 'Telemedicine', 'Social Impact', 'Mobile'] :
-              ['Education', 'AI', 'Personalization', 'Analytics'],
-        lookingFor: id === '1' ? ['CTO', 'Marketing Lead', 'Investors'] :
-                    id === '2' ? ['Lead Developer', 'Medical Advisor', 'Investors'] :
-                    ['Frontend Developer', 'UX Designer', 'Education Expert'],
-        featured: id === '1',
-        socialImpact: id === '1' ? 'Reducing carbon emissions by 40% for partner companies' :
-                      id === '2' ? 'Providing healthcare access to 10,000+ rural residents' :
-                      'Improving learning outcomes for 5,000+ students',
-        founder: {
-          name: 'Alex Chen',
-          role: 'CEO & Founder',
-          avatar: 'https://via.placeholder.com/80x80/10B981/FFFFFF?text=AC',
-          bio: 'Former sustainability engineer at Tesla with 8+ years of experience in clean technology. Passionate about building solutions that create positive environmental impact.',
-          email: 'alex@ecotech.example.com',
-          linkedin: 'linkedin.com/in/alexchen',
-          experience: '8+ years in CleanTech'
-        },
-        team: [
-          {
-            id: '1',
-            name: 'Sarah Johnson',
-            role: 'CTO',
-            avatar: 'https://via.placeholder.com/60x60/3B82F6/FFFFFF?text=SJ',
-            bio: 'Full-stack engineer with expertise in AI and machine learning',
-            skills: ['Python', 'React', 'AI/ML', 'DevOps']
-          },
-          {
-            id: '2',
-            name: 'Michael Rodriguez',
-            role: 'Head of Product',
-            avatar: 'https://via.placeholder.com/60x60/6B7280/FFFFFF?text=MR',
-            bio: 'Product manager with 6+ years experience in sustainable technology',
-            skills: ['Product Strategy', 'User Research', 'Analytics', 'Design']
-          }
-        ],
-        milestones: [
-          {
-            id: '1',
-            title: 'Product Launch',
-            description: 'Successfully launched MVP with 100+ early users',
-            date: '2024-01-15',
-            completed: true
-          },
-          {
-            id: '2',
-            title: 'Series A Funding',
-            description: 'Raise $2M Series A to scale operations',
-            date: '2024-06-30',
-            completed: false
-          },
-          {
-            id: '3',
-            title: 'International Expansion',
-            description: 'Expand to European markets',
-            date: '2024-12-31',
-            completed: false
-          }
-        ],
-        openPositions: [
-          {
-            id: '1',
-            title: 'Senior Frontend Developer',
-            type: 'full-time',
-            description: 'Join our team to build the next generation of sustainable technology solutions',
-            skills: ['React', 'TypeScript', 'UI/UX', 'Testing'],
-            commitment: 'Full-time, Equity + Salary'
-          },
-          {
-            id: '2',
-            title: 'Marketing Lead',
-            type: 'equity',
-            description: 'Lead our marketing efforts and help us reach more customers',
-            skills: ['Digital Marketing', 'Content Strategy', 'Analytics', 'Brand Building'],
-            commitment: 'Part-time, Equity-based'
-          }
-        ]
-      };
-      
-      setStartup(mockData);
       setLoading(false);
     };
 
@@ -258,22 +222,9 @@ Our mission is to democratize access to ${id === '1' ? 'clean technology' : id =
     });
   };
 
-  const handleApply = (positionId: string) => {
-    setSelectedPosition(positionId);
-    onOpen();
-  };
-
-  const submitApplication = () => {
-    toast({
-      title: 'Application Sent!',
-      description: 'Your application has been sent to the startup founder.',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
-    onClose();
-    setApplicationMessage('');
-    setSelectedPosition(null);
+  const handleRoleApply = (roleTitle: string, roleSkills: string[]) => {
+    setSelectedRole({ title: roleTitle, skills: roleSkills });
+    onApplicationModalOpen();
   };
 
   const handleShare = () => {
@@ -460,6 +411,7 @@ Our mission is to democratize access to ${id === '1' ? 'clean technology' : id =
                   <Tab>Team</Tab>
                   <Tab>Milestones</Tab>
                   <Tab>Opportunities</Tab>
+                  <Tab>Updates</Tab>
                 </TabList>
 
                 <TabPanels>
@@ -659,7 +611,7 @@ Our mission is to democratize access to ${id === '1' ? 'clean technology' : id =
                       </Card>
 
                       {startup.openPositions.map((position) => (
-                        <Card key={position.id} variant="outline" className="card-hover">
+                        <Card key={position.id} variant="outline" className="card-hover" borderLeft={position.hasRichDetails ? '4px solid' : undefined} borderLeftColor={position.hasRichDetails ? 'brand.400' : undefined}>
                           <CardBody p={6}>
                             <VStack spacing={4} align="stretch">
                               <HStack justify="space-between" align="start">
@@ -680,35 +632,47 @@ Our mission is to democratize access to ${id === '1' ? 'clean technology' : id =
                                     </Text>
                                   </HStack>
                                 </VStack>
-                                <Button
-                                  size="sm"
-                                  variant="solid"
-                                  colorScheme="brand"
-                                  onClick={() => handleApply(position.id)}
-                                >
-                                  Apply
-                                </Button>
+                                {(!user || user.id !== startup.userId) && (
+                                  <Button
+                                    size="sm"
+                                    variant="solid"
+                                    colorScheme="brand"
+                                    onClick={() => handleRoleApply(position.title, position.skills)}
+                                  >
+                                    Apply
+                                  </Button>
+                                )}
                               </HStack>
                               
-                              <Text fontSize="sm">{position.description}</Text>
+                              <Text fontSize="sm" color={position.hasRichDetails ? undefined : 'gray.500'} fontStyle={position.hasRichDetails ? undefined : 'italic'}>{position.description}</Text>
                               
-                              <Box>
-                                <Text fontSize="sm" fontWeight="semibold" mb={2}>
-                                  Required Skills:
-                                </Text>
-                                <HStack spacing={2} flexWrap="wrap">
-                                  {position.skills.map((skill) => (
-                                    <Badge key={skill} size="sm" colorScheme="gray">
-                                      {skill}
-                                    </Badge>
-                                  ))}
-                                </HStack>
-                              </Box>
+                              {position.skills.length > 0 && (
+                                <Box>
+                                  <Text fontSize="sm" fontWeight="semibold" mb={2}>
+                                    {position.hasRichDetails ? 'Skills:' : 'Required Skills:'}
+                                  </Text>
+                                  <HStack spacing={2} flexWrap="wrap">
+                                    {position.skills.map((skill) => (
+                                      <Badge key={skill} size="sm" colorScheme={position.hasRichDetails ? 'brand' : 'gray'}>
+                                        {skill}
+                                      </Badge>
+                                    ))}
+                                  </HStack>
+                                </Box>
+                              )}
                             </VStack>
                           </CardBody>
                         </Card>
                       ))}
                     </VStack>
+                  </TabPanel>
+
+                  {/* Updates Tab */}
+                  <TabPanel px={0}>
+                    <UpdateFeed
+                      startupId={startup.id}
+                      isCreator={!!user && user.id === startup.userId}
+                    />
                   </TabPanel>
                 </TabPanels>
               </Tabs>
@@ -774,12 +738,52 @@ Our mission is to democratize access to ${id === '1' ? 'clean technology' : id =
                 <CardBody p={6}>
                   <VStack spacing={4} align="stretch">
                     <Heading size="md">Looking For</Heading>
+                    <Text fontSize="sm" color="gray.500">Click a role to see details and apply</Text>
                     <VStack spacing={2} align="stretch">
-                      {startup.lookingFor.map((role) => (
-                        <Badge key={role} colorScheme="brand" p={2} borderRadius="md">
-                          {role}
-                        </Badge>
-                      ))}
+                      {startup.lookingFor.map((entry, idx) => {
+                        const role = normalizeRole(entry);
+                        const roleSkills: string[] = Array.isArray(role.skills)
+                          ? role.skills
+                          : typeof role.skills === 'string'
+                            ? (role.skills as string).split(',').map((s: string) => s.trim()).filter(Boolean)
+                            : [];
+                        return (
+                          <HStack key={role.title + '-' + idx} justify="space-between">
+                            <Badge
+                              colorScheme="brand"
+                              p={2}
+                              borderRadius="md"
+                              cursor="pointer"
+                              _hover={{ bg: 'brand.100', transform: 'scale(1.05)' }}
+                              transition="all 0.2s"
+                              onClick={() => {
+                                // Switch to Opportunities tab
+                                const tabsEl = document.querySelector('[role="tablist"]');
+                                if (tabsEl) {
+                                  const opportunitiesTab = tabsEl.querySelectorAll('[role="tab"]')[3] as HTMLElement;
+                                  if (opportunitiesTab) opportunitiesTab.click();
+                                }
+                                // Scroll to the opportunities section
+                                setTimeout(() => {
+                                  document.querySelector('[role="tabpanel"]:not([hidden])')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                }, 100);
+                              }}
+                            >
+                              {role.title} →
+                            </Badge>
+                            {(!user || user.id !== startup.userId) && (
+                              <Button
+                                size="xs"
+                                variant="outline"
+                                colorScheme="brand"
+                                onClick={() => handleRoleApply(role.title, roleSkills)}
+                              >
+                                Apply
+                              </Button>
+                            )}
+                          </HStack>
+                        );
+                      })}
                     </VStack>
                   </VStack>
                 </CardBody>
@@ -824,43 +828,18 @@ Our mission is to democratize access to ${id === '1' ? 'clean technology' : id =
         </Container>
 
         {/* Application Modal */}
-        <Modal isOpen={isOpen} onClose={onClose} size="lg">
-          <ModalOverlay />
-          <ModalContent>
-            <ModalHeader>Apply for Position</ModalHeader>
-            <ModalCloseButton />
-            <ModalBody pb={6}>
-              <VStack spacing={4} align="stretch">
-                <Text>
-                  Send a message to {startup.name} about your interest in joining their team.
-                </Text>
-                <FormControl>
-                  <FormLabel>Your Message</FormLabel>
-                  <Textarea
-                    placeholder="Tell them why you're interested and what you can contribute..."
-                    value={applicationMessage}
-                    onChange={(e) => setApplicationMessage(e.target.value)}
-                    rows={6}
-                  />
-                </FormControl>
-                <HStack spacing={3} pt={4}>
-                  <Button variant="ghost" onClick={onClose} flex={1}>
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="solid"
-                    colorScheme="brand"
-                    onClick={submitApplication}
-                    flex={1}
-                    isDisabled={!applicationMessage.trim()}
-                  >
-                    Send Application
-                  </Button>
-                </HStack>
-              </VStack>
-            </ModalBody>
-          </ModalContent>
-        </Modal>
+        {selectedRole && (
+          <ApplicationFormModal
+            isOpen={isApplicationModalOpen}
+            onClose={() => {
+              onApplicationModalClose();
+              setSelectedRole(null);
+            }}
+            startupId={startup.id}
+            roleTitle={selectedRole.title}
+            roleSkills={selectedRole.skills}
+          />
+        )}
       </Box>
     </>
   )

@@ -37,16 +37,19 @@ routes = [
 binding = "DB"
 database_name = "kolabolab-production"
 database_id = "108293bb-d093-4147-84b2-41aecf35179a"
+migrations_dir = "migrations"
 
 [[env.dev.d1_databases]]
 binding = "DB"
 database_name = "kolabolab-dev"
 database_id = "26627b7c-d2f0-49f7-a96b-40b7392136ae"
+migrations_dir = "migrations"
 
 [[env.staging.d1_databases]]
 binding = "DB"
 database_name = "kolabolab-staging"
 database_id = "42a0ff21-2f4a-4bba-8935-2a8edf8af62b"
+migrations_dir = "migrations"
 
 # KV storage for sessions and cache
 [[env.production.kv_namespaces]]
@@ -84,7 +87,7 @@ GITHUB_CALLBACK_URL = "https://kolabolab-api.beryour.workers.dev/auth/github/cal
 
 [env.dev.vars]
 NODE_ENV = "development"
-FRONTEND_URL = "https://0fc93d16.kolabolab-dev.pages.dev"
+FRONTEND_URL = "https://main.kolabolab-dev.pages.dev"
 GOOGLE_CALLBACK_URL = "https://kolabolab-api-dev.beryour.workers.dev/auth/google/callback"
 LINKEDIN_CALLBACK_URL = "https://kolabolab-api-dev.beryour.workers.dev/auth/linkedin/callback"
 GITHUB_CALLBACK_URL = "https://kolabolab-api-dev.beryour.workers.dev/auth/github/callback"

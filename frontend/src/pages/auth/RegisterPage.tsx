@@ -150,12 +150,12 @@ const RegisterPage: React.FC = () => {
   };
 
   const handleSocialSignup = (provider: string) => {
-    // Get API base URL from environment or detect from hostname
-    const apiBaseUrl = import.meta.env.VITE_API_URL || (
-      window.location.hostname.includes('kolabolab.com')
-        ? 'https://kolabolab-api.beryour.workers.dev'
-        : 'https://kolabolab-api-dev.beryour.workers.dev'
-    );
+    // Get API base URL - production by default, dev only for dev hostnames
+    const devHosts = ['kolabolab-api-dev', '0fc93d16', 'localhost', 'kolabolab-dev'];
+    const isDev = devHosts.some(h => window.location.hostname.indexOf(h) !== -1);
+    const apiBaseUrl = isDev
+      ? 'https://kolabolab-api-dev.beryour.workers.dev'
+      : 'https://kolabolab-api.beryour.workers.dev';
     
     // Redirect to OAuth provider
     const providerPath = provider.toLowerCase();

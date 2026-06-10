@@ -12,6 +12,7 @@ const OAuthCallbackPage: React.FC = () => {
   useEffect(() => {
     const handleOAuthCallback = async () => {
       const token = searchParams.get('token');
+      const accessToken = searchParams.get('access');
       const refreshToken = searchParams.get('refresh');
       const error = searchParams.get('error');
 
@@ -29,7 +30,7 @@ const OAuthCallbackPage: React.FC = () => {
 
       if (token && refreshToken) {
         try {
-          // Decode and validate the token
+          // Decode and validate the token (base64 user data)
           const userData = JSON.parse(atob(token));
           
           // Basic validation of user data structure
@@ -37,16 +38,24 @@ const OAuthCallbackPage: React.FC = () => {
             throw new Error('Invalid user data received from OAuth provider');
           }
 
-          // Store tokens for authenticated user
-          localStorage.setItem('accessToken', token);
+          // Ensure onboardingCompleted is a boolean (default to false if missing)
+          const user = {
+            ...userData,
+            onboardingCompleted: userData.onboardingCompleted ?? false,
+            roles: userData.roles ?? [],
+          };
+
+          // Store the real JWT access token (or fall back to the base64 token)
+          const jwtToken = accessToken || token;
+          localStorage.setItem('accessToken', jwtToken);
           localStorage.setItem('refreshToken', refreshToken);
 
           // Set authenticated user
-          setAuth(userData, { accessToken: token, refreshToken });
+          setAuth(user, { accessToken: jwtToken, refreshToken });
           
           toast({
             title: 'Welcome!',
-            description: `Successfully signed in as ${userData.email}`,
+            description: `Successfully signed in as ${user.email}`,
             status: 'success',
             duration: 3000,
             isClosable: true,

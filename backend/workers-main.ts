@@ -13,6 +13,16 @@ interface Env {
   JWT_REFRESH_SECRET: string;
   RESEND_API_KEY: string;
   FRONTEND_URL: string;
+  NODE_ENV: string;
+  GOOGLE_CLIENT_ID: string;
+  GOOGLE_CLIENT_SECRET: string;
+  GOOGLE_CALLBACK_URL: string;
+  LINKEDIN_CLIENT_ID: string;
+  LINKEDIN_CLIENT_SECRET: string;
+  LINKEDIN_CALLBACK_URL: string;
+  GITHUB_CLIENT_ID: string;
+  GITHUB_CLIENT_SECRET: string;
+  GITHUB_CALLBACK_URL: string;
 }
 
 const app = new Hono<{ Bindings: Env }>();
@@ -344,6 +354,86 @@ app.get('/api/user/profile', jwt({ secret: async (c) => c.env.JWT_SECRET }), asy
   return c.json({ user });
 });
 
+// Dashboard Stats endpoint
+app.get('/api/dashboard/stats', jwt({ secret: async (c) => c.env.JWT_SECRET }), async (c) => {
+  try {
+    const payload = c.get('jwtPayload');
+    const userId = payload.userId;
+
+    // Query total startups
+    const startupsResult = await c.env.DB.prepare(
+      'SELECT COUNT(*) as count FROM startups WHERE user_id = ?'
+    ).bind(userId).first();
+
+    // Query total distinct investors across user's startups
+    const investorsResult = await c.env.DB.prepare(
+      'SELECT COUNT(DISTINCT i.id) as count FROM investors i JOIN startups s ON i.startup_id = s.id WHERE s.user_id = ?'
+    ).bind(userId).first();
+
+    // Query total funding
+    const fundingResult = await c.env.DB.prepare(
+      'SELECT COALESCE(SUM(funding_amount), 0) as total FROM startups WHERE user_id = ?'
+    ).bind(userId).first();
+
+    // Query success rate
+    const successRateResult = await c.env.DB.prepare(
+      `SELECT COALESCE(ROUND(100.0 * COUNT(CASE WHEN status = 'successful' THEN 1 END) / NULLIF(COUNT(*), 0)), 0) as rate FROM startups WHERE user_id = ?`
+    ).bind(userId).first();
+
+    return c.json({
+      totalStartups: Number(startupsResult?.count ?? 0),
+      totalInvestors: Number(investorsResult?.count ?? 0),
+      totalFunding: Number(fundingResult?.total ?? 0),
+      successRate: Number(successRateResult?.rate ?? 0),
+    });
+  } catch (error) {
+    console.error('Dashboard stats error:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+// Dashboard Activities endpoint
+app.get('/api/dashboard/activities', jwt({ secret: async (c) => c.env.JWT_SECRET }), async (c) => {
+  try {
+    const payload = c.get('jwtPayload');
+    const userId = payload.userId;
+
+    const result = await c.env.DB.prepare(
+      'SELECT id, type, message, created_at as timestamp FROM activities WHERE user_id = ? ORDER BY created_at DESC LIMIT 20'
+    ).bind(userId).all();
+
+    return c.json({ activities: result.results || [] });
+  } catch (error) {
+    console.error('Dashboard activities error:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
+// User Startups endpoint
+app.get('/api/user/startups', jwt({ secret: async (c) => c.env.JWT_SECRET }), async (c) => {
+  try {
+    const payload = c.get('jwtPayload');
+    const userId = payload.userId;
+
+    const result = await c.env.DB.prepare(
+      'SELECT id, name, stage, funding_amount, status FROM startups WHERE user_id = ? ORDER BY created_at DESC'
+    ).bind(userId).all();
+
+    const startups = (result.results ?? []).map((row: any) => ({
+      id: row.id,
+      name: row.name,
+      stage: row.stage,
+      fundingAmount: row.funding_amount,
+      status: row.status,
+    }));
+
+    return c.json({ startups });
+  } catch (error) {
+    console.error('User startups error:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
 // Utility functions
 async function hashPassword(password: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -580,7 +670,7 @@ app.post('/api/auth/register-dev', async (c) => {
 app.get('/api/init-db', async (c) => {
   try {
     // Create users table with D1-compatible syntax
-    const result = await c.env.DB.prepare(`
+    await c.env.DB.prepare(`
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         email TEXT UNIQUE NOT NULL,
@@ -594,21 +684,70 @@ app.get('/api/init-db', async (c) => {
         updatedAt TEXT DEFAULT (datetime('now'))
       )
     `).run();
-    
+
+    // Create startups table
+    await c.env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS startups (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        name TEXT NOT NULL,
+        stage TEXT NOT NULL DEFAULT 'idea',
+        funding_amount INTEGER NOT NULL DEFAULT 0,
+        status TEXT NOT NULL DEFAULT 'active',
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `).run();
+
+    // Create activities table
+    await c.env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS activities (
+        id TEXT PRIMARY KEY,
+        user_id TEXT NOT NULL,
+        type TEXT NOT NULL,
+        message TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `).run();
+
+    // Create investors table
+    await c.env.DB.prepare(`
+      CREATE TABLE IF NOT EXISTS investors (
+        id TEXT PRIMARY KEY,
+        startup_id TEXT NOT NULL,
+        name TEXT NOT NULL,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (startup_id) REFERENCES startups(id) ON DELETE CASCADE
+      )
+    `).run();
+
+    // Create indexes for query performance
+    await c.env.DB.prepare(`
+      CREATE INDEX IF NOT EXISTS idx_startups_user_id ON startups(user_id)
+    `).run();
+
+    await c.env.DB.prepare(`
+      CREATE INDEX IF NOT EXISTS idx_activities_user_id_created ON activities(user_id, created_at DESC)
+    `).run();
+
+    await c.env.DB.prepare(`
+      CREATE INDEX IF NOT EXISTS idx_investors_startup_id ON investors(startup_id)
+    `).run();
+
     return c.json({ 
       message: 'Database initialized successfully',
-      result: result.success 
+      result: true 
     });
   } catch (error) {
     console.error('Database initialization error:', error);
     return c.json({ 
       error: 'Failed to initialize database',
-      details: error.message 
+      details: error instanceof Error ? error.message : 'Unknown error'
     }, 500);
   }
 });
 
 // Export for Cloudflare Workers
-export default {
-  fetch: app.fetch.bind(app)
-};
+export default app;

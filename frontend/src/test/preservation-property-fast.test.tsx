@@ -32,7 +32,8 @@ const mockUser = {
   username: 'testuser',
   avatar: 'https://example.com/avatar.jpg',
   roles: ['user', 'investor'],
-  isEmailVerified: true
+  isEmailVerified: true,
+  onboardingCompleted: true
 }
 
 const mockTokens = {

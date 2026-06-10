@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Box,
   Container,
@@ -11,117 +11,125 @@ import {
   StatLabel,
   StatNumber,
   StatHelpText,
-  StatArrow,
   VStack,
   HStack,
   Avatar,
   Badge,
   Button,
+  Icon,
   useColorModeValue,
   Spinner,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
 } from '@chakra-ui/react';
-import { FiTrendingUp, FiUsers, FiDollarSign, FiTarget } from 'react-icons/fi';
+import {
+  Rocket,
+  Settings,
+  Users,
+  Search,
+  Handshake,
+  TrendingUp,
+  PieChart,
+  Briefcase,
+  FileText,
+  Inbox,
+} from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { useDashboardStats, useDashboardActivities, useUserStartups } from '../hooks/useDashboardData';
+import { useMyApplications } from '../hooks/useApplications';
+import { EmptyStateStartups } from '../components/EmptyStateStartups';
+import { EmptyStateActivities } from '../components/EmptyStateActivities';
+import { ErrorState } from '../components/ErrorState';
+import DashboardFeed from './dashboard/components/DashboardFeed';
+import EmailVerificationBanner from '../components/EmailVerificationBanner';
 
-interface DashboardStats {
-  totalStartups: number;
-  totalInvestors: number;
-  totalFunding: string;
-  successRate: number;
+/**
+ * Format funding amount from cents to a USD currency display string.
+ */
+function formatFunding(cents: number): string {
+  return (cents / 100).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  });
 }
 
-interface Activity {
-  id: string;
-  type: string;
-  message: string;
-  timestamp: string;
+/**
+ * Returns true when all stat values are zero, meaning no percentage
+ * change indicators should be displayed.
+ */
+function areAllStatsZero(stats: { totalStartups: number; totalInvestors: number; totalFunding: number; successRate: number }): boolean {
+  return stats.totalStartups === 0 && stats.totalInvestors === 0 && stats.totalFunding === 0 && stats.successRate === 0;
 }
 
-interface StartupSummary {
-  id: string;
-  name: string;
-  stage: string;
-  funding: string;
-  status: string;
+interface QuickAction {
+  label: string;
+  icon: React.ComponentType;
+  colorScheme: string;
+  path: string;
+}
+
+const ENTREPRENEUR_ACTIONS: QuickAction[] = [
+  { label: 'Create Startup', icon: Rocket, colorScheme: 'brand', path: '/create-startup' },
+  { label: 'Manage Startups', icon: Settings, colorScheme: 'brand', path: '/dashboard#my-startups' },
+  { label: 'Received Applications', icon: Inbox, colorScheme: 'brand', path: '/applications/received' },
+];
+
+const COLLABORATOR_ACTIONS: QuickAction[] = [
+  { label: 'Discover Teams', icon: Search, colorScheme: 'accent', path: '/search' },
+  { label: 'My Collaborations', icon: Handshake, colorScheme: 'accent', path: '/collaborations' },
+  { label: 'My Applications', icon: FileText, colorScheme: 'accent', path: '/applications/mine' },
+];
+
+const INVESTOR_ACTIONS: QuickAction[] = [
+  { label: 'Browse Opportunities', icon: TrendingUp, colorScheme: 'purple', path: '/investments' },
+  { label: 'My Portfolio', icon: PieChart, colorScheme: 'purple', path: '/portfolio' },
+];
+
+const ADMIN_ACTIONS: QuickAction[] = [
+  { label: 'Review Startups', icon: Briefcase, colorScheme: 'red', path: '/admin' },
+  { label: 'Manage Users', icon: Users, colorScheme: 'red', path: '/admin' },
+];
+
+/**
+ * Returns role-based quick actions for the given user roles.
+ * Combines actions when a user has multiple roles.
+ */
+export function getQuickActionsForRoles(roles: string[]): QuickAction[] {
+  if (roles.includes('admin')) {
+    return ADMIN_ACTIONS;
+  }
+
+  const actions: QuickAction[] = [];
+
+  if (roles.includes('entrepreneur')) {
+    actions.push(...ENTREPRENEUR_ACTIONS);
+  }
+  if (roles.includes('collaborator')) {
+    actions.push(...COLLABORATOR_ACTIONS);
+  }
+  if (roles.includes('investor')) {
+    actions.push(...INVESTOR_ACTIONS);
+  }
+
+  return actions;
 }
 
 const DashboardPage: React.FC = () => {
   const { user } = useAuth();
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [activities, setActivities] = useState<Activity[]>([]);
-  const [myStartups, setMyStartups] = useState<StartupSummary[]>([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { data: stats, loading: statsLoading, error: statsError, refetch: refetchStats } = useDashboardStats();
+  const { data: activities, loading: activitiesLoading, error: activitiesError, refetch: refetchActivities } = useDashboardActivities();
+  const { data: startups, loading: startupsLoading, error: startupsError, refetch: refetchStartups } = useUserStartups();
+  const { data: myApplicationsData, isLoading: applicationsLoading } = useMyApplications();
 
   const cardBg = useColorModeValue('white', 'gray.800');
   const bgColor = useColorModeValue('gray.50', 'gray.900');
-  
-  // Personalized content based on user role
+  const activityBg = useColorModeValue('gray.50', 'gray.700');
+
+  const roles = user?.roles || [];
   const isAdmin = user?.roles?.includes('admin');
-  const isEntrepreneur = user?.roles?.includes('entrepreneur');
-
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock data based on user role
-        if (isAdmin) {
-          setStats({
-            totalStartups: 156,
-            totalInvestors: 89,
-            totalFunding: '$12.5M',
-            successRate: 78
-          });
-          setActivities([
-            { id: '1', type: 'admin', message: 'New startup "AI Vision" submitted for review', timestamp: '2 hours ago' },
-            { id: '2', type: 'admin', message: 'Investor "TechVC" joined the platform', timestamp: '4 hours ago' },
-            { id: '3', type: 'admin', message: 'Platform security scan completed successfully', timestamp: '1 day ago' }
-          ]);
-        } else {
-          setStats({
-            totalStartups: 3,
-            totalInvestors: 12,
-            totalFunding: '$250K',
-            successRate: 67
-          });
-          setActivities([
-            { id: '1', type: 'startup', message: 'Your startup "TechStart" received a new message', timestamp: '1 hour ago' },
-            { id: '2', type: 'investment', message: 'Investor showed interest in your project', timestamp: '3 hours ago' },
-            { id: '3', type: 'collaboration', message: 'New collaboration request from "DevCorp"', timestamp: '1 day ago' }
-          ]);
-        }
-        
-        setMyStartups([
-          { id: '1', name: isAdmin ? 'Platform Overview' : 'TechStart Inc.', stage: isAdmin ? 'Live' : 'Seed', funding: isAdmin ? 'N/A' : '$50K', status: 'Active' },
-          { id: '2', name: isAdmin ? 'User Management' : 'AI Vision', stage: isAdmin ? 'Beta' : 'Pre-Seed', funding: isAdmin ? 'N/A' : '$25K', status: 'In Review' }
-        ]);
-        
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
-  }, [isAdmin]);
-
-  if (loading) {
-    return (
-      <Box minH="100vh" bg={bgColor} display="flex" alignItems="center" justifyContent="center">
-        <VStack spacing={4}>
-          <Spinner size="xl" color="brand.500" thickness="4px" />
-          <Text>Loading your personalized dashboard...</Text>
-        </VStack>
-      </Box>
-    );
-  }
+  const quickActions = getQuickActionsForRoles(user?.roles ?? []);
 
   return (
     <>
@@ -133,12 +141,15 @@ const DashboardPage: React.FC = () => {
       <Box minH="100vh" bg={bgColor}>
         <Container maxW={{ base: "7xl", "2xl": "90%", "3xl": "85%" }} py={8}>
           <VStack spacing={8} align="stretch">
-            
+
+            {/* Email Verification Banner */}
+            <EmailVerificationBanner />
+
             {/* Welcome Header */}
             <Box>
               <HStack spacing={4} mb={4}>
-                <Avatar 
-                  size="lg" 
+                <Avatar
+                  size="lg"
                   name={`${user?.firstName} ${user?.lastName}`}
                   src={user?.avatar}
                 />
@@ -147,16 +158,16 @@ const DashboardPage: React.FC = () => {
                     Welcome back, {user?.firstName}!
                   </Heading>
                   <Text color="gray.600" fontSize="lg">
-                    {isAdmin 
-                      ? "Here's your platform overview and admin insights" 
+                    {isAdmin
+                      ? "Here's your platform overview and admin insights"
                       : "Here's what's happening with your startup journey"
                     }
                   </Text>
                   <HStack spacing={2}>
                     {user?.roles?.map((role) => (
-                      <Badge 
+                      <Badge
                         key={role}
-                        colorScheme={role === 'admin' ? 'red' : role === 'entrepreneur' ? 'brand' : 'green'} 
+                        colorScheme={role === 'admin' ? 'red' : role === 'entrepreneur' ? 'brand' : 'green'}
                         variant="subtle"
                       >
                         {role.charAt(0).toUpperCase() + role.slice(1)}
@@ -173,91 +184,279 @@ const DashboardPage: React.FC = () => {
             </Box>
 
             {/* Stats Grid */}
-            <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
-              <Card bg={cardBg}>
-                <CardBody>
-                  <Stat>
-                    <StatLabel>{isAdmin ? 'Total Startups' : 'My Startups'}</StatLabel>
-                    <StatNumber>{stats?.totalStartups}</StatNumber>
-                    <StatHelpText>
-                      <StatArrow type="increase" />
-                      23.36%
-                    </StatHelpText>
-                  </Stat>
-                </CardBody>
-              </Card>
+            {statsLoading ? (
+              <Box display="flex" justifyContent="center" py={8}>
+                <Spinner size="lg" color="brand.500" />
+              </Box>
+            ) : statsError ? (
+              <ErrorState error={statsError.message} onRetry={refetchStats} />
+            ) : stats ? (
+              <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
+                <Card bg={cardBg}>
+                  <CardBody>
+                    <Stat>
+                      <StatLabel>{isAdmin ? 'Total Startups' : 'My Startups'}</StatLabel>
+                      <StatNumber>{stats.totalStartups}</StatNumber>
+                      {!areAllStatsZero(stats) && (
+                        <StatHelpText>
+                          Startups created
+                        </StatHelpText>
+                      )}
+                    </Stat>
+                  </CardBody>
+                </Card>
 
-              <Card bg={cardBg}>
-                <CardBody>
-                  <Stat>
-                    <StatLabel>{isAdmin ? 'Total Investors' : 'Interested Investors'}</StatLabel>
-                    <StatNumber>{stats?.totalInvestors}</StatNumber>
-                    <StatHelpText>
-                      <StatArrow type="increase" />
-                      9.05%
-                    </StatHelpText>
-                  </Stat>
-                </CardBody>
-              </Card>
+                <Card bg={cardBg}>
+                  <CardBody>
+                    <Stat>
+                      <StatLabel>{isAdmin ? 'Total Investors' : 'Interested Investors'}</StatLabel>
+                      <StatNumber>{stats.totalInvestors}</StatNumber>
+                      {!areAllStatsZero(stats) && (
+                        <StatHelpText>
+                          Across all startups
+                        </StatHelpText>
+                      )}
+                    </Stat>
+                  </CardBody>
+                </Card>
 
-              <Card bg={cardBg}>
-                <CardBody>
-                  <Stat>
-                    <StatLabel>{isAdmin ? 'Platform Funding' : 'Total Funding'}</StatLabel>
-                    <StatNumber>{stats?.totalFunding}</StatNumber>
-                    <StatHelpText>
-                      <StatArrow type="increase" />
-                      12.15%
-                    </StatHelpText>
-                  </Stat>
-                </CardBody>
-              </Card>
+                <Card bg={cardBg}>
+                  <CardBody>
+                    <Stat>
+                      <StatLabel>{isAdmin ? 'Platform Funding' : 'Total Funding'}</StatLabel>
+                      <StatNumber>{formatFunding(stats.totalFunding)}</StatNumber>
+                      {!areAllStatsZero(stats) && (
+                        <StatHelpText>
+                          Total raised
+                        </StatHelpText>
+                      )}
+                    </Stat>
+                  </CardBody>
+                </Card>
 
-              <Card bg={cardBg}>
-                <CardBody>
-                  <Stat>
-                    <StatLabel>Success Rate</StatLabel>
-                    <StatNumber>{stats?.successRate}%</StatNumber>
-                    <StatHelpText>
-                      <StatArrow type="increase" />
-                      5.25%
-                    </StatHelpText>
-                  </Stat>
-                </CardBody>
-              </Card>
-            </SimpleGrid>
+                <Card bg={cardBg}>
+                  <CardBody>
+                    <Stat>
+                      <StatLabel>Success Rate</StatLabel>
+                      <StatNumber>{stats.successRate}%</StatNumber>
+                      {!areAllStatsZero(stats) && (
+                        <StatHelpText>
+                          Of your startups
+                        </StatHelpText>
+                      )}
+                    </Stat>
+                  </CardBody>
+                </Card>
+              </SimpleGrid>
+            ) : null}
 
             {/* Recent Activity */}
             <Card bg={cardBg}>
               <CardBody>
                 <Heading size="md" mb={4}>Recent Activity</Heading>
-                <VStack spacing={3} align="stretch">
-                  {activities.map((activity) => (
-                    <Box key={activity.id} p={3} borderRadius="md" bg={useColorModeValue('gray.50', 'gray.700')}>
-                      <HStack justify="space-between">
-                        <Text>{activity.message}</Text>
-                        <Text fontSize="sm" color="gray.500">{activity.timestamp}</Text>
-                      </HStack>
-                    </Box>
-                  ))}
-                </VStack>
+                {activitiesLoading ? (
+                  <Box display="flex" justifyContent="center" py={6}>
+                    <Spinner size="md" color="brand.500" />
+                  </Box>
+                ) : activitiesError ? (
+                  <ErrorState error={activitiesError.message} onRetry={refetchActivities} />
+                ) : activities.length === 0 ? (
+                  <EmptyStateActivities />
+                ) : (
+                  <VStack spacing={3} align="stretch">
+                    {activities.map((activity) => (
+                      <Box key={activity.id} p={3} borderRadius="md" bg={activityBg}>
+                        <HStack justify="space-between">
+                          <Text>{activity.message}</Text>
+                          <Text fontSize="sm" color="gray.500">{activity.timestamp}</Text>
+                        </HStack>
+                      </Box>
+                    ))}
+                  </VStack>
+                )}
               </CardBody>
             </Card>
+
+            {/* My Startups */}
+            {roles.includes('entrepreneur') && (
+            <Card bg={cardBg} id="my-startups">
+              <CardBody>
+                <Heading size="md" mb={4}>My Startups</Heading>
+                {startupsLoading ? (
+                  <Box display="flex" justifyContent="center" py={6}>
+                    <Spinner size="md" color="brand.500" />
+                  </Box>
+                ) : startupsError ? (
+                  <ErrorState error={startupsError.message} onRetry={refetchStartups} />
+                ) : startups.length === 0 ? (
+                  <EmptyStateStartups onCreateStartup={() => navigate('/create-startup')} />
+                ) : (
+                  <VStack spacing={3} align="stretch">
+                    {startups.map((startup) => (
+                      <Box
+                        key={startup.id}
+                        p={3}
+                        borderRadius="md"
+                        bg={activityBg}
+                        cursor="pointer"
+                        _hover={{ bg: 'brand.50', transform: 'translateX(4px)' }}
+                        transition="all 0.2s"
+                        opacity={startup.status === 'pending_approval' ? 0.75 : 1}
+                        borderLeft={startup.status === 'pending_approval' ? '3px solid' : 'none'}
+                        borderLeftColor={startup.status === 'pending_approval' ? 'orange.400' : 'transparent'}
+                        onClick={() => navigate(`/startups/${startup.id}`)}
+                      >
+                        <HStack justify="space-between">
+                          <VStack align="start" spacing={0}>
+                            <Text fontWeight="medium" color="brand.700">{startup.name}</Text>
+                            <Text fontSize="sm" color="gray.500">{startup.stage}</Text>
+                          </VStack>
+                          <HStack spacing={3}>
+                            <Text fontSize="sm" fontWeight="medium">
+                              {formatFunding(startup.fundingAmount)}
+                            </Text>
+                            {startup.status === 'pending_approval' ? (
+                              <Badge colorScheme="orange" variant="subtle">
+                                Pending Approval
+                              </Badge>
+                            ) : (
+                              <Badge
+                                colorScheme={startup.status === 'active' ? 'green' : startup.status === 'successful' ? 'blue' : 'gray'}
+                                variant="subtle"
+                              >
+                                {startup.status}
+                              </Badge>
+                            )}
+                            {isAdmin && (
+                              <Button
+                                size="xs"
+                                colorScheme="red"
+                                variant="ghost"
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+                                  if (!window.confirm(`Are you sure you want to delete "${startup.name}"?`)) return;
+                                  try {
+                                    const devHosts = ['kolabolab-api-dev', '0fc93d16', 'localhost', 'kolabolab-dev'];
+                                    const isDev = devHosts.some(h => window.location.hostname.indexOf(h) !== -1);
+                                    const apiBaseUrl = isDev ? 'https://kolabolab-api-dev.beryour.workers.dev' : 'https://kolabolab-api.beryour.workers.dev';
+                                    const accessToken = localStorage.getItem('accessToken');
+                                    const res = await fetch(`${apiBaseUrl}/api/startups/${startup.id}`, {
+                                      method: 'DELETE',
+                                      headers: { 'Authorization': `Bearer ${accessToken}` },
+                                    });
+                                    if (res.ok) {
+                                      refetchStartups();
+                                      refetchStats();
+                                    }
+                                  } catch (e2) { console.error('Delete failed:', e2); }
+                                }}
+                              >
+                                Delete
+                              </Button>
+                            )}
+                          </HStack>
+                        </HStack>
+                      </Box>
+                    ))}
+                  </VStack>
+                )}
+              </CardBody>
+            </Card>
+            )}
+
+            {/* My Applications (Collaborator) */}
+            {roles.includes('collaborator') && (
+            <Card bg={cardBg} id="my-applications">
+              <CardBody>
+                <Heading size="md" mb={4}>My Applications</Heading>
+                {applicationsLoading ? (
+                  <Box display="flex" justifyContent="center" py={6}>
+                    <Spinner size="md" color="brand.500" />
+                  </Box>
+                ) : !myApplicationsData?.applications?.length ? (
+                  <VStack spacing={3} py={6}>
+                    <Text color="gray.500" textAlign="center">
+                      You haven't submitted any applications yet. Browse startups to find opportunities.
+                    </Text>
+                    <Button
+                      as={RouterLink}
+                      to="/startups"
+                      colorScheme="accent"
+                      variant="outline"
+                      size="sm"
+                    >
+                      Browse Startups
+                    </Button>
+                  </VStack>
+                ) : (
+                  <VStack spacing={3} align="stretch">
+                    {myApplicationsData.applications.map((application) => (
+                      <Box
+                        key={application.id}
+                        p={3}
+                        borderRadius="md"
+                        bg={activityBg}
+                      >
+                        <HStack justify="space-between">
+                          <VStack align="start" spacing={0}>
+                            <Text fontWeight="medium">{application.startupName}</Text>
+                            <Text fontSize="sm" color="gray.500">{application.roleTitle}</Text>
+                          </VStack>
+                          <Badge
+                            colorScheme={
+                              application.status === 'accepted' ? 'green' :
+                              application.status === 'rejected' ? 'red' : 'yellow'
+                            }
+                            variant="subtle"
+                          >
+                            {application.status.charAt(0).toUpperCase() + application.status.slice(1)}
+                          </Badge>
+                        </HStack>
+                      </Box>
+                    ))}
+                  </VStack>
+                )}
+              </CardBody>
+            </Card>
+            )}
+
+            {/* Investment Overview (Investor) */}
+            {roles.includes('investor') && (
+            <Card bg={cardBg} id="investment-overview">
+              <CardBody>
+                <Heading size="md" mb={4}>Investment Overview</Heading>
+                <Text color="gray.500">Investment tracking coming soon. Browse startups to discover opportunities.</Text>
+                <Button mt={4} as={RouterLink} to="/startups" colorScheme="brand" variant="outline" size="sm">
+                  Browse Startups
+                </Button>
+              </CardBody>
+            </Card>
+            )}
 
             {/* Quick Actions */}
             <Card bg={cardBg}>
               <CardBody>
+                <Heading size="md" mb={4}>Recent Updates</Heading>
+                <DashboardFeed />
+              </CardBody>
+            </Card>
+
+            {/* Quick Actions (navigation) */}
+            <Card bg={cardBg}>
+              <CardBody>
                 <Heading size="md" mb={4}>Quick Actions</Heading>
-                <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-                  <Button leftIcon={<FiTarget />} colorScheme="brand" variant="outline">
-                    {isAdmin ? 'Review Startups' : 'Create Startup'}
-                  </Button>
-                  <Button leftIcon={<FiUsers />} colorScheme="accent" variant="outline">
-                    {isAdmin ? 'Manage Users' : 'Find Collaborators'}
-                  </Button>
-                  <Button leftIcon={<FiDollarSign />} colorScheme="purple" variant="outline">
-                    {isAdmin ? 'Platform Analytics' : 'Seek Investment'}
-                  </Button>
+                <SimpleGrid columns={{ base: 1, md: 2, lg: Math.min(quickActions.length, 4) }} spacing={4}>
+                  {quickActions.map((action) => (
+                    <Button
+                      key={action.label}
+                      leftIcon={<Icon as={action.icon} />}
+                      colorScheme={action.colorScheme}
+                      variant="outline"
+                      onClick={() => navigate(action.path)}
+                    >
+                      {action.label}
+                    </Button>
+                  ))}
                 </SimpleGrid>
               </CardBody>
             </Card>

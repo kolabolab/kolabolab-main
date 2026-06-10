@@ -1,8 +1,17 @@
 import axios, { AxiosError, AxiosRequestConfig, CancelTokenSource } from 'axios'
 import { useAuthStore } from '../hooks/useAuth'
+import type { ApplicationSubmission, ReceivedApplicationsResponse, MyApplicationsResponse, ApplicationWithDetails } from '../types/applications'
+import type { NotificationListResponse, UnreadCountResponse } from '../types/notifications'
+import type { SendMessageRequest, ConversationsListResponse, ConversationMessagesResponse, UnreadMessageCountResponse } from '../types/messages'
+import type { UpdatesResponse, DashboardFeedResponse } from '../types/startupUpdates'
+import type { ProfileUpdateData, UserProfileResponse } from '../types/profile'
 
-// Use environment variable or fallback to local development
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://test-api.beryour.workers.dev';
+// API URL - runtime hostname detection
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const __PROD_API__ = 'https://kolabolab-api.beryour.workers.dev';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars  
+const __DEV_API__ = 'https://kolabolab-api-dev.beryour.workers.dev';
+const API_BASE_URL = window.location.hostname.includes('localhost') || window.location.hostname.includes('kolabolab-dev') || window.location.hostname.includes('0fc93d16') ? __DEV_API__ : __PROD_API__;
 
 // Fallback mode for when backend is not available
 const FALLBACK_MODE = import.meta.env.VITE_FALLBACK_MODE === 'true' || false;
@@ -52,7 +61,7 @@ const handleAPIError = (error: AxiosError): APIError => {
     apiError.status = error.response.status
     apiError.code = (error.response.data as any)?.code || `HTTP_${error.response.status}`
     apiError.details = error.response.data
-    apiError.message = (error.response.data as any)?.message || error.message
+    apiError.message = (error.response.data as any)?.message || (error.response.data as any)?.error || error.message
   } else if (error.request) {
     // Request was made but no response received
     apiError.code = 'NETWORK_ERROR'
@@ -117,7 +126,9 @@ apiClient.interceptors.response.use(
     }
     
     // Handle 401 Unauthorized with token refresh
-    if ((error as AxiosError).response?.status === 401 && !(originalRequest as any)._retry) {
+    // Skip for auth endpoints (login, register) - they should handle their own 401s
+    const isAuthEndpoint = originalRequest?.url?.includes('/auth/login') || originalRequest?.url?.includes('/auth/register');
+    if ((error as AxiosError).response?.status === 401 && !(originalRequest as any)._retry && !isAuthEndpoint) {
       (originalRequest as any)._retry = true
       
       const { tokens, clearAuth, setAuth } = useAuthStore.getState()
@@ -307,13 +318,22 @@ export const authAPI = {
   
   verifyEmail: async (token: string) => {
     try {
-      const response = await apiClient.post('/auth/verify-email', { token })
+      const response = await apiClient.get('/api/auth/verify-email', { params: { token } })
       return response.data
     } catch (error) {
       throw handleAPIError(error as AxiosError)
     }
   },
   
+  resendVerification: async () => {
+    try {
+      const response = await apiClient.post('/api/auth/resend-verification')
+      return response.data
+    } catch (error) {
+      throw handleAPIError(error as AxiosError)
+    }
+  },
+
   resendVerificationEmail: async (email: string) => {
     try {
       const response = await apiClient.post('/auth/resend-verification-email', { email })
@@ -322,6 +342,101 @@ export const authAPI = {
       throw handleAPIError(error as AxiosError)
     }
   }
+}
+
+// Dashboard API functions
+export const dashboardAPI = {
+  getStats: () => apiClient.get('/api/dashboard/stats').then(r => r.data),
+  getActivities: () => apiClient.get('/api/dashboard/activities').then(r => r.data),
+  getUserStartups: () => apiClient.get('/api/user/startups').then(r => r.data),
+}
+
+// Admin API functions
+export const adminAPI = {
+  getPendingStartups: () => apiClient.get('/api/admin/pending-startups').then(r => r.data),
+  getAllStartups: () => apiClient.get('/api/admin/all-startups').then(r => r.data),
+  getUsers: () => apiClient.get('/api/admin/users').then(r => r.data),
+  approveStartup: (id: string) => apiClient.post(`/api/admin/approve/${id}`).then(r => r.data),
+  rejectStartup: (id: string) => apiClient.post(`/api/admin/reject/${id}`).then(r => r.data),
+  deleteStartup: (id: string) => apiClient.delete(`/api/admin/startups/${id}`).then(r => r.data),
+  getStats: () => apiClient.get('/api/admin/stats').then(r => r.data),
+  getAnalytics: (period?: string) => apiClient.get('/api/admin/analytics', { params: { period } }).then(r => r.data),
+}
+
+// Applications API functions
+export const applicationsAPI = {
+  submitApplication: (data: ApplicationSubmission) =>
+    apiClient.post('/api/applications', data).then(r => r.data),
+
+  getReceivedApplications: (params?: { page?: number; roleTitle?: string; status?: string }) =>
+    apiClient.get<ReceivedApplicationsResponse>('/api/applications/received', { params }).then(r => r.data),
+
+  getMyApplications: () =>
+    apiClient.get<MyApplicationsResponse>('/api/applications/mine').then(r => r.data),
+
+  updateApplicationStatus: (id: string, status: 'accepted' | 'rejected') =>
+    apiClient.patch<{ message: string; application: ApplicationWithDetails }>(`/api/applications/${id}/status`, { status }).then(r => r.data),
+}
+
+// Notifications API functions
+export const notificationsAPI = {
+  getNotifications: (page?: number) =>
+    apiClient.get<NotificationListResponse>('/api/notifications', { params: page ? { page } : undefined }).then(r => r.data),
+
+  getUnreadCount: () =>
+    apiClient.get<UnreadCountResponse>('/api/notifications/unread-count').then(r => r.data),
+
+  markAsRead: (id: string) =>
+    apiClient.patch<{ message: string; notification: { id: string; isRead: boolean; updatedAt: string } }>(`/api/notifications/${id}/read`).then(r => r.data),
+
+  markAllAsRead: () =>
+    apiClient.post<{ message: string; updatedCount: number }>('/api/notifications/mark-all-read').then(r => r.data),
+}
+
+// Messages API functions
+export const messagesAPI = {
+  sendMessage: (data: SendMessageRequest) =>
+    apiClient.post('/api/messages', data).then(r => r.data),
+
+  getConversations: () =>
+    apiClient.get<ConversationsListResponse>('/api/messages/conversations').then(r => r.data),
+
+  getConversationMessages: (conversationId: string) =>
+    apiClient.get<ConversationMessagesResponse>(`/api/messages/conversations/${conversationId}`).then(r => r.data),
+
+  markConversationAsRead: (conversationId: string) =>
+    apiClient.patch<{ message: string; updatedCount: number }>(`/api/messages/conversations/${conversationId}/read`).then(r => r.data),
+
+  getUnreadCount: () =>
+    apiClient.get<UnreadMessageCountResponse>('/api/messages/unread-count').then(r => r.data),
+}
+
+// Profile API functions
+export const profileAPI = {
+  getUserProfile: (userId: string) =>
+    apiClient.get<UserProfileResponse>(`/api/users/${userId}/profile`).then(r => r.data),
+
+  updateMyProfile: (data: ProfileUpdateData) =>
+    apiClient.put<{ message: string; user: UserProfileResponse['user'] }>('/api/users/me/profile', data).then(r => r.data),
+}
+
+// Startup Updates API functions
+export const updatesAPI = {
+  createUpdate: (startupId: string, content: string) =>
+    apiClient.post(`/api/startups/${startupId}/updates`, { content }).then(r => r.data),
+
+  getStartupUpdates: (startupId: string, page?: number, limit?: number) =>
+    apiClient.get<UpdatesResponse>(`/api/startups/${startupId}/updates`, {
+      params: { page, limit },
+    }).then(r => r.data),
+
+  deleteUpdate: (startupId: string, updateId: string) =>
+    apiClient.delete(`/api/startups/${startupId}/updates/${updateId}`).then(r => r.data),
+
+  getDashboardFeed: (page?: number, limit?: number) =>
+    apiClient.get<DashboardFeedResponse>('/api/dashboard/feed', {
+      params: { page, limit },
+    }).then(r => r.data),
 }
 
 export default apiClient

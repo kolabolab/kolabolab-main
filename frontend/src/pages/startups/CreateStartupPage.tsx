@@ -41,6 +41,9 @@ import {
   FiCalendar
 } from 'react-icons/fi'
 import { Helmet } from 'react-helmet-async'
+import { RoleDetailState, RoleExpansionPanel } from '@/components/RoleExpansionPanel'
+import { validateDescription, validateSkill, parseSkills, serializeRoles } from '@/utils/roleSerializer'
+import { RichRole } from '@/types/roles'
 
 interface StartupForm {
   // Basic Information
@@ -62,6 +65,8 @@ interface StartupForm {
   founderLinkedin: string;
   teamSize: number;
   lookingFor: string[];
+  roleDetails: Record<string, RoleDetailState>;
+  compensationType: string;
   
   // Funding & Business
   fundingGoal: string;
@@ -112,6 +117,8 @@ const CreateStartupPage: React.FC = () => {
     founderLinkedin: '',
     teamSize: 1,
     lookingFor: [],
+    roleDetails: {},
+    compensationType: 'equity',
     fundingGoal: '',
     fundingRaised: '',
     businessModel: '',
@@ -132,6 +139,7 @@ const CreateStartupPage: React.FC = () => {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [expandedRoles, setExpandedRoles] = useState<Record<string, boolean>>({});
   const [newTag, setNewTag] = useState('');
   const [newTechnology, setNewTechnology] = useState('');
   // const { isOpen, onOpen, onClose } = useDisclosure();
@@ -202,12 +210,58 @@ const CreateStartupPage: React.FC = () => {
 
     setIsLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const devHosts = ['kolabolab-api-dev', '0fc93d16', 'localhost', 'kolabolab-dev'];
+      const isDev = devHosts.some(h => window.location.hostname.indexOf(h) !== -1);
+      const apiBaseUrl = isDev
+        ? 'https://kolabolab-api-dev.beryour.workers.dev'
+        : 'https://kolabolab-api.beryour.workers.dev';
+      
+      const accessToken = localStorage.getItem('accessToken');
+
+      // Combine lookingFor titles with roleDetails into RichRole[] and serialize
+      const richRoles: RichRole[] = formData.lookingFor.map((title) => {
+        const details = formData.roleDetails[title];
+        if (!details) return { title };
+        return {
+          title,
+          description: details.description || undefined,
+          skills: details.skillsInput ? parseSkills(details.skillsInput) : undefined,
+          commitment: details.commitment || undefined,
+        };
+      });
+      const serializedRoles = serializeRoles(richRoles);
+      
+      const response = await fetch(`${apiBaseUrl}/api/startups`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          stage: formData.stage?.toLowerCase().replace(' ', '-') || 'idea',
+          fundingGoal: formData.fundingGoal,
+          description: formData.description,
+          industry: formData.industry,
+          location: formData.location,
+          website: formData.website,
+          tags: formData.tags,
+          lookingFor: serializedRoles,
+          compensationType: formData.compensationType,
+          teamSize: formData.teamSize,
+          socialImpact: formData.socialImpact,
+          founderLinkedin: formData.founderLinkedin,
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create startup');
+      }
       
       toast({
-        title: 'Startup Created Successfully!',
-        description: 'Your startup profile has been submitted and is now live.',
+        title: 'Startup Submitted!',
+        description: 'Your startup has been created and is pending review by the admin. It will be visible to other users once approved.',
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -217,7 +271,7 @@ const CreateStartupPage: React.FC = () => {
     } catch (error) {
       toast({
         title: 'Submission Failed',
-        description: 'There was an error creating your startup. Please try again.',
+        description: error instanceof Error ? error.message : 'There was an error creating your startup. Please try again.',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -514,18 +568,162 @@ const CreateStartupPage: React.FC = () => {
             </FormControl>
 
             <FormControl>
-              <FormLabel>Looking For</FormLabel>
+              <FormLabel>Looking For (select all that apply)</FormLabel>
               <CheckboxGroup
                 value={formData.lookingFor}
-                onChange={(values) => setFormData(prev => ({ ...prev, lookingFor: values as string[] }))}
+                onChange={(values) => {
+                  const newRoles = values as string[];
+                  const prevRoles = formData.lookingFor;
+
+                  // Determine newly added roles
+                  const addedRoles = newRoles.filter(r => !prevRoles.includes(r));
+                  // Determine removed roles
+                  const removedRoles = prevRoles.filter(r => !newRoles.includes(r));
+
+                  // Initialize roleDetails and expandedRoles for newly added roles
+                  const newRoleDetails = { ...formData.roleDetails };
+                  const newExpandedRoles = { ...expandedRoles };
+
+                  for (const role of addedRoles) {
+                    newRoleDetails[role] = { description: '', skillsInput: '', commitment: '' };
+                    newExpandedRoles[role] = true;
+                  }
+
+                  // Remove roleDetails and expandedRoles for deselected roles
+                  for (const role of removedRoles) {
+                    delete newRoleDetails[role];
+                    delete newExpandedRoles[role];
+                  }
+
+                  setFormData(prev => ({
+                    ...prev,
+                    lookingFor: newRoles,
+                    roleDetails: newRoleDetails,
+                  }));
+                  setExpandedRoles(newExpandedRoles);
+                }}
               >
-                <SimpleGrid columns={{ base: 2, md: 3 }} spacing={2}>
-                  {['Co-founder', 'CTO', 'Lead Developer', 'Designer', 'Marketing Lead', 'Sales Lead', 'Advisor', 'Mentor', 'Investors', 'Beta Users'].map((role) => (
+                <SimpleGrid columns={{ base: 2, md: 3, lg: 4 }} spacing={2}>
+                  {[
+                    'Co-founder',
+                    'CTO',
+                    'CEO',
+                    'COO',
+                    'CFO',
+                    'Software Engineer',
+                    'Frontend Developer',
+                    'Backend Developer',
+                    'Full-Stack Developer',
+                    'Mobile Developer',
+                    'DevOps Engineer',
+                    'Cloud Architect',
+                    'Data Analyst',
+                    'Data Scientist',
+                    'Machine Learning Engineer',
+                    'AI Engineer',
+                    'Cyber Security Analyst',
+                    'Penetration Tester',
+                    'UX Designer',
+                    'UI Designer',
+                    'Product Designer',
+                    'Graphic Designer',
+                    'Product Manager',
+                    'Project Manager',
+                    'Programme Manager',
+                    'Project Director',
+                    'Project Officer',
+                    'Business Analyst',
+                    'Scrum Master',
+                    'Agile Coach',
+                    'Marketing Lead',
+                    'Digital Marketing Specialist',
+                    'Content Creator',
+                    'SEO Specialist',
+                    'Social Media Manager',
+                    'Sales Lead',
+                    'Business Development Manager',
+                    'Growth Hacker',
+                    'Community Manager',
+                    'Customer Success Manager',
+                    'HR Manager',
+                    'Legal Advisor',
+                    'Financial Advisor',
+                    'Advisor',
+                    'Mentor',
+                    'Investors',
+                    'Beta Users',
+                    'QA Engineer',
+                    'Technical Writer',
+                    'Solutions Architect',
+                  ].map((role) => (
                     <Checkbox key={role} value={role}>{role}</Checkbox>
                   ))}
                 </SimpleGrid>
               </CheckboxGroup>
               <FormHelperText>Select all that apply</FormHelperText>
+            </FormControl>
+
+            {/* Role Expansion Panels */}
+            {formData.lookingFor.length > 0 && (
+              <VStack spacing={3} align="stretch">
+                {formData.lookingFor.map((role) => {
+                  const details = formData.roleDetails[role];
+                  if (!details) return null;
+
+                  const roleErrors: { description?: string; skills?: string } = {};
+                  const descError = validateDescription(details.description);
+                  if (descError) roleErrors.description = descError;
+
+                  if (details.skillsInput) {
+                    const skills = parseSkills(details.skillsInput);
+                    const skillError = skills.find((s) => validateSkill(s) !== null);
+                    if (skillError) {
+                      roleErrors.skills = validateSkill(skillError)!;
+                    }
+                  }
+
+                  return (
+                    <RoleExpansionPanel
+                      key={role}
+                      roleTitle={role}
+                      details={details}
+                      isExpanded={!!expandedRoles[role]}
+                      onToggleExpand={() => {
+                        setExpandedRoles((prev) => ({
+                          ...prev,
+                          [role]: !prev[role],
+                        }));
+                      }}
+                      onChange={(updatedDetails: RoleDetailState) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          roleDetails: {
+                            ...prev.roleDetails,
+                            [role]: updatedDetails,
+                          },
+                        }));
+                      }}
+                      errors={roleErrors}
+                    />
+                  );
+                })}
+              </VStack>
+            )}
+
+            <FormControl>
+              <FormLabel>Compensation Type for Roles</FormLabel>
+              <Select
+                value={formData.compensationType || 'equity'}
+                onChange={(e) => setFormData(prev => ({ ...prev, compensationType: e.target.value }))}
+              >
+                <option value="equity">Equity Only</option>
+                <option value="volunteer">Volunteer</option>
+                <option value="paid">Paid (Salary)</option>
+                <option value="equity_salary">Equity + Salary</option>
+                <option value="stipend">Stipend</option>
+                <option value="mixed">Mixed (varies by role)</option>
+              </Select>
+              <FormHelperText>How will team members be compensated?</FormHelperText>
             </FormControl>
           </VStack>
         );

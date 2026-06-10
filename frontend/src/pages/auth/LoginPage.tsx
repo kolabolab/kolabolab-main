@@ -92,7 +92,9 @@ const LoginPage: React.FC = () => {
       const response = await authAPI.login(formData.email, formData.password);
       
       // Extract user and tokens from response
-      const { user, accessToken, refreshToken } = response;
+      const user = response.user;
+      const accessToken = response.accessToken || response.tokens?.accessToken;
+      const refreshToken = response.refreshToken || response.tokens?.refreshToken;
       
       // Create user profile from API response
       const authenticatedUser = {
@@ -107,6 +109,7 @@ const LoginPage: React.FC = () => {
         company: user.company,
         location: user.location,
         isEmailVerified: true, // If login succeeds, email is verified
+        onboardingCompleted: user.onboardingCompleted ?? false,
       };
 
       const tokens = {
@@ -131,10 +134,19 @@ const LoginPage: React.FC = () => {
       let errorMessage = 'Invalid email or password. Please try again.';
       
       // Handle specific API errors
-      if (error.response?.data?.message) {
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
-      } else if (error.message) {
+      } else if (error.details?.error) {
+        errorMessage = error.details.error;
+      } else if (error.message && !error.message.includes('status code')) {
         errorMessage = error.message;
+      }
+
+      // Make the message more user-friendly
+      if (errorMessage === 'Invalid credentials') {
+        errorMessage = 'Invalid email or password. Please check your credentials or register a new account.';
       }
       
       setErrors({ general: errorMessage });
@@ -142,8 +154,9 @@ const LoginPage: React.FC = () => {
         title: 'Login failed',
         description: errorMessage,
         status: 'error',
-        duration: 5000,
+        duration: 10000,
         isClosable: true,
+        position: 'top',
       });
     } finally {
       setIsLoading(false);
@@ -153,12 +166,12 @@ const LoginPage: React.FC = () => {
   const handleOAuthLogin = async (provider: 'google' | 'linkedin' | 'github') => {
     setIsLoading(true);
     try {
-      // Get API base URL from environment or detect from hostname
-      const apiBaseUrl = import.meta.env.VITE_API_URL || (
-        window.location.hostname.includes('kolabolab.com') 
-          ? 'https://kolabolab-api.beryour.workers.dev'
-          : 'https://kolabolab-api-dev.beryour.workers.dev'
-      );
+      // Get API base URL - production by default, dev only for dev hostnames
+      const devHosts = ['kolabolab-api-dev', '0fc93d16', 'localhost', 'kolabolab-dev'];
+      const isDev = devHosts.some(h => window.location.hostname.indexOf(h) !== -1);
+      const apiBaseUrl = isDev
+        ? 'https://kolabolab-api-dev.beryour.workers.dev'
+        : 'https://kolabolab-api.beryour.workers.dev';
       const oauthUrl = `${apiBaseUrl}/auth/${provider}`;
       
       // Redirect to backend OAuth endpoint

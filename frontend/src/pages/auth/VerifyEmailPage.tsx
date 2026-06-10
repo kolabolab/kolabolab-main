@@ -18,17 +18,16 @@ import {
 import { FiCheckCircle, FiXCircle, FiArrowRight } from 'react-icons/fi';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { useAuth } from '../../hooks/useAuth';
+import { authAPI } from '../../services/apiClient';
 
 const VerifyEmailPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const toast = useToast();
-  const { setAuth } = useAuth();
   
   const [verificationStatus, setVerificationStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+  const [resendLoading, setResendLoading] = useState(false);
 
   const bgColor = useColorModeValue('gray.50', 'gray.900');
   const cardBg = useColorModeValue('white', 'gray.800');
@@ -36,103 +35,63 @@ const VerifyEmailPage: React.FC = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       const token = searchParams.get('token');
-      const email = searchParams.get('email');
 
-      if (!token || !email) {
+      if (!token) {
         setVerificationStatus('error');
         setErrorMessage('Invalid verification link. Please check your email and try again.');
         return;
       }
 
-      setUserEmail(email);
-
       try {
-        // Simulate API verification delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-
-        // Check if verification token exists and is valid
-        const pendingVerifications = JSON.parse(localStorage.getItem('pendingVerifications') || '{}');
-        const verification = pendingVerifications[email];
-
-        if (!verification || verification.token !== token) {
-          setVerificationStatus('error');
-          setErrorMessage('Invalid or expired verification token. Please request a new verification email.');
-          return;
-        }
-
-        // Get user profiles
-        const savedProfiles = localStorage.getItem('userProfiles');
-        let userProfiles: any = {};
+        const result = await authAPI.verifyEmail(token);
         
-        if (savedProfiles) {
-          userProfiles = JSON.parse(savedProfiles);
+        if (result.message === 'Email verified successfully' || result.message === 'Email is already verified') {
+          setVerificationStatus('success');
+          toast({
+            title: 'Email Verified!',
+            description: 'Your account is now fully active. You can now log in.',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+
+          // Redirect to login after 3 seconds (user needs to sign in)
+          setTimeout(() => {
+            navigate('/login');
+          }, 3000);
         }
-
-        const user = userProfiles[email];
-        if (!user) {
-          setVerificationStatus('error');
-          setErrorMessage('User account not found. Please register again.');
-          return;
-        }
-
-        // Mark user as verified
-        const verifiedUser = {
-          ...user,
-          isEmailVerified: true,
-          emailVerifiedAt: new Date().toISOString(),
-        };
-
-        // Update user profiles
-        userProfiles[email] = verifiedUser;
-        localStorage.setItem('userProfiles', JSON.stringify(userProfiles));
-
-        // Remove from pending verifications
-        delete pendingVerifications[email];
-        localStorage.setItem('pendingVerifications', JSON.stringify(pendingVerifications));
-
-        // Create tokens and log user in
-        const mockTokens = {
-          accessToken: 'mock-access-token-' + Date.now(),
-          refreshToken: 'mock-refresh-token-' + Date.now(),
-        };
-
-        localStorage.setItem('accessToken', mockTokens.accessToken);
-        localStorage.setItem('refreshToken', mockTokens.refreshToken);
-
-        // Set authentication state
-        setAuth(verifiedUser, mockTokens);
-
-        setVerificationStatus('success');
-
-        toast({
-          title: 'Email Verified Successfully!',
-          description: `Welcome to KolaboLab, ${verifiedUser.firstName}! Your account is now active.`,
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        });
-
-        // Redirect to dashboard after a short delay
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 3000);
-
-      } catch (error) {
+      } catch (error: any) {
         console.error('Email verification error:', error);
         setVerificationStatus('error');
-        setErrorMessage('An error occurred during verification. Please try again.');
+        setErrorMessage(error?.message || error?.details?.error || 'Verification failed. The link may be expired.');
       }
     };
 
     verifyEmail();
-  }, [searchParams, navigate, toast, setAuth]);
+  }, [searchParams, navigate, toast]);
 
-  const handleGoToDashboard = () => {
-    navigate('/dashboard');
-  };
-
-  const handleRequestNewLink = () => {
-    navigate(`/verify-email-sent?email=${encodeURIComponent(userEmail)}`);
+  const handleResend = async () => {
+    setResendLoading(true);
+    try {
+      const result = await authAPI.resendVerification();
+      toast({
+        title: 'Verification email sent!',
+        description: 'Check your inbox for the new verification link.',
+        status: 'success',
+        duration: 8000,
+        isClosable: true,
+      });
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error?.message || 'Could not resend verification email. Please log in first.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   return (
@@ -145,7 +104,6 @@ const VerifyEmailPage: React.FC = () => {
       <Box minH="100vh" bg={bgColor} py={8}>
         <Container maxW="md">
           <VStack spacing={8}>
-
             <Card bg={cardBg} w="full" shadow="xl">
               <CardBody p={8} textAlign="center">
                 <VStack spacing={6}>
@@ -167,19 +125,19 @@ const VerifyEmailPage: React.FC = () => {
                         Email Verified Successfully!
                       </Heading>
                       <Text color="gray.600" fontSize="lg">
-                        Your account has been activated. You will be redirected to your dashboard shortly.
+                        Your account is now active. You'll be redirected to sign in shortly.
                       </Text>
                       <Alert status="success" borderRadius="md">
                         <AlertIcon />
-                        Welcome to KolaboLab! Your account is now ready to use.
+                        Your email is verified! Please sign in to access your account.
                       </Alert>
                       <Button
                         rightIcon={<FiArrowRight />}
-                        colorScheme="success"
+                        colorScheme="green"
                         size="lg"
-                        onClick={handleGoToDashboard}
+                        onClick={() => navigate('/login')}
                       >
-                        Go to Dashboard
+                        Sign In Now
                       </Button>
                     </>
                   )}
@@ -198,20 +156,21 @@ const VerifyEmailPage: React.FC = () => {
                         <Box textAlign="left">
                           <Text fontWeight="bold">What can you do?</Text>
                           <Text fontSize="sm">
-                            • Check if you clicked the correct link from your email
-                            • Request a new verification email
-                            • Contact support if the problem persists
+                            • Check if you clicked the correct link from your email<br/>
+                            • Request a new verification email below<br/>
+                            • Log in first if you need to resend
                           </Text>
                         </Box>
                       </Alert>
                       <VStack spacing={3} w="full">
                         <Button
                           colorScheme="brand"
-                          variant="outline"
-                          onClick={handleRequestNewLink}
+                          onClick={handleResend}
+                          isLoading={resendLoading}
+                          loadingText="Sending..."
                           w="full"
                         >
-                          Request New Verification Email
+                          Resend Verification Email
                         </Button>
                         <Button
                           variant="ghost"
@@ -227,7 +186,6 @@ const VerifyEmailPage: React.FC = () => {
                 </VStack>
               </CardBody>
             </Card>
-
           </VStack>
         </Container>
       </Box>

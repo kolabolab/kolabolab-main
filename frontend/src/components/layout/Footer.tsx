@@ -2,221 +2,75 @@ import React from 'react'
 import {
   Box,
   Container,
-  Stack,
+  SimpleGrid,
   Text,
   Link,
   useColorModeValue,
   HStack,
   VStack,
-  Divider,
   Icon,
+  Flex,
+  Divider,
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
-import { ExternalLinkIcon } from '@chakra-ui/icons'
-import { FiHeart } from 'react-icons/fi'
+import { FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi'
 
 export const Footer: React.FC = React.memo(() => {
   return (
-    <Box
-      bg={useColorModeValue('gray.50', 'gray.900')}
-      color={useColorModeValue('gray.700', 'gray.200')}
-      borderTop="1px"
-      borderColor={useColorModeValue('gray.200', 'gray.700')}
-      mt="auto"
-    >
-      <Container as={Stack} maxW="6xl" py={10}>
-        <Stack spacing={8}>
-          <Stack direction={{ base: 'column', md: 'row' }} spacing={8}>
-            {/* Brand section */}
-            <VStack align="start" spacing={4} flex={1}>
-              <Text fontSize="lg" fontWeight="bold" color="brand.500">
-                KolaboLab
-              </Text>
-              <Text fontSize="sm" maxW="300px">
-                Connecting entrepreneurs, collaborators, and investors to build 
-                the future of technology with social impact.
-              </Text>
-            </VStack>
+    <Box bg={useColorModeValue('brand.900', 'gray.900')} color="gray.400" mt="auto">
+      <Container maxW="6xl" py={10}>
+        <SimpleGrid columns={{ base: 2, md: 4 }} spacing={8} mb={8}>
+          <VStack align="start" spacing={2}>
+            <Text fontWeight="600" color="white" fontSize="sm" mb={1}>Platform</Text>
+            <Link as={RouterLink} to="/startups" fontSize="sm" _hover={{ color: 'accent.400' }}>Browse Startups</Link>
+            <Link as={RouterLink} to="/search" fontSize="sm" _hover={{ color: 'accent.400' }}>Find Collaborators</Link>
+            <Link as={RouterLink} to="/create-startup" fontSize="sm" _hover={{ color: 'accent.400' }}>Create a Startup</Link>
+          </VStack>
 
-            {/* Platform links */}
-            <VStack align="start" spacing={3} flex={1}>
-              <Text fontWeight="bold">Platform</Text>
-              <Link 
-                as={RouterLink} 
-                to="/startups" 
-                fontSize="sm" 
-                className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
-              >
-                Browse Startups
-              </Link>
-              <Link 
-                as={RouterLink} 
-                to="/search" 
-                fontSize="sm"
-                className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
-              >
-                Search Projects
-              </Link>
-              <Link 
-                as={RouterLink} 
-                to="/register" 
-                fontSize="sm"
-                className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
-              >
-                Join Community
-              </Link>
-            </VStack>
+          <VStack align="start" spacing={2}>
+            <Text fontWeight="600" color="white" fontSize="sm" mb={1}>Company</Text>
+            <Link as={RouterLink} to="/about" fontSize="sm" _hover={{ color: 'accent.400' }}>About Us</Link>
+            <Link href="mailto:hello@kolabolab.com" fontSize="sm" _hover={{ color: 'accent.400' }}>Contact</Link>
+          </VStack>
 
-            {/* Resources links */}
-            <VStack align="start" spacing={3} flex={1}>
-              <Text fontWeight="bold">Resources</Text>
-              <Link 
-                href="/docs" 
-                fontSize="sm" 
-                isExternal
-                className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
-              >
-                Documentation <Icon as={ExternalLinkIcon} mx="2px" />
-              </Link>
-              <Link 
-                href="/blog" 
-                fontSize="sm" 
-                isExternal
-                className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
-              >
-                Blog <Icon as={ExternalLinkIcon} mx="2px" />
-              </Link>
-              <Link 
-                href="/api" 
-                fontSize="sm" 
-                isExternal
-                className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
-              >
-                API Reference <Icon as={ExternalLinkIcon} mx="2px" />
-              </Link>
-            </VStack>
+          <VStack align="start" spacing={2}>
+            <Text fontWeight="600" color="white" fontSize="sm" mb={1}>Legal</Text>
+            <Link as={RouterLink} to="/privacy" fontSize="sm" _hover={{ color: 'accent.400' }}>Privacy Policy</Link>
+            <Link as={RouterLink} to="/terms" fontSize="sm" _hover={{ color: 'accent.400' }}>Terms of Service</Link>
+          </VStack>
 
-            {/* Support links */}
-            <VStack align="start" spacing={3} flex={1}>
-              <Text fontWeight="bold">Support</Text>
-              <Link 
-                href="/help" 
-                fontSize="sm" 
-                isExternal
-                className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
-              >
-                Help Center <Icon as={ExternalLinkIcon} mx="2px" />
+          <VStack align="start" spacing={2}>
+            <Text fontWeight="600" color="white" fontSize="sm" mb={1}>Connect</Text>
+            <HStack spacing={4}>
+              <Link href="https://twitter.com/kolabolab" isExternal aria-label="Twitter">
+                <Icon as={FiTwitter} w={4} h={4} _hover={{ color: 'accent.400' }} transition="color 0.2s" />
               </Link>
-              <Link 
-                href="/contact" 
-                fontSize="sm" 
-                isExternal
-                className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
-              >
-                Contact Us <Icon as={ExternalLinkIcon} mx="2px" />
+              <Link href="https://linkedin.com/company/kolabolab" isExternal aria-label="LinkedIn">
+                <Icon as={FiLinkedin} w={4} h={4} _hover={{ color: 'accent.400' }} transition="color 0.2s" />
               </Link>
-              <Link 
-                href="/community" 
-                fontSize="sm" 
-                isExternal
-                className="footer-link"
-                display="flex"
-                alignItems="center"
-                minH="44px"
-                px={2}
-              >
-                Community <Icon as={ExternalLinkIcon} mx="2px" />
-              </Link>
-            </VStack>
-          </Stack>
-
-          <Divider />
-
-          <Stack
-            direction={{ base: 'column', md: 'row' }}
-            justify="space-between"
-            align="center"
-            spacing={4}
-          >
-            <Text fontSize="sm">
-              © {new Date().getFullYear()} KolaboLab. All rights reserved.
-            </Text>
-            
-            <HStack spacing={6} flexWrap="wrap" justify={{ base: "center", md: "flex-end" }}>
-              <Link 
-                href="/privacy" 
-                fontSize="sm" 
-                className="footer-link"
-                _hover={{ color: 'brand.500', textDecoration: 'none' }}
-                transition="color 0.2s ease"
-              >
-                Privacy Policy
-              </Link>
-              <Link 
-                href="/terms" 
-                fontSize="sm" 
-                className="footer-link"
-                _hover={{ color: 'brand.500', textDecoration: 'none' }}
-                transition="color 0.2s ease"
-              >
-                Terms of Service
-              </Link>
-              <Link 
-                as={RouterLink}
-                to="/about"
-                fontSize="sm"
-                className="footer-link"
-                _hover={{ color: 'brand.500', textDecoration: 'none' }}
-                transition="color 0.2s ease"
-                display="flex"
-                alignItems="center"
-                gap={1}
-              >
-                Made with <Icon as={FiHeart} color="red.500" w={3} h={3} /> for social impact
+              <Link href="https://github.com/kolabolab" isExternal aria-label="GitHub">
+                <Icon as={FiGithub} w={4} h={4} _hover={{ color: 'accent.400' }} transition="color 0.2s" />
               </Link>
             </HStack>
-          </Stack>
+          </VStack>
+        </SimpleGrid>
 
-          {/* Accessibility statement */}
-          <Box pt={4}>
-            <Text fontSize="xs" color="gray.500" textAlign="center">
-              KolaboLab is committed to digital accessibility. We continually improve 
-              the user experience for everyone and apply the relevant accessibility standards.
-            </Text>
-          </Box>
-        </Stack>
+        <Divider borderColor="whiteAlpha.200" />
+
+        <Flex
+          direction={{ base: 'column', md: 'row' }}
+          justify="space-between"
+          align="center"
+          pt={6}
+          gap={2}
+        >
+          <Text fontSize="xs" color="gray.500">
+            © {new Date().getFullYear()} KolaboLab. All rights reserved.
+          </Text>
+          <Text fontSize="xs" color="gray.500">
+            Connect · Collaborate · Grow
+          </Text>
+        </Flex>
       </Container>
     </Box>
   )

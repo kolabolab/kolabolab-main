@@ -122,134 +122,34 @@ const SearchPage: React.FC = () => {
   const performSearch = async () => {
     setLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Mock search results based on filters
-    const mockResults: SearchResult[] = [
-      {
-        id: '1',
-        type: 'startup',
-        title: 'EcoTech Solutions',
-        subtitle: 'Sustainable technology for a greener future',
-        description: 'Revolutionary platform for sustainable technology solutions that reduce carbon footprint while increasing business efficiency.',
-        location: 'San Francisco, CA',
-        image: 'https://via.placeholder.com/80x80/10B981/FFFFFF?text=ET',
-        tags: ['Sustainability', 'AI', 'IoT', 'CleanTech'],
-        metrics: {
-          views: 2340,
-          followers: 156,
-          funding: '$1.5M raised',
-          stage: 'Growth',
-          teamSize: 12,
-        },
-        featured: true,
-      },
-      {
-        id: '2',
-        type: 'startup',
-        title: 'HealthBridge Connect',
-        subtitle: 'Connecting rural communities with healthcare',
-        description: 'Telemedicine platform providing healthcare access to underserved communities through mobile technology.',
-        location: 'Austin, TX',
-        image: 'https://via.placeholder.com/80x80/3B82F6/FFFFFF?text=HB',
-        tags: ['Healthcare', 'Telemedicine', 'Social Impact', 'Mobile'],
-        metrics: {
-          views: 1580,
-          followers: 89,
-          funding: '$450K raised',
-          stage: 'Early Stage',
-          teamSize: 8,
-        },
-      },
-      {
-        id: '3',
-        type: 'person',
-        title: 'Sarah Chen',
-        subtitle: 'Full-Stack Developer & AI Specialist',
-        description: 'Experienced developer looking to join innovative startups focused on sustainable technology and social impact.',
-        location: 'Seattle, WA',
-        image: 'https://via.placeholder.com/80x80/6B7280/FFFFFF?text=SC',
-        tags: ['React', 'Python', 'AI/ML', 'DevOps'],
-        metrics: {
-          experience: '8+ years',
-          role: 'Senior Developer',
-          skills: ['React', 'Python', 'AI/ML', 'DevOps', 'AWS'],
-        },
-      },
-      {
-        id: '4',
-        type: 'opportunity',
-        title: 'Lead Frontend Developer',
-        subtitle: 'EcoTech Solutions � Full-time',
-        description: 'Join our mission to build sustainable technology solutions that make a real environmental impact.',
-        location: 'San Francisco, CA (Remote OK)',
-        image: 'https://via.placeholder.com/80x80/10B981/FFFFFF?text=ET',
-        tags: ['React', 'TypeScript', 'Sustainability', 'Senior Level'],
-        metrics: {
-          role: 'Frontend Developer',
-          experience: '5+ years required',
-        },
-      },
-      {
-        id: '5',
-        type: 'person',
-        title: 'Michael Rodriguez',
-        subtitle: 'Angel Investor & Startup Mentor',
-        description: 'Supporting early-stage startups in HealthTech and EdTech with funding and strategic guidance.',
-        location: 'New York, NY',
-        image: 'https://via.placeholder.com/80x80/9333EA/FFFFFF?text=MR',
-        tags: ['Angel Investor', 'HealthTech', 'EdTech', 'Mentor'],
-        metrics: {
-          experience: '15+ years',
-          role: 'Investor',
-        },
-      },
-      {
-        id: '6',
-        type: 'startup',
-        title: 'EduFlow Analytics',
-        subtitle: 'Personalized learning for every student',
-        description: 'AI-powered educational platform that adapts to individual learning styles and provides real-time feedback.',
-        location: 'Boston, MA',
-        image: 'https://via.placeholder.com/80x80/F59E0B/FFFFFF?text=EA',
-        tags: ['Education', 'AI', 'Analytics', 'Personalization'],
-        metrics: {
-          views: 890,
-          followers: 67,
-          funding: '$240K raised',
-          stage: 'MVP',
-          teamSize: 5,
-        },
-      },
-    ];
-
-    // Filter results based on search criteria
-    let filteredResults = mockResults;
-    
-    if (filters.query) {
-      filteredResults = filteredResults.filter(result =>
-        result.title.toLowerCase().includes(filters.query.toLowerCase()) ||
-        result.description.toLowerCase().includes(filters.query.toLowerCase()) ||
-        result.tags.some(tag => tag.toLowerCase().includes(filters.query.toLowerCase()))
-      );
-    }
-
-    if (filters.type !== 'all') {
-      if (filters.type === 'startups') {
-        filteredResults = filteredResults.filter(result => result.type === 'startup');
-      } else if (filters.type === 'people') {
-        filteredResults = filteredResults.filter(result => result.type === 'person');
-      } else if (filters.type === 'opportunities') {
-        filteredResults = filteredResults.filter(result => result.type === 'opportunity');
+    try {
+      const devHosts = ['kolabolab-api-dev', '0fc93d16', 'localhost', 'kolabolab-dev'];
+      const isDev = devHosts.some(h => window.location.hostname.indexOf(h) !== -1);
+      const apiBaseUrl = isDev
+        ? 'https://kolabolab-api-dev.beryour.workers.dev'
+        : 'https://kolabolab-api.beryour.workers.dev';
+      
+      const params = new URLSearchParams();
+      if (filters.query) params.set('q', filters.query);
+      if (filters.type !== 'all') params.set('type', filters.type);
+      
+      const response = await fetch(`${apiBaseUrl}/api/search?${params.toString()}`);
+      if (response.ok) {
+        const data = await response.json();
+        setResults(data.results || []);
+        setResultCount(data.results?.length || 0);
+      } else {
+        setResults([]);
+        setResultCount(0);
       }
+    } catch (error) {
+      console.error('Search failed:', error);
+      setResults([]);
+      setResultCount(0);
     }
-
-    setResults(filteredResults);
-    setResultCount(filteredResults.length);
+    
     setLoading(false);
   };
-
   const handleFilterChange = (key: keyof SearchFilters, value: any) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
@@ -402,7 +302,13 @@ const SearchPage: React.FC = () => {
             <Box>
               <HStack justify="space-between" mb={6}>
                 <Text color="gray.600">
-                  {loading ? 'Searching...' : `${resultCount} results found`}
+                  {loading ? 'Searching...' : `${results.filter((r) => {
+                    if (filters.type === 'all') return true;
+                    if (filters.type === 'startups') return r.type === 'startup';
+                    if (filters.type === 'people') return r.type === 'person';
+                    if (filters.type === 'opportunities') return r.type === 'opportunity';
+                    return true;
+                  }).length} results found`}
                 </Text>
                 <HStack spacing={2}>
                   <Text fontSize="sm" color="gray.500">Sort by:</Text>
@@ -435,8 +341,14 @@ const SearchPage: React.FC = () => {
                 </SimpleGrid>
               ) : results.length > 0 ? (
                 <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={6}>
-                  {results.map((result) => (
-                    <Card key={result.id} className="card-hover glass-panel">
+                  {results.filter((result) => {
+                    if (filters.type === 'all') return true;
+                    if (filters.type === 'startups') return result.type === 'startup';
+                    if (filters.type === 'people') return result.type === 'person';
+                    if (filters.type === 'opportunities') return result.type === 'opportunity';
+                    return true;
+                  }).map((result) => (
+                    <Card key={`${result.type}-${result.id}-${result.title}`} className="card-hover glass-panel">
                       <CardBody p={6}>
                         <VStack spacing={4} align="stretch">
                           <HStack spacing={4} align="start">

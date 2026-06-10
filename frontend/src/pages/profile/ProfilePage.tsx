@@ -25,15 +25,22 @@ import {
   Alert,
   AlertIcon,
 } from '@chakra-ui/react';
-import { FiCamera, FiSave, FiUser, FiMail, FiBriefcase, FiMapPin } from 'react-icons/fi';
+import { FiCamera, FiSave, FiUser, FiMail, FiBriefcase, FiMapPin, FiExternalLink } from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { RoleSelector } from '../../components/RoleSelector';
+import { apiClient } from '../../services/apiClient';
 
 const ProfilePage: React.FC = () => {
-  const { user, setAuth } = useAuth();
+  const { user, setAuth, updateUser } = useAuth();
   const toast = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // Role editing state
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(user?.roles || []);
+  const [isSavingRoles, setIsSavingRoles] = useState(false);
   
   const cardBg = useColorModeValue('white', 'gray.800');
   const bgColor = useColorModeValue('gray.50', 'gray.900');
@@ -148,6 +155,46 @@ const ProfilePage: React.FC = () => {
     handleInputChange('avatar', avatars[nextIndex]);
   };
 
+  const handleRoleChange = (newRoles: string[]) => {
+    // Prevent deselecting the last remaining role
+    if (newRoles.length === 0) return;
+    setSelectedRoles(newRoles);
+  };
+
+  const handleSaveRoles = async () => {
+    setIsSavingRoles(true);
+    const previousRoles = user?.roles || [];
+
+    try {
+      const response = await apiClient.put('/api/user/roles', { roles: selectedRoles });
+      const updatedRoles = response.data.roles || selectedRoles;
+
+      // Update auth store with new roles
+      updateUser({ roles: updatedRoles });
+
+      toast({
+        title: 'Roles Updated',
+        description: 'Your roles have been successfully updated.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      // Revert UI to previous roles
+      setSelectedRoles(previousRoles);
+
+      toast({
+        title: 'Update Failed',
+        description: 'There was an error updating your roles. Please try again.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsSavingRoles(false);
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -165,6 +212,19 @@ const ProfilePage: React.FC = () => {
               <Text color="gray.600">
                 Manage your personal information and preferences
               </Text>
+              {user?.id && (
+                <Button
+                  as={Link}
+                  to={`/users/${user.id}`}
+                  size="sm"
+                  variant="outline"
+                  colorScheme="brand"
+                  mt={3}
+                  rightIcon={<FiExternalLink />}
+                >
+                  View Public Profile
+                </Button>
+              )}
             </Box>
 
             {/* Profile Overview Card */}
@@ -338,6 +398,40 @@ const ProfilePage: React.FC = () => {
                     </Alert>
                   )}
 
+                </VStack>
+              </CardBody>
+            </Card>
+
+            {/* Role Editing Section */}
+            <Card bg={cardBg}>
+              <CardHeader>
+                <HStack justify="space-between">
+                  <Heading size="md">Your Roles</Heading>
+                  <Button
+                    leftIcon={<FiSave />}
+                    colorScheme="brand"
+                    onClick={handleSaveRoles}
+                    isLoading={isSavingRoles}
+                    loadingText="Saving..."
+                    isDisabled={
+                      JSON.stringify(selectedRoles.slice().sort()) ===
+                      JSON.stringify((user?.roles || []).slice().sort())
+                    }
+                  >
+                    Save
+                  </Button>
+                </HStack>
+              </CardHeader>
+              <CardBody>
+                <VStack spacing={4} align="stretch">
+                  <Text color="gray.600">
+                    Select the roles that describe how you use KolaboLab. At least one role must remain selected.
+                  </Text>
+                  <RoleSelector
+                    selectedRoles={selectedRoles}
+                    onChange={handleRoleChange}
+                    disabled={isSavingRoles}
+                  />
                 </VStack>
               </CardBody>
             </Card>

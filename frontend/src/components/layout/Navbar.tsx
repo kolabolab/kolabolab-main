@@ -26,8 +26,10 @@ import {
 } from '@chakra-ui/react'
 import { Link as RouterLink, useNavigate } from 'react-router-dom'
 import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons'
-import { FiTrendingUp, FiUsers, FiLogOut, FiFolderPlus, FiUser, FiChevronDown } from 'react-icons/fi'
+import { FiTrendingUp, FiUsers, FiLogOut, FiFolderPlus, FiUser, FiChevronDown, FiShield, FiBell, FiMessageSquare } from 'react-icons/fi'
 import { useAuth } from '../../hooks/useAuth'
+import { NotificationBell } from './NotificationBell'
+import { UnreadBadge } from '../UnreadBadge'
 
 const NavLink = ({ children, to, variant = 'default' }: { 
   children: React.ReactNode; 
@@ -196,8 +198,12 @@ export const Navbar: React.FC = React.memo(() => {
                   <>
                     <NavLink to="/dashboard">Dashboard</NavLink>
                     <NavLink to="/collaborations">Collaborations</NavLink>
+                    <NavLink to="/applications/mine">Applications</NavLink>
                     {user?.roles?.includes('investor') && (
                       <NavLink to="/investments" variant="investor">Investments</NavLink>
+                    )}
+                    {user?.roles?.includes('admin') && (
+                      <NavLink to="/admin">Admin</NavLink>
                     )}
                   </>
                 )}
@@ -220,6 +226,32 @@ export const Navbar: React.FC = React.memo(() => {
                   >
                     Create Startup
                   </Button>
+
+                  {/* Notification Bell */}
+                  <Box display={{ base: 'none', md: 'flex' }}>
+                    <NotificationBell />
+                  </Box>
+
+                  {/* Messages Link */}
+                  <Box display={{ base: 'none', md: 'flex' }} alignItems="center">
+                    <ChakraLink
+                      as={RouterLink}
+                      to="/messages"
+                      display="flex"
+                      alignItems="center"
+                      px={2}
+                      py={1}
+                      rounded="lg"
+                      _hover={{
+                        textDecoration: 'none',
+                        bg: 'rgba(27, 42, 74, 0.08)',
+                      }}
+                      aria-label="Messages"
+                    >
+                      <Icon as={FiMessageSquare} w={5} h={5} />
+                      <UnreadBadge />
+                    </ChakraLink>
+                  </Box>
                   
                   {/* Proper Chakra UI Menu */}
                   <Menu>
@@ -322,6 +354,16 @@ export const Navbar: React.FC = React.memo(() => {
                         _focus={{ bg: 'brand.50' }}
                       >
                         My Profile
+                      </MenuItem>
+
+                      <MenuItem
+                        icon={<Icon as={FiUsers} />}
+                        onClick={() => navigate('/applications/mine')}
+                        borderRadius="md"
+                        _hover={{ bg: 'brand.50' }}
+                        _focus={{ bg: 'brand.50' }}
+                      >
+                        My Applications
                       </MenuItem>
                       
                       <MenuDivider />
@@ -542,6 +584,61 @@ export const Navbar: React.FC = React.memo(() => {
                       </HStack>
                     </ChakraLink>
 
+                    <ChakraLink
+                      as={RouterLink}
+                      to="/notifications"
+                      px={4}
+                      py={3}
+                      w="100%"
+                      rounded="lg"
+                      minH="48px"
+                      fontWeight="500"
+                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      onClick={onClose}
+                    >
+                      <HStack>
+                        <Icon as={FiBell} />
+                        <Text>Notifications</Text>
+                      </HStack>
+                    </ChakraLink>
+
+                    <ChakraLink
+                      as={RouterLink}
+                      to="/messages"
+                      px={4}
+                      py={3}
+                      w="100%"
+                      rounded="lg"
+                      minH="48px"
+                      fontWeight="500"
+                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      onClick={onClose}
+                    >
+                      <HStack>
+                        <Icon as={FiMessageSquare} />
+                        <Text>Messages</Text>
+                        <UnreadBadge />
+                      </HStack>
+                    </ChakraLink>
+
+                    <ChakraLink
+                      as={RouterLink}
+                      to="/applications/mine"
+                      px={4}
+                      py={3}
+                      w="100%"
+                      rounded="lg"
+                      minH="48px"
+                      fontWeight="500"
+                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      onClick={onClose}
+                    >
+                      <HStack>
+                        <Icon as={FiUsers} />
+                        <Text>My Applications</Text>
+                      </HStack>
+                    </ChakraLink>
+
                     {user?.roles?.includes('investor') && (
                       <ChakraLink
                         as={RouterLink}
@@ -559,6 +656,26 @@ export const Navbar: React.FC = React.memo(() => {
                         <HStack>
                           <Icon as={FiTrendingUp} />
                           <Text>Investments</Text>
+                        </HStack>
+                      </ChakraLink>
+                    )}
+
+                    {user?.roles?.includes('admin') && (
+                      <ChakraLink
+                        as={RouterLink}
+                        to="/admin"
+                        px={4}
+                        py={3}
+                        w="100%"
+                        rounded="lg"
+                        minH="48px"
+                        fontWeight="500"
+                        _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                        onClick={onClose}
+                      >
+                        <HStack>
+                          <Icon as={FiShield} />
+                          <Text>Admin</Text>
                         </HStack>
                       </ChakraLink>
                     )}

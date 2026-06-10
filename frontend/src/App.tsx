@@ -23,10 +23,20 @@ const ProfilePage = React.lazy(() => import('./pages/profile/ProfilePage'))
 const SearchPage = React.lazy(() => import('./pages/SearchPage'))
 const CollaborationsPage = React.lazy(() => import('./pages/CollaborationsPage'))
 const InvestmentsPage = React.lazy(() => import('./pages/InvestmentsPage'))
+const OnboardingPage = React.lazy(() => import('./pages/OnboardingPage'))
+const AdminDashboardPage = React.lazy(() => import('./pages/AdminDashboardPage'))
+const ReceivedApplicationsPage = React.lazy(() => import('./pages/applications/ReceivedApplicationsPage'))
+const MyApplicationsPage = React.lazy(() => import('./pages/applications/MyApplicationsPage'))
+const NotificationsPage = React.lazy(() => import('./pages/notifications/NotificationsPage'))
+const ConversationsListPage = React.lazy(() => import('./pages/messages/ConversationsListPage'))
+const ConversationViewPage = React.lazy(() => import('./pages/messages/ConversationViewPage'))
+const UserProfilePage = React.lazy(() => import('./pages/profile/UserProfilePage'))
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage'))
 
 // Protected route wrapper
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import { AdminRoute } from './components/auth/AdminRoute'
+import { OnboardingGuard } from './components/OnboardingGuard'
 
 // Loading component for route transitions with new design
 const RouteLoader = () => (
@@ -139,17 +149,34 @@ function App() {
                 <Route path="/startups/:id" element={<StartupDetailPage />} />
                 <Route path="/startup/:id" element={<Navigate to="/startups/:id" replace />} />
                 
+                {/* Public user profile route */}
+                <Route path="/users/:id" element={<UserProfilePage />} />
+                
                 {/* Search routes */}
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/find" element={<Navigate to="/search" replace />} />
                 <Route path="/explore" element={<Navigate to="/search" replace />} />
                 
-                {/* Protected routes */}
+                {/* Onboarding route - protected but guard allows when onboarding incomplete */}
+                <Route
+                  path="/onboarding"
+                  element={
+                    <ProtectedRoute>
+                      <OnboardingGuard>
+                        <OnboardingPage />
+                      </OnboardingGuard>
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* Protected routes - wrapped with OnboardingGuard */}
                 <Route
                   path="/dashboard"
                   element={
                     <ProtectedRoute>
-                      <DashboardPage />
+                      <OnboardingGuard>
+                        <DashboardPage />
+                      </OnboardingGuard>
                     </ProtectedRoute>
                   }
                 />
@@ -157,7 +184,9 @@ function App() {
                   path="/create-startup"
                   element={
                     <ProtectedRoute>
-                      <CreateStartupPage />
+                      <OnboardingGuard>
+                        <CreateStartupPage />
+                      </OnboardingGuard>
                     </ProtectedRoute>
                   }
                 />
@@ -173,7 +202,9 @@ function App() {
                   path="/profile"
                   element={
                     <ProtectedRoute>
-                      <ProfilePage />
+                      <OnboardingGuard>
+                        <ProfilePage />
+                      </OnboardingGuard>
                     </ProtectedRoute>
                   }
                 />
@@ -189,7 +220,9 @@ function App() {
                   path="/collaborations"
                   element={
                     <ProtectedRoute>
-                      <CollaborationsPage />
+                      <OnboardingGuard>
+                        <CollaborationsPage />
+                      </OnboardingGuard>
                     </ProtectedRoute>
                   }
                 />
@@ -205,7 +238,9 @@ function App() {
                   path="/investments"
                   element={
                     <ProtectedRoute>
-                      <InvestmentsPage />
+                      <OnboardingGuard>
+                        <InvestmentsPage />
+                      </OnboardingGuard>
                     </ProtectedRoute>
                   }
                 />
@@ -216,6 +251,74 @@ function App() {
                 <Route
                   path="/funding"
                   element={<Navigate to="/investments" replace />}
+                />
+
+                {/* Application routes */}
+                <Route
+                  path="/applications/mine"
+                  element={
+                    <ProtectedRoute>
+                      <OnboardingGuard>
+                        <MyApplicationsPage />
+                      </OnboardingGuard>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/applications/received"
+                  element={
+                    <ProtectedRoute>
+                      <OnboardingGuard>
+                        <ReceivedApplicationsPage />
+                      </OnboardingGuard>
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* Notifications route */}
+                <Route
+                  path="/notifications"
+                  element={
+                    <ProtectedRoute>
+                      <OnboardingGuard>
+                        <NotificationsPage />
+                      </OnboardingGuard>
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* Messaging routes */}
+                <Route
+                  path="/messages"
+                  element={
+                    <ProtectedRoute>
+                      <OnboardingGuard>
+                        <ConversationsListPage />
+                      </OnboardingGuard>
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/messages/:conversationId"
+                  element={
+                    <ProtectedRoute>
+                      <OnboardingGuard>
+                        <ConversationViewPage />
+                      </OnboardingGuard>
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* Admin routes */}
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute>
+                      <AdminRoute>
+                        <AdminDashboardPage />
+                      </AdminRoute>
+                    </ProtectedRoute>
+                  }
                 />
                 
                 {/* Additional helpful routes */}

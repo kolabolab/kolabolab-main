@@ -51,6 +51,7 @@ export const createMockUser = (overrides = {}) => ({
   avatar: 'https://example.com/avatar.jpg',
   roles: ['user'],
   isEmailVerified: true,
+  onboardingCompleted: true,
   ...overrides,
 })
 

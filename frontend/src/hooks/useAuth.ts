@@ -13,6 +13,7 @@ export interface User {
   company?: string
   location?: string
   isEmailVerified: boolean
+  onboardingCompleted: boolean
 }
 
 interface AuthTokens {
@@ -84,6 +85,25 @@ export const useAuthStore = create<AuthStore>()(
         tokens: state.tokens,
         isAuthenticated: state.isAuthenticated,
       }),
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<AuthStore> | undefined
+        if (!persisted) return currentState
+
+        // Handle stale localStorage data where onboardingCompleted may be missing
+        const user = persisted.user
+          ? {
+              ...persisted.user,
+              onboardingCompleted: persisted.user.onboardingCompleted ?? false,
+              roles: persisted.user.roles ?? [],
+            }
+          : null
+
+        return {
+          ...currentState,
+          ...persisted,
+          user,
+        }
+      },
     }
   )
 )
