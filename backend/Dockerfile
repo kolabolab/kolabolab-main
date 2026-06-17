@@ -1,5 +1,5 @@
 # Multi-stage build for NestJS Backend optimized for Cloudflare Workers/Vercel
-FROM node:18-alpine AS base
+FROM node:25-alpine AS base
 
 # Install dependencies for native modules
 RUN apk add --no-cache libc6-compat python3 make g++
@@ -25,7 +25,7 @@ RUN npm run build
 RUN npm prune --production
 
 # Production stage optimized for serverless deployment
-FROM node:18-alpine AS production
+FROM node:25-alpine AS production
 RUN apk add --no-cache dumb-init curl
 
 WORKDIR /app
