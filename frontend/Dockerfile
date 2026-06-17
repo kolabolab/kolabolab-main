@@ -1,5 +1,5 @@
 # Multi-stage build for React Frontend optimized for Cloudflare Pages/Vercel
-FROM node:18-alpine AS base
+FROM node:25-alpine AS base
 
 # Install dependencies for native modules
 RUN apk add --no-cache libc6-compat
