@@ -11,6 +11,7 @@ import {
   MenuItem,
   MenuDivider,
   useDisclosure,
+  useColorModeValue,
   Avatar,
   Text,
   Link as ChakraLink,
@@ -78,6 +79,9 @@ export const Navbar: React.FC = React.memo(() => {
   const { user, isAuthenticated, clearAuth } = useAuth()
   const navigate = useNavigate()
   const [logoError, setLogoError] = useState(false)
+  // The mark's primary form is ink, which disappears on the dark navbar, so the
+  // dark surface gets a variant with that form lifted to paper.
+  const logoSrc = useColorModeValue('/kolabolab-logo.png', '/kolabolab-logo-dark.png')
   
   // No custom dropdown state needed - using Chakra UI Menu
 
@@ -156,29 +160,50 @@ export const Navbar: React.FC = React.memo(() => {
                 as={RouterLink}
                 to="/"
                 flexShrink={0}
+                display="flex"
+                alignItems="center"
+                h="44px"
                 _hover={{ textDecoration: 'none' }}
               >
                 {logoError ? (
                   <Text
+                    as="span"
                     fontSize={{ base: "lg", md: "xl" }}
                     fontWeight="800"
                     className="gradient-text"
                     fontFamily="heading"
                     lineHeight="1"
                     whiteSpace="nowrap"
+                    display="block"
+                    mb={0}
                   >
                     KolaboLab
                   </Text>
                 ) : (
-                  <Image
-                    src="/kolabolab-logo.png"
-                    alt="KolaboLab - Connect, Collaborate, Grow"
-                    height={{ base: "72px", md: "96px" }}
-                    maxH={{ base: "72px", md: "96px" }}
-                    objectFit="contain"
-                    mixBlendMode="multiply"
-                    onError={() => setLogoError(true)}
-                  />
+                  <HStack spacing={2.5} align="center">
+                    <Image
+                      src={logoSrc}
+                      alt="KolaboLab - Connect, Collaborate, Grow"
+                      height={{ base: "26px", md: "30px" }}
+                      maxH={{ base: "26px", md: "30px" }}
+                      objectFit="contain"
+                      display="block"
+                      onError={() => setLogoError(true)}
+                    />
+                    <Text
+                      as="span"
+                      fontSize={{ base: "lg", md: "xl" }}
+                      fontWeight="800"
+                      fontFamily="heading"
+                      letterSpacing="-0.02em"
+                      lineHeight="1"
+                      whiteSpace="nowrap"
+                      display={{ base: 'none', sm: 'block' }}
+                      className="gradient-text"
+                    >
+                      KolaboLab
+                    </Text>
+                  </HStack>
                 )}
               </ChakraLink>
 
@@ -436,9 +461,10 @@ export const Navbar: React.FC = React.memo(() => {
                     <Image
                       src="/kolabolab-logo.png"
                       alt="KolaboLab - Connect, Collaborate, Grow"
-                      height="72px"
-                      maxH="72px"
+                      height="32px"
+                      maxH="32px"
                       objectFit="contain"
+                      display="block"
                       onError={() => setLogoError(true)}
                     />
                   )}

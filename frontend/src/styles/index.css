@@ -173,7 +173,11 @@
 .dark-mode .gradient-text,
 .chakra-ui-dark .gradient-text,
 [data-theme="dark"] .gradient-text {
-  opacity: 0.8;
+  /* The light-mode ramp starts at ink (#232838), which is invisible on a dark
+     surface. Ramp paper -> light iris instead of just dimming it. */
+  background: linear-gradient(135deg, #FAFAFB 0%, #A8AAFB 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 /* Base Reset & Typography */
