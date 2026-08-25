@@ -123,3 +123,7 @@ test-output/
 # Cloudflare
 .wrangler/
 backend/node_modules
+# GAN design harness artifacts (screenshots, auth seed, symlink)
+gan-harness/shots/
+gan-harness/node_modules
+gan-harness/auth-seed.json

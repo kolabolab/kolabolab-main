@@ -1,507 +1,543 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Container,
   Heading,
   Text,
   Button,
-  VStack,
   HStack,
-  Icon,
+  VStack,
   SimpleGrid,
-  useColorModeValue,
-  Card,
-  CardBody,
+  Icon,
   Badge,
   Flex,
-  Spacer,
+  Divider,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
-import { FiArrowRight, FiUsers, FiTrendingUp, FiTarget, FiZap, FiGlobe, FiHeart } from 'react-icons/fi';
+import {
+  FiArrowRight,
+  FiArrowUpRight,
+  FiGlobe,
+  FiMic,
+  FiShield,
+  FiType,
+} from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
 
-interface FeatureProps {
-  title: string;
-  text: string;
-  icon: any;
-  variant?: 'primary' | 'secondary' | 'success';
-  gradient?: string;
-}
+/**
+ * KolaboLab landing — "Three sides, one table."
+ *
+ * Design thesis: this is a three-sided market (founders / collaborators /
+ * investors). The page is built around that convergence rather than the
+ * centered-hero + three-identical-cards template.
+ *
+ * Layout rules used here:
+ *  - Asymmetric editorial grid. Nothing is centre-stacked.
+ *  - One accent (iris) for interaction, lime reserved for signal moments.
+ *  - Content is visible by default; motion is a progressive enhancement.
+ */
 
-const Feature: React.FC<FeatureProps> = ({ title, text, icon, variant = 'primary' }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
+type Role = 'founder' | 'collaborator' | 'investor';
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('fade-in', 'visible');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
+const ROLES: Record<
+  Role,
+  { label: string; lede: string; cta: string; to: string; sideNote: string }
+> = {
+  founder: {
+    label: 'I’m building',
+    lede:
+      'Publish what you’re actually building and get matched with collaborators and backers who care about the problem — not your alma mater.',
+    cta: 'Start your startup',
+    to: '/register',
+    sideNote: 'Founders keep full control of what’s public.',
+  },
+  collaborator: {
+    label: 'I want to build',
+    lede:
+      'Show the work, not the résumé. Get surfaced for roles that match what you can do, with translation and screen-reader support in the core.',
+    cta: 'Find work worth doing',
+    to: '/register',
+    sideNote: 'Skills are matched before names are shown.',
+  },
+  investor: {
+    label: 'I back builders',
+    lede:
+      'See ventures at the moment they become investable, with a consistent signal set instead of whatever the warm intro happened to mention.',
+    cta: 'Browse ventures',
+    to: '/startups',
+    sideNote: 'Every venture answers the same questions.',
+  },
+};
 
-    if (cardRef.current) {
-      observer.observe(cardRef.current);
-    }
+const SIDES: Array<{ tag: Role; title: string; blurb: string; offset: number }> = [
+  {
+    tag: 'founder',
+    title: 'Founders',
+    blurb: 'Bring the problem and the plan.',
+    offset: 0,
+  },
+  {
+    tag: 'collaborator',
+    title: 'Collaborators',
+    blurb: 'Bring the craft that ships it.',
+    offset: 28,
+  },
+  {
+    tag: 'investor',
+    title: 'Investors',
+    blurb: 'Bring the runway to scale it.',
+    offset: 12,
+  },
+];
 
-    return () => observer.disconnect();
-  }, []);
+const STEPS = [
+  {
+    n: '01',
+    title: 'Publish the substance',
+    body:
+      'A venture profile answers the same structured questions for everyone: the problem, the stage, what’s missing. No pitch-deck theatre.',
+  },
+  {
+    n: '02',
+    title: 'Match on merit',
+    body:
+      'Matching reads skills, stage and intent — deliberately not seniority signals or who shares your network. Same questions, same surface, for everyone.',
+  },
+  {
+    n: '03',
+    title: 'Move to real work',
+    body:
+      'Applications, threads and investment conversations live in one place, so a promising match becomes a working relationship instead of a dead inbox.',
+  },
+];
 
-  const getCardVariant = () => {
-    switch (variant) {
-      case 'primary': return 'primary';
-      case 'secondary': return 'secondary';
-      case 'success': return 'success';
-      default: return 'glass';
-    }
-  };
+const ACCESS = [
+  { icon: FiGlobe, title: 'Real-time translation', body: 'Collaborate across languages without switching tools.' },
+  { icon: FiMic, title: 'Voice input', body: 'Dictate profiles and messages end to end.' },
+  { icon: FiType, title: 'Screen-reader native', body: 'Semantics and focus order are part of the build, not a retrofit.' },
+  { icon: FiShield, title: 'WCAG 2.2 AA', body: 'Contrast and target sizes are enforced in the test suite.' },
+];
 
-  const getIconColor = () => {
-    switch (variant) {
-      case 'primary': return 'brand.500';
-      case 'secondary': return 'gray.500';
-      case 'success': return 'success.500';
-      default: return 'brand.500';
-    }
-  };
-
-  const getGradientText = () => {
-    switch (variant) {
-      case 'primary': return 'gradient-text';
-      case 'secondary': return 'secondary-gradient-text';
-      case 'success': return 'support-gradient-text';
-      default: return 'gradient-text';
-    }
-  };
-
+/** The convergence diagram: three sides meeting at one node. */
+const ConvergenceDiagram: React.FC<{ active: Role; onPick: (r: Role) => void }> = ({
+  active,
+  onPick,
+}) => {
+  const spine = useColorModeValue('rgba(9,10,15,0.14)', 'rgba(255,255,255,0.16)');
   return (
-    <Card
-      ref={cardRef}
-      variant={getCardVariant()}
-      className="fade-in card-hover"
-      cursor="pointer"
-      height="100%"
-    >
-      <CardBody p={8} textAlign="center">
-        <VStack spacing={6}>
-          <Box
-            p={4}
-            borderRadius="full"
-            bg={useColorModeValue('rgba(255, 255, 255, 0.8)', 'rgba(255, 255, 255, 0.1)')}
-            className="float-animation"
-          >
-            <Icon as={icon} w={8} h={8} color={getIconColor()} />
-          </Box>
-          <Heading size="lg" className={getGradientText()}>
-            {title}
-          </Heading>
-          <Text fontSize="md" lineHeight="tall">
-            {text}
-          </Text>
-        </VStack>
-      </CardBody>
-    </Card>
+    <Box position="relative" pl={{ base: 6, md: 10 }} py={2} role="group">
+      {/* vertical spine */}
+      <Box
+        position="absolute"
+        left={{ base: '10px', md: '14px' }}
+        top="14%"
+        bottom="14%"
+        w="2px"
+        bg={spine}
+        aria-hidden="true"
+      />
+      {/* convergence node */}
+      <Box
+        position="absolute"
+        left={{ base: '3px', md: '7px' }}
+        top="50%"
+        transform="translateY(-50%)"
+        w="16px"
+        h="16px"
+        borderRadius="full"
+        bg="accent.500"
+        boxShadow="0 0 0 5px var(--chakra-colors-accent-100)"
+        aria-hidden="true"
+      />
+      <VStack align="stretch" spacing={{ base: 3, md: 4 }}>
+        {SIDES.map((s) => {
+          const isActive = s.tag === active;
+          return (
+            <Box
+              key={s.tag}
+              as="button"
+              type="button"
+              onClick={() => onPick(s.tag)}
+              aria-pressed={isActive}
+              textAlign="left"
+              position="relative"
+              ml={{ base: 0, md: `${s.offset}px` }}
+              bg="bg-surface"
+              border="1px solid"
+              borderColor={isActive ? 'accent.400' : 'border-subtle'}
+              borderRadius="lg"
+              px={{ base: 4, md: 5 }}
+              py={{ base: 3, md: 4 }}
+              boxShadow={isActive ? 'lg' : 'sm'}
+              transform={isActive ? 'translateX(6px)' : 'none'}
+              transition="all 0.2s cubic-bezier(0.4,0,0.2,1)"
+              _hover={{ borderColor: 'accent.300', transform: 'translateX(6px)' }}
+              _focusVisible={{
+                outline: '2px solid transparent',
+                boxShadow: '0 0 0 3px rgba(107,110,242,0.4)',
+              }}
+            >
+              {/* connector stub back to the spine */}
+              <Box
+                position="absolute"
+                left={{ base: '-24px', md: `-${s.offset + 26}px` }}
+                top="50%"
+                h="2px"
+                w={{ base: '24px', md: `${s.offset + 26}px` }}
+                bg={isActive ? 'accent.400' : spine}
+                aria-hidden="true"
+              />
+              <HStack justify="space-between" align="center" spacing={4}>
+                <Box>
+                  <Text
+                    fontFamily="heading"
+                    fontWeight="700"
+                    fontSize={{ base: 'md', md: 'lg' }}
+                    letterSpacing="-0.01em"
+                  >
+                    {s.title}
+                  </Text>
+                  <Text fontSize="sm" color="text-secondary">
+                    {s.blurb}
+                  </Text>
+                </Box>
+                <Icon
+                  as={FiArrowUpRight}
+                  boxSize={4}
+                  color={isActive ? 'accent.500' : 'text-tertiary'}
+                  aria-hidden="true"
+                />
+              </HStack>
+            </Box>
+          );
+        })}
+      </VStack>
+    </Box>
   );
 };
 
-const StatsCard: React.FC<{ number: string; label: string; icon: any }> = ({ number, label, icon }) => (
-  <Card variant="glass" className="card-hover">
-    <CardBody p={6} textAlign="center">
-      <VStack spacing={3}>
-        <Icon as={icon} w={6} h={6} color="brand.500" />
-        <Heading size="xl" className="gradient-text">
-          {number}
-        </Heading>
-        <Text fontSize="sm" opacity={0.8}>
-          {label}
-        </Text>
-      </VStack>
-    </CardBody>
-  </Card>
-);
-
 const HomePage: React.FC = () => {
-  const heroRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('fade-in', 'visible');
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  const [role, setRole] = useState<Role>('founder');
+  const active = ROLES[role];
+  const inkPanel = useColorModeValue('brand.600', 'brand.800');
 
   return (
     <>
       <Helmet>
-        <title>KolaboLab - Revolutionary Startup Collaboration Platform</title>
+        <title>KolaboLab — Three sides, one table</title>
         <meta
           name="description"
-          content="Join KolaboLab's revolutionary platform connecting entrepreneurs, collaborators, and investors. Build the future of technology with AI-powered matching and global accessibility."
+          content="KolaboLab matches founders, collaborators and investors on what they've actually built. Accessibility and translation in the core, not bolted on."
         />
-        <meta name="keywords" content="startup, collaboration, investment, entrepreneur, innovation, technology, social impact" />
       </Helmet>
 
       <Box as="main" id="main-content">
-        {/* Hero Section with Gradient Background */}
-        <Box
-          className="primary-context"
-          position="relative"
-          overflow="hidden"
-          minH="100vh"
-          display="flex"
-          alignItems="center"
-        >
-          {/* Floating Elements */}
-          <Box
-            position="absolute"
-            top="10%"
-            right="10%"
-            w="100px"
-            h="100px"
-            borderRadius="full"
-            bg="linear-gradient(135deg, rgba(27, 42, 74, 0.1) 0%, rgba(27, 42, 74, 0.05) 100%)"
-            className="float-animation"
-            style={{ animationDelay: '0s' }}
-          />
-          <Box
-            position="absolute"
-            bottom="20%"
-            left="5%"
-            w="80px"
-            h="80px"
-            borderRadius="full"
-            bg="linear-gradient(135deg, rgba(107, 114, 128, 0.1) 0%, rgba(107, 114, 128, 0.05) 100%)"
-            className="float-animation"
-            style={{ animationDelay: '2s' }}
-          />
-          <Box
-            position="absolute"
-            top="50%"
-            left="80%"
-            w="60px"
-            h="60px"
-            borderRadius="full"
-            bg="linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%)"
-            className="float-animation"
-            style={{ animationDelay: '4s' }}
-          />
-
-          <Container maxW={{ base: "6xl", "2xl": "85%", "3xl": "80%" }} py={20}>
-            <VStack
-              ref={heroRef}
-              spacing={10}
-              textAlign="center"
-              className="fade-in"
-            >
-              <Badge
-                px={4}
-                py={2}
-                borderRadius="full"
-                variant="subtle"
-                colorScheme="brand"
-                fontSize="sm"
-                className="glass-panel"
-              >
-                <HStack spacing={2}>
-                  <Icon as={FiZap} />
-                  <Text>Global Startup Collaboration Platform</Text>
+        {/* ---------------------------------------------------------------- hero */}
+        <Box borderBottom="1px solid" borderColor="border-subtle">
+          <Container maxW="7xl" px={{ base: 5, md: 8 }} pt={{ base: 12, md: 20 }} pb={{ base: 14, md: 20 }}>
+            <SimpleGrid columns={{ base: 1, lg: 12 }} spacing={{ base: 12, lg: 10 }} alignItems="center">
+              {/* left: the argument */}
+              <Box gridColumn={{ lg: 'span 7' }}>
+                <HStack spacing={3} mb={{ base: 5, md: 7 }}>
+                  <Box w="28px" h="2px" bg="accent.500" aria-hidden="true" />
+                  <Text
+                    fontFamily="heading"
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.14em"
+                    textTransform="uppercase"
+                    color="text-secondary"
+                  >
+                    Collaboration infrastructure
+                  </Text>
                 </HStack>
-              </Badge>
 
-              <Heading
-                as="h1"
-                fontSize={{ base: '3xl', md: '5xl', lg: '6xl' }}
-                fontWeight="800"
-                letterSpacing="tight"
-                lineHeight="shorter"
-                maxW="4xl"
-              >
-                Professional Platform for{' '}
-                <Text as="span" className="gradient-text">
-                  Startup
-                </Text>{' '}
-                Collaboration &{' '}
-                <Text as="span" className="support-gradient-text">
-                  Investment
+                <Heading
+                  as="h1"
+                  fontSize={{ base: '2.5rem', sm: '3.25rem', md: '4rem', xl: '4.5rem' }}
+                  lineHeight="0.98"
+                  letterSpacing="-0.035em"
+                  maxW="20ch"
+                >
+                  The introduction shouldn’t depend on{' '}
+                  <Box as="span" color="accent.500">
+                    who you already know
+                  </Box>
+                  .
+                </Heading>
+
+                <Text
+                  mt={{ base: 5, md: 7 }}
+                  fontSize={{ base: 'md', md: 'lg' }}
+                  color="text-secondary"
+                  maxW="52ch"
+                  lineHeight="1.65"
+                >
+                  {active.lede}
                 </Text>
-              </Heading>
 
-              <Text
-                fontSize={{ base: 'lg', md: 'xl' }}
-                maxW="3xl"
-                opacity={0.9}
-                lineHeight="tall"
-              >
-                Connect with co-founders, find skilled collaborators, and secure funding through our 
-                intelligent matching platform. Built for global accessibility and meaningful connections.
-              </Text>
+                {/* role switcher */}
+                <Box mt={{ base: 7, md: 9 }}>
+                  <Text
+                    as="span"
+                    id="role-switch-label"
+                    fontSize="xs"
+                    fontWeight="600"
+                    letterSpacing="0.1em"
+                    textTransform="uppercase"
+                    color="text-tertiary"
+                  >
+                    Choose your side
+                  </Text>
+                  <HStack
+                    mt={3}
+                    spacing={0}
+                    border="1px solid"
+                    borderColor="border-default"
+                    borderRadius="full"
+                    p="3px"
+                    display="inline-flex"
+                    role="group"
+                    aria-labelledby="role-switch-label"
+                    flexWrap="wrap"
+                  >
+                    {(Object.keys(ROLES) as Role[]).map((r) => (
+                      <Button
+                        key={r}
+                        onClick={() => setRole(r)}
+                        aria-pressed={role === r}
+                        size="sm"
+                        variant={role === r ? 'solid' : 'ghost'}
+                        colorScheme={role === r ? 'brand' : undefined}
+                        borderRadius="full"
+                        minH="40px"
+                        px={5}
+                        fontSize="sm"
+                      >
+                        {ROLES[r].label}
+                      </Button>
+                    ))}
+                  </HStack>
+                </Box>
 
-              <HStack
-                spacing={6}
-                justify="center"
-                align="center"
-                pt={4}
-                w="full"
-                flexWrap="wrap"
-              >
-                <Button
-                  as={RouterLink}
-                  to="/register"
-                  variant="solid"
-                  colorScheme="brand"
-                  size="lg"
-                  rightIcon={<FiArrowRight />}
-                  className="hero-button"
-                >
-                  Launch Your Startup
-                </Button>
-                <Button
-                  as={RouterLink}
-                  to="/startups"
-                  variant="solid"
-                  colorScheme="blue"
-                  size="lg"
-                  className="hero-button"
-                >
-                  Discover Opportunities
-                </Button>
-              </HStack>
+                <HStack mt={{ base: 7, md: 8 }} spacing={3} flexWrap="wrap">
+                  <Button
+                    as={RouterLink}
+                    to={active.to}
+                    size="lg"
+                    variant="solid"
+                    colorScheme="brand"
+                    rightIcon={<FiArrowRight aria-hidden="true" />}
+                  >
+                    {active.cta}
+                  </Button>
+                  <Button as={RouterLink} to="/search" size="lg" variant="outline">
+                    See how matching works
+                  </Button>
+                </HStack>
 
-              {/* Stats Section */}
-              <SimpleGrid
-                columns={{ base: 2, md: 4 }}
-                spacing={6}
-                pt={12}
-                w="full"
-                maxW="2xl"
-              >
-                <StatsCard number="50+" label="Languages Supported" icon={FiGlobe} />
-                <StatsCard number="Smart" label="Matching System" icon={FiZap} />
-                <StatsCard number="WCAG" label="2.2 AA Compliant" icon={FiHeart} />
-                <StatsCard number="Global" label="Reach" icon={FiUsers} />
-              </SimpleGrid>
-            </VStack>
-          </Container>
-        </Box>
+                <Text mt={5} fontSize="sm" color="text-tertiary">
+                  {active.sideNote}
+                </Text>
+              </Box>
 
-        {/* Features Section */}
-        <Box py={24} className="primary-context">
-          <Container maxW={{ base: "6xl", "2xl": "85%", "3xl": "80%" }}>
-            <VStack spacing={6} mb={16} textAlign="center">
-              <Badge
-                px={4}
-                py={2}
-                borderRadius="full"
-                variant="subtle"
-                colorScheme="brand"
-                fontSize="sm"
-              >
-                For Every Visionary
-              </Badge>
-              <Heading
-                as="h2"
-                fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}
-                fontWeight="700"
-                maxW="4xl"
-              >
-                Designed for Entrepreneurs, Collaborators & Investors
-              </Heading>
-              <Text fontSize="xl" maxW="3xl" opacity={0.8}>
-                Our platform adapts to your role, providing tailored experiences that drive meaningful connections and successful partnerships.
-              </Text>
-            </VStack>
-
-            <SimpleGrid columns={{ base: 1, md: 3 }} spacing={8}>
-              <Feature
-                variant="primary"
-                icon={FiTarget}
-                title="For Entrepreneurs"
-                text="Launch your vision with intelligent co-founder matching, access to skilled collaborators, and direct connections to investors who align with your mission."
-              />
-              <Feature
-                variant="secondary"
-                icon={FiUsers}
-                title="For Collaborators"
-                text="Discover exciting projects that match your skills and interests. Build your portfolio while contributing to innovations that create positive impact."
-              />
-              <Feature
-                variant="success"
-                icon={FiTrendingUp}
-                title="For Investors"
-                text="Access curated opportunities in social impact technology. Use our analytics to identify promising startups and make informed investment decisions."
-              />
+              {/* right: the convergence */}
+              <Box gridColumn={{ lg: 'span 5' }} w="100%">
+                <ConvergenceDiagram active={role} onPick={setRole} />
+              </Box>
             </SimpleGrid>
           </Container>
         </Box>
 
-        {/* Innovation Section */}
-        <Box py={24} className="success-context">
-          <Container maxW={{ base: "6xl", "2xl": "85%", "3xl": "80%" }}>
-            <Card variant="glass" size="lg" className="card-hover">
-              <CardBody p={12}>
-                <Flex
-                  direction={{ base: 'column', lg: 'row' }}
-                  align="center"
-                  gap={10}
+        {/* ------------------------------------------------- capability band */}
+        <Box borderBottom="1px solid" borderColor="border-subtle" bg="bg-surface">
+          <Container maxW="7xl" px={{ base: 5, md: 8 }} py={{ base: 8, md: 10 }}>
+            <SimpleGrid columns={{ base: 1, sm: 2, lg: 4 }} spacing={0}>
+              {ACCESS.map((a, i) => (
+                <HStack
+                  key={a.title}
+                  align="flex-start"
+                  spacing={4}
+                  px={{ base: 0, lg: 6 }}
+                  py={{ base: 4, lg: 2 }}
+                  borderLeft={{ base: 'none', lg: i === 0 ? 'none' : '1px solid' }}
+                  borderColor="border-subtle"
                 >
-                  <VStack align={{ base: 'center', lg: 'start' }} spacing={6} flex={1}>
-                    <Badge
-                      px={4}
-                      py={2}
-                      borderRadius="full"
-                      variant="subtle"
-                      colorScheme="success"
-                      fontSize="sm"
-                    >
-                      Professional Technology
-                    </Badge>
-                    <Heading
-                      as="h2"
-                      fontSize={{ base: '2xl', md: '3xl', lg: '4xl' }}
-                      fontWeight="700"
-                      textAlign={{ base: 'center', lg: 'left' }}
-                    >
-                      Built for{' '}
-                      <Text as="span" className="gradient-text">
-                        Accessibility
-                      </Text>{' '}
-                      & Global Impact
-                    </Heading>
-                    <Text fontSize="lg" textAlign={{ base: 'center', lg: 'left' }}>
-                      Our platform breaks down barriers with real-time translation, screen reader compatibility, 
-                      voice input support, and intelligent matching algorithms that ensure equal opportunities for all.
+                  <Icon as={a.icon} boxSize={5} color="accent.500" mt="2px" aria-hidden="true" />
+                  <Box>
+                    <Text fontFamily="heading" fontWeight="700" fontSize="sm">
+                      {a.title}
                     </Text>
-                    <HStack spacing={4} pt={4}>
-                      <Button
-                        as={RouterLink}
-                        to="/about"
-                        variant="ghost"
-                        size="lg"
-                        rightIcon={<FiArrowRight />}
-                      >
-                        Learn More
-                      </Button>
-                    </HStack>
-                  </VStack>
-                  <Spacer />
-                  <Box flex={1} textAlign="center">
-                    <SimpleGrid columns={2} spacing={4}>
-                      <Card variant="glass" className="card-hover">
-                        <CardBody p={6} textAlign="center">
-                          <Icon as={FiGlobe} w={8} h={8} color="brand.500" mb={3} />
-                          <Text fontWeight="600">50+ Languages</Text>
-                          <Text fontSize="sm" opacity={0.7}>Real-time Translation</Text>
-                        </CardBody>
-                      </Card>
-                      <Card variant="glass" className="card-hover">
-                        <CardBody p={6} textAlign="center">
-                          <Icon as={FiHeart} w={8} h={8} color="startup.500" mb={3} />
-                          <Text fontWeight="600">WCAG 2.2 AA</Text>
-                          <Text fontSize="sm" opacity={0.7}>Accessibility Standard</Text>
-                        </CardBody>
-                      </Card>
-                      <Card variant="glass" className="card-hover">
-                        <CardBody p={6} textAlign="center">
-                          <Icon as={FiZap} w={8} h={8} color="investor.500" mb={3} />
-                          <Text fontWeight="600">AI Matching</Text>
-                          <Text fontSize="sm" opacity={0.7}>Bias-Free Algorithm</Text>
-                        </CardBody>
-                      </Card>
-                      <Card variant="glass" className="card-hover">
-                        <CardBody p={6} textAlign="center">
-                          <Icon as={FiUsers} w={8} h={8} color="brand.500" mb={3} />
-                          <Text fontWeight="600">Global Community</Text>
-                          <Text fontSize="sm" opacity={0.7}>Inclusive Platform</Text>
-                        </CardBody>
-                      </Card>
-                    </SimpleGrid>
+                    <Text fontSize="sm" color="text-secondary" lineHeight="1.5">
+                      {a.body}
+                    </Text>
                   </Box>
-                </Flex>
-              </CardBody>
-            </Card>
+                </HStack>
+              ))}
+            </SimpleGrid>
           </Container>
         </Box>
 
-        {/* CTA Section */}
-        <Box py={24}>
-          <Container maxW={{ base: "4xl", "2xl": "70%", "3xl": "60%" }}>
-            <Card variant="glass" className="card-hover">
-              <CardBody p={12}>
-                <VStack spacing={8} textAlign="center">
-                  <Badge
-                    px={4}
-                    py={2}
-                    borderRadius="full"
-                    variant="subtle"
-                    colorScheme="brand"
-                    fontSize="sm"
+        {/* ------------------------------------------------------ how it works */}
+        <Container maxW="7xl" px={{ base: 5, md: 8 }} py={{ base: 16, md: 24 }}>
+          <SimpleGrid columns={{ base: 1, lg: 12 }} spacing={{ base: 10, lg: 8 }}>
+            <Box gridColumn={{ lg: 'span 4' }}>
+              <Heading
+                as="h2"
+                fontSize={{ base: '2rem', md: '2.75rem' }}
+                lineHeight="1.05"
+                letterSpacing="-0.03em"
+                position={{ lg: 'sticky' }}
+                top={{ lg: '96px' }}
+              >
+                How a match
+                <br />
+                becomes work.
+              </Heading>
+            </Box>
+
+            <Box gridColumn={{ lg: 'span 8' }}>
+              <VStack align="stretch" spacing={0}>
+                {STEPS.map((s, i) => (
+                  <Box
+                    key={s.n}
+                    pt={i === 0 ? 0 : { base: 8, md: 10 }}
+                    pb={{ base: 8, md: 10 }}
+                    borderTop={i === 0 ? 'none' : '1px solid'}
+                    borderColor="border-subtle"
+                    pl={{ lg: `${i * 32}px` }}
+                    transition="padding 0.2s ease"
                   >
-                    Join the Revolution
-                  </Badge>
-                  <Heading
-                    as="h2"
-                    fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}
-                    fontWeight="700"
-                    className="gradient-text"
-                  >
-                    Ready to Transform Your Future?
-                  </Heading>
-                  <Text fontSize="xl" maxW="2xl" opacity={0.9}>
-                    Join thousands of entrepreneurs, collaborators, and investors who are already building the future through KolaboLab.
-                  </Text>
-                  <HStack spacing={6} wrap="wrap" justify="center" pt={4}>
-                    <Button
-                      as={RouterLink}
-                      to="/register"
-                      variant="asymmetric"
-                      size="xl"
-                      rightIcon={<FiArrowRight />}
-                      className="interactive-element"
-                    >
-                      Get Started Free
-                    </Button>
-                    <Button
-                      as={RouterLink}
-                      to="/demo"
-                      variant="glass"
-                      size="xl"
-                      className="interactive-element"
-                    >
-                      View Demo
-                    </Button>
-                  </HStack>
-                </VStack>
-              </CardBody>
-            </Card>
+                    <HStack align="flex-start" spacing={{ base: 5, md: 8 }}>
+                      <Text
+                        fontFamily="heading"
+                        fontSize={{ base: '2rem', md: '2.75rem' }}
+                        fontWeight="700"
+                        lineHeight="1"
+                        letterSpacing="-0.03em"
+                        color="transparent"
+                        sx={{
+                          WebkitTextStroke: '1px var(--chakra-colors-accent-400)',
+                        }}
+                        aria-hidden="true"
+                        flexShrink={0}
+                      >
+                        {s.n}
+                      </Text>
+                      <Box>
+                        <Heading as="h3" fontSize={{ base: 'xl', md: '2xl' }} letterSpacing="-0.02em">
+                          {s.title}
+                        </Heading>
+                        <Text mt={3} color="text-secondary" maxW="58ch" lineHeight="1.65">
+                          {s.body}
+                        </Text>
+                      </Box>
+                    </HStack>
+                  </Box>
+                ))}
+              </VStack>
+            </Box>
+          </SimpleGrid>
+        </Container>
+
+        {/* --------------------------------------------------- bias statement */}
+        <Box bg={inkPanel} color="white">
+          <Container maxW="7xl" px={{ base: 5, md: 8 }} py={{ base: 16, md: 24 }}>
+            <SimpleGrid columns={{ base: 1, lg: 12 }} spacing={{ base: 8, lg: 10 }} alignItems="end">
+              <Box gridColumn={{ lg: 'span 8' }}>
+                <Badge
+                  bg="signal.400"
+                  color="brand.700"
+                  fontFamily="heading"
+                  letterSpacing="0.06em"
+                  textTransform="uppercase"
+                  fontSize="xs"
+                  px={3}
+                  py={1}
+                >
+                  Why we built it this way
+                </Badge>
+                <Text
+                  as="p"
+                  mt={{ base: 6, md: 8 }}
+                  fontFamily="heading"
+                  fontWeight="700"
+                  fontSize={{ base: '1.75rem', md: '2.75rem', xl: '3.25rem' }}
+                  lineHeight="1.08"
+                  letterSpacing="-0.03em"
+                  maxW="30ch"
+                >
+                  Most opportunity still moves through private networks. That is a{' '}
+                  <Box as="span" color="signal.400">
+                    distribution problem
+                  </Box>
+                  , not a talent problem.
+                </Text>
+              </Box>
+              <Box gridColumn={{ lg: 'span 4' }}>
+                <Text color="whiteAlpha.800" lineHeight="1.7">
+                  So the same structured questions are asked of every venture, matching reads
+                  substance over signalling, and translation, voice input and screen-reader support
+                  are in the core product rather than an accessibility page.
+                </Text>
+                <Button
+                  as={RouterLink}
+                  to="/register"
+                  mt={7}
+                  size="lg"
+                  variant="solid"
+                  colorScheme="gray"
+                  rightIcon={<FiArrowRight aria-hidden="true" />}
+                >
+                  Join KolaboLab
+                </Button>
+              </Box>
+            </SimpleGrid>
           </Container>
         </Box>
+
+        {/* ------------------------------------------------------------- close */}
+        <Container maxW="7xl" px={{ base: 5, md: 8 }} py={{ base: 16, md: 24 }}>
+          <Flex
+            direction={{ base: 'column', md: 'row' }}
+            align={{ base: 'flex-start', md: 'flex-end' }}
+            justify="space-between"
+            gap={8}
+          >
+            <Box>
+              <Heading
+                as="h2"
+                fontSize={{ base: '2rem', md: '3rem' }}
+                lineHeight="1.02"
+                letterSpacing="-0.03em"
+                maxW="22ch"
+              >
+                Bring your side of the table.
+              </Heading>
+              <Text mt={4} color="text-secondary" maxW="46ch">
+                Free to join. Publish a venture, a skill set, or a thesis — and get matched on what
+                it actually says.
+              </Text>
+            </Box>
+            <HStack spacing={3} flexShrink={0} flexWrap="wrap">
+              <Button
+                as={RouterLink}
+                to="/register"
+                size="lg"
+                variant="asymmetric"
+                rightIcon={<FiArrowRight aria-hidden="true" />}
+              >
+                Create your account
+              </Button>
+              <Button as={RouterLink} to="/startups" size="lg" variant="outline">
+                Browse ventures
+              </Button>
+            </HStack>
+          </Flex>
+          <Divider mt={{ base: 12, md: 16 }} />
+        </Container>
       </Box>
-
-      {/* Floating Action Button */}
-      <Button
-        as={RouterLink}
-        to="/register"
-        className="btn-fab"
-        aria-label="Quick Registration"
-        title="Quick Registration"
-      >
-        <FiArrowRight />
-      </Button>
     </>
   );
 };

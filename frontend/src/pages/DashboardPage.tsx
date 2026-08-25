@@ -154,10 +154,15 @@ const DashboardPage: React.FC = () => {
                   src={user?.avatar}
                 />
                 <VStack align="start" spacing={1}>
-                  <Heading size="xl" className="gradient-text">
+                  <Heading
+                    as="h1"
+                    fontSize={{ base: '1.875rem', md: '2.5rem' }}
+                    lineHeight="1.05"
+                    letterSpacing="-0.03em"
+                  >
                     Welcome back, {user?.firstName}!
                   </Heading>
-                  <Text color="gray.600" fontSize="lg">
+                  <Text color="text-secondary" fontSize="lg">
                     {isAdmin
                       ? "Here's your platform overview and admin insights"
                       : "Here's what's happening with your startup journey"
@@ -175,7 +180,7 @@ const DashboardPage: React.FC = () => {
                     ))}
                   </HStack>
                   {user?.company && (
-                    <Text fontSize="sm" color="gray.500">
+                    <Text fontSize="sm" color="text-tertiary">
                       {user.company} • {user.location}
                     </Text>
                   )}
@@ -191,92 +196,84 @@ const DashboardPage: React.FC = () => {
             ) : statsError ? (
               <ErrorState error={statsError.message} onRetry={refetchStats} />
             ) : stats ? (
-              <SimpleGrid columns={{ base: 1, md: 2, lg: 4 }} spacing={6}>
-                <Card bg={cardBg}>
-                  <CardBody>
-                    <Stat>
-                      <StatLabel>{isAdmin ? 'Total Startups' : 'My Startups'}</StatLabel>
-                      <StatNumber>{stats.totalStartups}</StatNumber>
-                      {!areAllStatsZero(stats) && (
-                        <StatHelpText>
-                          Startups created
-                        </StatHelpText>
-                      )}
-                    </Stat>
-                  </CardBody>
-                </Card>
-
-                <Card bg={cardBg}>
-                  <CardBody>
-                    <Stat>
-                      <StatLabel>{isAdmin ? 'Total Investors' : 'Interested Investors'}</StatLabel>
-                      <StatNumber>{stats.totalInvestors}</StatNumber>
-                      {!areAllStatsZero(stats) && (
-                        <StatHelpText>
-                          Across all startups
-                        </StatHelpText>
-                      )}
-                    </Stat>
-                  </CardBody>
-                </Card>
-
-                <Card bg={cardBg}>
-                  <CardBody>
-                    <Stat>
-                      <StatLabel>{isAdmin ? 'Platform Funding' : 'Total Funding'}</StatLabel>
-                      <StatNumber>{formatFunding(stats.totalFunding)}</StatNumber>
-                      {!areAllStatsZero(stats) && (
-                        <StatHelpText>
-                          Total raised
-                        </StatHelpText>
-                      )}
-                    </Stat>
-                  </CardBody>
-                </Card>
-
-                <Card bg={cardBg}>
-                  <CardBody>
-                    <Stat>
-                      <StatLabel>Success Rate</StatLabel>
-                      <StatNumber>{stats.successRate}%</StatNumber>
-                      {!areAllStatsZero(stats) && (
-                        <StatHelpText>
-                          Of your startups
-                        </StatHelpText>
-                      )}
-                    </Stat>
-                  </CardBody>
-                </Card>
-              </SimpleGrid>
+              <Box
+                bg={cardBg}
+                border="1px solid"
+                borderColor="border-subtle"
+                borderRadius="xl"
+                overflow="hidden"
+              >
+                <SimpleGrid columns={{ base: 2, lg: 4 }} spacing={0}>
+                  {[
+                    {
+                      label: isAdmin ? 'Total Startups' : 'My Startups',
+                      value: String(stats.totalStartups),
+                      help: 'Startups created',
+                    },
+                    {
+                      label: isAdmin ? 'Total Investors' : 'Interested Investors',
+                      value: String(stats.totalInvestors),
+                      help: 'Across all startups',
+                    },
+                    {
+                      label: isAdmin ? 'Platform Funding' : 'Total Funding',
+                      value: formatFunding(stats.totalFunding),
+                      help: 'Total raised',
+                    },
+                    {
+                      label: 'Success Rate',
+                      value: `${stats.successRate}%`,
+                      help: 'Of your startups',
+                    },
+                  ].map((item, i) => (
+                    <Box
+                      key={item.help}
+                      px={{ base: 5, lg: 7 }}
+                      py={{ base: 5, lg: 6 }}
+                      borderLeft={{ base: 'none', lg: i === 0 ? 'none' : '1px solid' }}
+                      borderTop={{ base: i > 1 ? '1px solid' : 'none', lg: 'none' }}
+                      borderColor="border-subtle"
+                    >
+                      <Stat>
+                        <StatLabel
+                          fontSize="xs"
+                          fontWeight="600"
+                          letterSpacing="0.1em"
+                          textTransform="uppercase"
+                          color="text-tertiary"
+                        >
+                          {item.label}
+                        </StatLabel>
+                        <StatNumber
+                          fontFamily="heading"
+                          fontSize={{ base: '1.875rem', lg: '2.5rem' }}
+                          lineHeight="1.05"
+                          letterSpacing="-0.03em"
+                          mt={2}
+                        >
+                          {item.value}
+                        </StatNumber>
+                        {!areAllStatsZero(stats) && (
+                          <StatHelpText color="text-secondary" mt={2} mb={0}>
+                            {item.help}
+                          </StatHelpText>
+                        )}
+                      </Stat>
+                    </Box>
+                  ))}
+                </SimpleGrid>
+              </Box>
             ) : null}
 
-            {/* Recent Activity */}
-            <Card bg={cardBg}>
-              <CardBody>
-                <Heading size="md" mb={4}>Recent Activity</Heading>
-                {activitiesLoading ? (
-                  <Box display="flex" justifyContent="center" py={6}>
-                    <Spinner size="md" color="brand.500" />
-                  </Box>
-                ) : activitiesError ? (
-                  <ErrorState error={activitiesError.message} onRetry={refetchActivities} />
-                ) : activities.length === 0 ? (
-                  <EmptyStateActivities />
-                ) : (
-                  <VStack spacing={3} align="stretch">
-                    {activities.map((activity) => (
-                      <Box key={activity.id} p={3} borderRadius="md" bg={activityBg}>
-                        <HStack justify="space-between">
-                          <Text>{activity.message}</Text>
-                          <Text fontSize="sm" color="gray.500">{activity.timestamp}</Text>
-                        </HStack>
-                      </Box>
-                    ))}
-                  </VStack>
-                )}
-              </CardBody>
-            </Card>
-
+            {/* Working surfaces: primary column + narrow rail.
+                Previously every module was a full-width card of equal
+                weight, so nothing led the page. */}
+            <SimpleGrid
+              columns={{ base: 1, xl: 3 }}
+              spacing={{ base: 6, xl: 8 }}
+              alignItems="start"
+            >
+              <VStack gridColumn={{ xl: "span 2" }} align="stretch" spacing={{ base: 6, xl: 8 }}>
             {/* My Startups */}
             {roles.includes('entrepreneur') && (
             <Card bg={cardBg} id="my-startups">
@@ -441,11 +438,43 @@ const DashboardPage: React.FC = () => {
               </CardBody>
             </Card>
 
+              </VStack>
+
+              <VStack align="stretch" spacing={{ base: 6, xl: 8 }}>
+            {/* Recent Activity */}
+            <Card bg={cardBg}>
+              <CardBody>
+                <Heading size="md" mb={4}>Recent Activity</Heading>
+                {activitiesLoading ? (
+                  <Box display="flex" justifyContent="center" py={6}>
+                    <Spinner size="md" color="brand.500" />
+                  </Box>
+                ) : activitiesError ? (
+                  <ErrorState error={activitiesError.message} onRetry={refetchActivities} />
+                ) : activities.length === 0 ? (
+                  <EmptyStateActivities />
+                ) : (
+                  <VStack spacing={3} align="stretch">
+                    {activities.map((activity) => (
+                      <Box key={activity.id} p={3} borderRadius="md" bg={activityBg}>
+                        <HStack justify="space-between">
+                          <Text>{activity.message}</Text>
+                          <Text fontSize="sm" color="gray.500">{activity.timestamp}</Text>
+                        </HStack>
+                      </Box>
+                    ))}
+                  </VStack>
+                )}
+              </CardBody>
+            </Card>
+
             {/* Quick Actions (navigation) */}
             <Card bg={cardBg}>
               <CardBody>
                 <Heading size="md" mb={4}>Quick Actions</Heading>
-                <SimpleGrid columns={{ base: 1, md: 2, lg: Math.min(quickActions.length, 4) }} spacing={4}>
+                {/* Lives in the narrow rail now, so it stacks instead of
+                    forcing 4 columns into ~370px. */}
+                <SimpleGrid columns={{ base: 1, sm: 2, xl: 1 }} spacing={3}>
                   {quickActions.map((action) => (
                     <Button
                       key={action.label}
@@ -453,6 +482,8 @@ const DashboardPage: React.FC = () => {
                       colorScheme={action.colorScheme}
                       variant="outline"
                       onClick={() => navigate(action.path)}
+                      justifyContent="flex-start"
+                      fontWeight="500"
                     >
                       {action.label}
                     </Button>
@@ -460,6 +491,8 @@ const DashboardPage: React.FC = () => {
                 </SimpleGrid>
               </CardBody>
             </Card>
+              </VStack>
+            </SimpleGrid>
 
           </VStack>
         </Container>

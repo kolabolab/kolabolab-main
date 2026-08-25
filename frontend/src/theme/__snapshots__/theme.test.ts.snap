@@ -236,8 +236,8 @@ exports[`Theme structure > matches the expected theme snapshot 1`] = `
       "light": "rgba(9, 10, 15, 0.64)",
     },
     "tertiary": {
-      "dark": "rgba(255, 255, 255, 0.42)",
-      "light": "rgba(9, 10, 15, 0.42)",
+      "dark": "rgba(255, 255, 255, 0.58)",
+      "light": "rgba(9, 10, 15, 0.58)",
     },
   },
   "transparent": "transparent",

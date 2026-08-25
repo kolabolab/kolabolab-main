@@ -96,7 +96,7 @@
   --bg-surface-overlay: #FAFAFB;
   --text-primary: rgba(9, 10, 15, 0.92);
   --text-secondary: rgba(9, 10, 15, 0.64);
-  --text-tertiary: rgba(9, 10, 15, 0.42);
+  --text-tertiary: rgba(9, 10, 15, 0.58);
   --border-subtle: rgba(9, 10, 15, 0.08);
   --border-default: rgba(9, 10, 15, 0.14);
   --shadow-sm: 0 1px 2px rgba(9, 10, 15, 0.05);
@@ -155,7 +155,7 @@
   --bg-surface-overlay: #12141C;
   --text-primary: rgba(255, 255, 255, 0.92);
   --text-secondary: rgba(255, 255, 255, 0.64);
-  --text-tertiary: rgba(255, 255, 255, 0.42);
+  --text-tertiary: rgba(255, 255, 255, 0.58);
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-default: rgba(255, 255, 255, 0.14);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -214,7 +214,8 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
-  color: var(--text-primary);
+  /* No colour here: an element selector beats inherited colour, which broke
+     every inverted (dark-panel) surface. Colour comes from body + tokens. */
   overflow-wrap: break-word;
 }
 
@@ -226,7 +227,8 @@ h5 { font-size: 1.125rem; }
 h6 { font-size: 1rem; }
 
 p {
-  color: var(--text-secondary);
+  /* Soft paragraph tone is opt-in via `color="text-secondary"` on the
+     component. A global colour here overrode inverted surfaces. */
   margin-bottom: var(--space-4);
   overflow-wrap: break-word;
 }

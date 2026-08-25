@@ -140,8 +140,10 @@ const colors = {
       dark: 'rgba(255, 255, 255, 0.64)',
     },
     tertiary: {
-      light: 'rgba(9, 10, 15, 0.42)',
-      dark: 'rgba(255, 255, 255, 0.42)',
+      // 0.42 failed AA for small text (2.86:1 on bg-base). 0.58 -> 4.82:1 light,
+      // 6.86:1 dark. Verified by gan-harness/a11y-contrast.mjs.
+      light: 'rgba(9, 10, 15, 0.58)',
+      dark: 'rgba(255, 255, 255, 0.58)',
     },
   },
   interactive: {
@@ -408,13 +410,15 @@ const components = {
     baseStyle: {
       fontWeight: 700,
       letterSpacing: '-0.02em',
-      color: 'text-primary',
+      // No `color` here on purpose: body sets text-primary and everything
+      // inherits. Hardcoding it breaks inverted surfaces (dark panels), where
+      // the parent sets `color="white"`.
     },
   },
 
   Text: {
     baseStyle: {
-      color: 'text-primary',
+      // Inherit — see Heading note above.
     },
   },
 
