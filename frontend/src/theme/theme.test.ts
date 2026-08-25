@@ -26,9 +26,9 @@ describe('Theme structure', () => {
       }
     });
 
-    it('has cyan #00BFFF as the 500 shade', () => {
+    it('has iris #6B6EF2 as the 500 shade', () => {
       const colors = theme.colors as any;
-      expect(colors.accent[500]).toBe('#00BFFF');
+      expect(colors.accent[500]).toBe('#6B6EF2');
     });
   });
 
@@ -78,7 +78,7 @@ describe('Theme structure', () => {
 });
 
 describe('Button variants', () => {
-  it('asymmetric variant includes navy-to-cyan gradient', () => {
+  it('asymmetric variant includes ink-to-iris gradient', () => {
     const buttonTheme = (theme.components as any)?.Button;
     expect(buttonTheme).toBeDefined();
     expect(buttonTheme.variants.asymmetric).toBeDefined();
@@ -86,17 +86,17 @@ describe('Button variants', () => {
     // Call the variant function to get the style object
     const styles = buttonTheme.variants.asymmetric({});
     expect(styles.bgGradient).toContain('brand.500');
-    expect(styles.bgGradient).toContain('accent.500');
+    expect(styles.bgGradient).toContain('accent.600');
   });
 
-  it('asymmetric variant hover includes navy/cyan box shadow', () => {
+  it('asymmetric variant hover includes ink/iris box shadow', () => {
     const buttonTheme = (theme.components as any)?.Button;
     const styles = buttonTheme.variants.asymmetric({});
-    // Hover shadow uses cyan rgba
-    expect(styles._hover.boxShadow).toContain('rgba(0, 191, 255');
+    // Hover shadow uses iris rgba
+    expect(styles._hover.boxShadow).toContain('rgba(107, 110, 242');
   });
 
-  it('solid variant uses brand colorScheme with cyan-tinted hover', () => {
+  it('solid variant uses brand colorScheme with iris-tinted hover', () => {
     const buttonTheme = (theme.components as any)?.Button;
     expect(buttonTheme.variants.solid).toBeDefined();
 
@@ -104,7 +104,7 @@ describe('Button variants', () => {
     const styles = buttonTheme.variants.solid({ colorScheme: 'brand', theme });
     expect(styles.bg).toBe('brand.500');
     expect(styles._hover.bg).toBe('brand.600');
-    // Brand hover uses cyan box shadow
-    expect(styles._hover.boxShadow).toContain('rgba(0, 191, 255');
+    // Brand hover uses iris box shadow
+    expect(styles._hover.boxShadow).toContain('rgba(107, 110, 242');
   });
 });

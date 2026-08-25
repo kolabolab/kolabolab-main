@@ -123,8 +123,8 @@ describe('Theme Integration: Dark mode toggle does not produce flash of wrong co
 
     // bg-base should have both light and dark values
     expect(semanticTokens['bg-base']).toBeDefined();
-    expect(semanticTokens['bg-base'].default).toBe('#F8FAFF');
-    expect(semanticTokens['bg-base']._dark).toBe('#0A0A0B');
+    expect(semanticTokens['bg-base'].default).toBe('#FAFAFB');
+    expect(semanticTokens['bg-base']._dark).toBe('#0B0C11');
 
     // interactive-accent should have brighter cyan in dark mode
     expect(semanticTokens['interactive-accent']).toBeDefined();
@@ -236,6 +236,6 @@ describe('Theme Integration: index.html contains correct favicon elements', () =
   });
 
   it('contains <meta name="theme-color"> with value #1B2A4A', () => {
-    expect(htmlContent).toMatch(/<meta[^>]*name="theme-color"[^>]*content="#1B2A4A"[^>]*>/);
+    expect(htmlContent).toMatch(/<meta[^>]*name="theme-color"[^>]*content="#232838"[^>]*>/);
   });
 });

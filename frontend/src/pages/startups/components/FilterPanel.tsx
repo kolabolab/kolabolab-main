@@ -90,7 +90,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             aria-label="Search startups"
             _focus={{
               borderColor: 'brand.500',
-              boxShadow: '0 0 0 1px var(--primary-navy, #1B2A4A)',
+              boxShadow: '0 0 0 1px var(--brand-ink, #232838)',
             }}
           />
           {filters.q && (

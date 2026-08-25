@@ -210,8 +210,8 @@ describe('Preservation Property Tests - Existing Functionality (Fast)', () => {
     it('should maintain consistent color scheme and theme structure', () => {
       // Verify theme structure is preserved
       expect(theme.colors.brand).toBeDefined()
-      expect(theme.colors.brand['500']).toBe('#1B2A4A')
-      expect(theme.fonts.heading).toContain('Poppins')
+      expect(theme.colors.brand['500']).toBe('#232838')
+      expect(theme.fonts.heading).toContain('Space Grotesk')
       expect(theme.fonts.body).toContain('Inter')
       
       // Verify component variants are preserved

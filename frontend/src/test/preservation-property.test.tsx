@@ -19,7 +19,6 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { BrowserRouter } from 'react-router-dom'
 import React from 'react'
 import { Navbar } from '../components/layout/Navbar'
-import { HomePage } from '../pages/HomePage'
 import { SearchPage } from '../pages/SearchPage'
 import { DashboardPage } from '../pages/DashboardPage'
 import { authAPI, apiClient } from '../services/apiClient'
@@ -243,8 +242,8 @@ describe('Preservation Property Tests - Existing Functionality', () => {
     it('should maintain consistent color scheme and theme structure', () => {
       // Verify theme structure is preserved
       expect(theme.colors.brand).toBeDefined()
-      expect(theme.colors.brand['500']).toBe('#1B2A4A')
-      expect(theme.fonts.heading).toContain('Poppins')
+      expect(theme.colors.brand['500']).toBe('#232838')
+      expect(theme.fonts.heading).toContain('Space Grotesk')
       expect(theme.fonts.body).toContain('Inter')
       
       // Verify component variants are preserved

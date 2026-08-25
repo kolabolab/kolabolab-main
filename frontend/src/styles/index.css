@@ -1,38 +1,48 @@
 /* KolaboLab Consolidated Styles - Single CSS Entry Point */
 
 /* Import Modern Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 /* CSS Custom Properties - Design Tokens */
 :root {
-  /* Core Brand Colors - Navy/Cyan Theme */
-  --primary-navy: #1B2A4A;
-  --accent-cyan: #00BFFF;
+  /* Core Brand Colors - Ink & Iris Theme (design-system experiment) */
+  --brand-ink: #232838;
+  --accent-iris: #6B6EF2;
+  --signal-lime: #C7F13B;
   --accent-gray: #6B7280;
+  /* Legacy aliases — keep old names resolving until full rename sweep */
+  --primary-navy: var(--brand-ink);
+  --accent-cyan: var(--accent-iris);
   
-  /* Navy Palette - Primary Brand Color */
-  --navy-50:  #E8EBF0;
-  --navy-100: #C5CCD9;
-  --navy-200: #9FADBF;
-  --navy-300: #7A8EA6;
-  --navy-400: #5E7793;
-  --navy-500: #1B2A4A;
-  --navy-600: #162240;
-  --navy-700: #111A33;
-  --navy-800: #0C1226;
-  --navy-900: #070B19;
+  /* Ink Palette - Primary Brand Color */
+  --ink-50:  #F5F6F8;
+  --ink-100: #EBECF0;
+  --ink-200: #D6D8E0;
+  --ink-300: #B3B7C4;
+  --ink-400: #838BA1;
+  --ink-500: #232838;
+  --ink-600: #1B1F2C;
+  --ink-700: #151822;
+  --ink-800: #0F1119;
+  --ink-900: #090A0F;
   
-  /* Cyan Palette - Accent Color */
-  --cyan-50:  #E0F7FF;
-  --cyan-100: #B3ECFF;
-  --cyan-200: #80E0FF;
-  --cyan-300: #4DD4FF;
-  --cyan-400: #26CAFF;
-  --cyan-500: #00BFFF;
-  --cyan-600: #00A3DB;
-  --cyan-700: #0087B8;
-  --cyan-800: #006B94;
-  --cyan-900: #004F70;
+  /* Iris Palette - Accent Color */
+  --iris-50:  #F0F0FF;
+  --iris-100: #E2E3FF;
+  --iris-200: #C9CAFE;
+  --iris-300: #A8AAFB;
+  --iris-400: #8487F5;
+  --iris-500: #6B6EF2;
+  --iris-600: #4B4EDB;
+  --iris-700: #3C3EB5;
+  --iris-800: #2F318C;
+  --iris-900: #252766;
+
+  /* Lime Palette - Signal / Highlight Color */
+  --lime-300: #D4F55F;
+  --lime-400: #C7F13B;
+  --lime-500: #B7E51D;
+  --lime-600: #94BE10;
   
   /* Green Palette - Success Semantic Color */
   --green-50: #ECFDF5;
@@ -71,34 +81,34 @@
   --blue-900: #1E3A8A;
   
   /* Gradient System - Navy/Cyan Primary */
-  --gradient-primary: linear-gradient(135deg, #1B2A4A 0%, #00BFFF 100%);
+  --gradient-primary: linear-gradient(135deg, #232838 0%, #6B6EF2 100%);
   --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
   --gradient-secondary: linear-gradient(135deg, #6B7280 0%, #4B5563 100%);
   --gradient-support: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
   --gradient-glass: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
   
   /* Semantic System - Light Mode */
-  --bg-base: #F8FAFF;
-  --bg-surface: rgba(255, 255, 255, 0.8);
-  --bg-elevated: rgba(255, 255, 255, 0.95);
-  --bg-glass: rgba(255, 255, 255, 0.7);
+  --bg-base: #FAFAFB;
+  --bg-surface: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-glass: rgba(255, 255, 255, 0.72);
   --bg-surface-raised: #FFFFFF;
-  --bg-surface-overlay: #F9FAFB;
-  --text-primary: rgba(0, 0, 0, 0.92);
-  --text-secondary: rgba(0, 0, 0, 0.64);
-  --text-tertiary: rgba(0, 0, 0, 0.38);
-  --border-subtle: rgba(0, 0, 0, 0.06);
-  --border-default: rgba(0, 0, 0, 0.12);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.15);
+  --bg-surface-overlay: #FAFAFB;
+  --text-primary: rgba(9, 10, 15, 0.92);
+  --text-secondary: rgba(9, 10, 15, 0.64);
+  --text-tertiary: rgba(9, 10, 15, 0.42);
+  --border-subtle: rgba(9, 10, 15, 0.08);
+  --border-default: rgba(9, 10, 15, 0.14);
+  --shadow-sm: 0 1px 2px rgba(9, 10, 15, 0.05);
+  --shadow-md: 0 2px 8px rgba(9, 10, 15, 0.07);
+  --shadow-lg: 0 12px 24px -8px rgba(9, 10, 15, 0.12);
+  --shadow-xl: 0 24px 48px -12px rgba(9, 10, 15, 0.18);
   /* Interactive elements */
-  --interactive-accent: #00BFFF;
-  --interactive-hover: rgba(27, 42, 74, 0.08);
+  --interactive-accent: #4B4EDB;
+  --interactive-hover: rgba(35, 40, 56, 0.06);
   
   /* Typography System */
-  --font-heading: 'Poppins', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-accent: 'Space Grotesk', system-ui, -apple-system, sans-serif;
   
@@ -118,11 +128,11 @@
   --space-24: 96px;
   
   /* Border Radius System */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
   --radius-full: 9999px;
   
   /* Animation System */
@@ -137,27 +147,27 @@
 .dark-mode,
 .chakra-ui-dark,
 [data-theme="dark"] {
-  --bg-base: #0A0A0B;
-  --bg-surface: rgba(17, 26, 51, 0.8);
-  --bg-elevated: rgba(22, 34, 64, 0.95);
-  --bg-glass: rgba(17, 26, 51, 0.7);
-  --bg-surface-raised: #162240;
-  --bg-surface-overlay: #111A33;
+  --bg-base: #0B0C11;
+  --bg-surface: #12141C;
+  --bg-elevated: #171A24;
+  --bg-glass: rgba(18, 20, 28, 0.72);
+  --bg-surface-raised: #171A24;
+  --bg-surface-overlay: #12141C;
   --text-primary: rgba(255, 255, 255, 0.92);
   --text-secondary: rgba(255, 255, 255, 0.64);
-  --text-tertiary: rgba(255, 255, 255, 0.38);
-  --border-subtle: rgba(0, 191, 255, 0.06);
-  --border-default: rgba(0, 191, 255, 0.12);
+  --text-tertiary: rgba(255, 255, 255, 0.42);
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-default: rgba(255, 255, 255, 0.14);
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.4);
   --shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
-  /* Interactive elements use lighter navy and brighter cyan in dark mode */
-  --primary-navy: #9FADBF;
-  --accent-cyan: #4DD4FF;
-  --interactive-accent: #4DD4FF;
-  --interactive-hover: rgba(0, 191, 255, 0.12);
-  --interactive-active: rgba(0, 191, 255, 0.2);
+  /* Interactive elements use lighter ink and brighter iris in dark mode */
+  --primary-navy: #B3B7C4;
+  --accent-cyan: #A8AAFB;
+  --interactive-accent: #A8AAFB;
+  --interactive-hover: rgba(107, 110, 242, 0.14);
+  --interactive-active: rgba(107, 110, 242, 0.22);
 }
 
 .dark-mode .gradient-text,
@@ -190,7 +200,7 @@ body {
 
 /* Focus styles for better accessibility */
 *:focus {
-  outline: 2px solid var(--accent-cyan);
+  outline: 2px solid var(--accent-iris);
   outline-offset: 2px;
 }
 
@@ -229,8 +239,8 @@ img {
 
 /* Selection styles */
 ::selection {
-  background-color: #00BFFF;
-  color: white;
+  background-color: #C9CAFE;
+  color: #151822;
 }
 
 /* Custom scrollbar */

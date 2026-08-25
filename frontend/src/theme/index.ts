@@ -1,30 +1,58 @@
 import { extendTheme, type ThemeConfig } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 
+/**
+ * KolaboLab Design System — "Ink & Iris" (experiment)
+ * ----------------------------------------------------
+ * Design language inspired by the current generation of successful
+ * innovation platforms: near-black ink primary, electric iris accent,
+ * lime "signal" highlights, editorial display type (Space Grotesk),
+ * hairline borders and crisp shadows over heavy glassmorphism.
+ *
+ * Token contract is unchanged from the previous brand theme:
+ * same scale names (brand/accent/success/gray/blue/neutral),
+ * same semantic tokens, same component variant names.
+ */
+
 const colors = {
   brand: {
-    50: '#E8EBF0',
-    100: '#C5CCD9',
-    200: '#9FADBF',
-    300: '#7A8EA6',
-    400: '#5E7793',
-    500: '#1B2A4A', // Primary Navy - matches brand logo
-    600: '#162240',
-    700: '#111A33',
-    800: '#0C1226',
-    900: '#070B19',
+    // Ink — near-black with a cool undertone. Primary surface + action color.
+    50: '#F5F6F8',
+    100: '#EBECF0',
+    200: '#D6D8E0',
+    300: '#B3B7C4',
+    400: '#838BA1',
+    500: '#232838', // Primary Ink
+    600: '#1B1F2C',
+    700: '#151822',
+    800: '#0F1119',
+    900: '#090A0F',
   },
   accent: {
-    50: '#E0F7FF',
-    100: '#B3ECFF',
-    200: '#80E0FF',
-    300: '#4DD4FF',
-    400: '#26CAFF',
-    500: '#00BFFF', // Cyan accent
-    600: '#00A3DB',
-    700: '#0087B8',
-    800: '#006B94',
-    900: '#004F70',
+    // Electric Iris — interactive accent, focus, links.
+    50: '#F0F0FF',
+    100: '#E2E3FF',
+    200: '#C9CAFE',
+    300: '#A8AAFB',
+    400: '#8487F5',
+    500: '#6B6EF2', // Iris accent
+    600: '#4B4EDB',
+    700: '#3C3EB5',
+    800: '#2F318C',
+    900: '#252766',
+  },
+  signal: {
+    // Electric Lime — celebratory highlights, badges, marketing pops.
+    50: '#F9FEE7',
+    100: '#F1FCC5',
+    200: '#E4F996',
+    300: '#D4F55F',
+    400: '#C7F13B',
+    500: '#B7E51D',
+    600: '#94BE10',
+    700: '#71930E',
+    800: '#597211',
+    900: '#4B5F14',
   },
   success: {
     50: '#ECFDF5',
@@ -44,7 +72,7 @@ const colors = {
     200: '#E5E7EB',
     300: '#D1D5DB',
     400: '#9CA3AF',
-    500: '#6B7280', // Professional Accent Gray
+    500: '#6B7280',
     600: '#4B5563',
     700: '#374151',
     800: '#1F2937',
@@ -78,466 +106,729 @@ const colors = {
   },
   bg: {
     base: {
-      light: '#F8FAFF',
-      dark: '#0A0A0B',
+      light: '#FAFAFB',
+      dark: '#0B0C11',
     },
     surface: {
-      light: 'rgba(255, 255, 255, 0.8)',
-      dark: 'rgba(17, 26, 51, 0.8)',
+      light: '#FFFFFF',
+      dark: '#12141C',
     },
     elevated: {
-      light: 'rgba(255, 255, 255, 0.95)',
-      dark: 'rgba(22, 34, 64, 0.95)',
+      light: '#FFFFFF',
+      dark: '#171A24',
     },
     glass: {
-      light: 'rgba(255, 255, 255, 0.7)',
-      dark: 'rgba(17, 26, 51, 0.7)',
+      light: 'rgba(255, 255, 255, 0.72)',
+      dark: 'rgba(18, 20, 28, 0.72)',
     },
     raised: {
       light: '#FFFFFF',
-      dark: '#162240',
+      dark: '#171A24',
     },
     overlay: {
-      light: '#F8FAFF',
-      dark: '#111A33',
+      light: '#FAFAFB',
+      dark: '#12141C',
     },
   },
   text: {
     primary: {
-      light: 'rgba(0, 0, 0, 0.92)',
+      light: 'rgba(9, 10, 15, 0.92)',
       dark: 'rgba(255, 255, 255, 0.92)',
     },
     secondary: {
-      light: 'rgba(0, 0, 0, 0.64)',
+      light: 'rgba(9, 10, 15, 0.64)',
       dark: 'rgba(255, 255, 255, 0.64)',
     },
     tertiary: {
-      light: 'rgba(0, 0, 0, 0.38)',
-      dark: 'rgba(255, 255, 255, 0.38)',
+      light: 'rgba(9, 10, 15, 0.42)',
+      dark: 'rgba(255, 255, 255, 0.42)',
     },
   },
   interactive: {
     accent: {
-      light: '#00BFFF',
-      dark: '#4DD4FF',
+      light: '#4B4EDB',
+      dark: '#A8AAFB',
     },
     hover: {
-      light: 'rgba(27, 42, 74, 0.08)',
-      dark: 'rgba(0, 191, 255, 0.12)',
+      light: 'rgba(35, 40, 56, 0.06)',
+      dark: 'rgba(107, 110, 242, 0.14)',
     },
     active: {
-      light: 'rgba(27, 42, 74, 0.12)',
-      dark: 'rgba(0, 191, 255, 0.2)',
+      light: 'rgba(35, 40, 56, 0.1)',
+      dark: 'rgba(107, 110, 242, 0.22)',
     },
   },
 };
 
 const fonts = {
-  heading: `'Poppins', system-ui, -apple-system, sans-serif`,
+  heading: `'Space Grotesk', 'Inter', system-ui, -apple-system, sans-serif`,
   body: `'Inter', system-ui, -apple-system, sans-serif`,
   accent: `'Space Grotesk', system-ui, -apple-system, sans-serif`,
 };
 
+const radii = {
+  sm: '6px',
+  base: '8px',
+  md: '10px',
+  lg: '14px',
+  xl: '20px',
+  '2xl': '28px',
+  full: '9999px',
+};
+
 const shadows = {
-  sm: '0 2px 8px rgba(0, 0, 0, 0.04)',
-  md: '0 8px 32px rgba(0, 0, 0, 0.05)',
-  lg: '0 12px 40px rgba(0, 0, 0, 0.1)',
-  xl: '0 20px 60px rgba(0, 0, 0, 0.15)',
-  'sm-dark': '0 2px 8px rgba(0, 0, 0, 0.2)',
-  'md-dark': '0 8px 32px rgba(0, 0, 0, 0.3)',
-  'lg-dark': '0 12px 40px rgba(0, 0, 0, 0.4)',
-  'xl-dark': '0 20px 60px rgba(0, 0, 0, 0.5)',
+  sm: '0 1px 2px rgba(9, 10, 15, 0.05)',
+  md: '0 2px 8px rgba(9, 10, 15, 0.07)',
+  lg: '0 12px 24px -8px rgba(9, 10, 15, 0.12)',
+  xl: '0 24px 48px -12px rgba(9, 10, 15, 0.18)',
+  outline: '0 0 0 3px rgba(107, 110, 242, 0.4)',
+  'sm-dark': '0 1px 2px rgba(0, 0, 0, 0.3)',
+  'md-dark': '0 2px 8px rgba(0, 0, 0, 0.35)',
+  'lg-dark': '0 12px 24px -8px rgba(0, 0, 0, 0.5)',
+  'xl-dark': '0 24px 48px -12px rgba(0, 0, 0, 0.6)',
+};
+
+// Focus ring shared by interactive components
+const focusRing = {
+  boxShadow: '0 0 0 3px rgba(107, 110, 242, 0.4)',
+  outline: '2px solid transparent',
+  outlineOffset: '2px',
 };
 
 const components = {
   Button: {
     baseStyle: {
-      fontFamily: 'heading',
-      fontWeight: '600',
-      borderRadius: '16px',
-      minH: '44px',
-      transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
-      _hover: {
-        transform: 'translateY(-3px) scale(1.02)',
-      },
-      _active: {
-        transform: 'translateY(1px) scale(0.98)',
-      },
-      _focusVisible: {
-        outline: '3px solid rgba(0, 191, 255, 0.5)',
-        outlineOffset: '2px',
-      },
-    },
-    variants: {
-      solid: (props: any) => ({
-        bg: `${props.colorScheme}.500`,
-        color: 'white',
-        boxShadow: mode(shadows.md, shadows['md-dark'])(props),
-        _hover: {
-          bg: `${props.colorScheme}.600`,
-          boxShadow: props.colorScheme === 'brand'
-            ? '0 8px 25px rgba(0, 191, 255, 0.3)'
-            : mode(shadows.lg, shadows['lg-dark'])(props),
-        },
-      }),
-      asymmetric: () => ({
-        bgGradient: 'linear(to-r, brand.500, accent.500)',
-        color: 'white',
-        boxShadow: '0 4px 20px rgba(27, 42, 74, 0.25)',
-        _hover: {
-          bgGradient: 'linear(to-r, brand.600, accent.400)',
-          boxShadow: '0 8px 25px rgba(0, 191, 255, 0.3)',
-          transform: 'translateY(-3px) scale(1.02)',
-        },
-      }),
-      secondary: () => ({
-        bg: 'gray.500',
-        color: 'white',
-        boxShadow: '0 4px 20px rgba(107, 114, 128, 0.2)',
-        _hover: {
-          bg: 'gray.600',
-          boxShadow: '0 8px 25px rgba(107, 114, 128, 0.3)',
-        },
-      }),
-      success: () => ({
-        bg: 'green.500',
-        color: 'white',
-        boxShadow: '0 4px 20px rgba(16, 185, 129, 0.25)',
-        _hover: {
-          bg: 'green.600',
-          boxShadow: '0 8px 25px rgba(16, 185, 129, 0.35)',
-        },
-      }),
-      glass: (props: any) => ({
-        bg: mode('bg.glass.light', 'bg.glass.dark')(props),
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
-        border: '1px solid',
-        borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(0, 191, 255, 0.06)')(props),
-        color: mode('text.primary.light', 'text.primary.dark')(props),
-        boxShadow: mode(shadows.sm, shadows['sm-dark'])(props),
-        _hover: {
-          bg: mode('rgba(255, 255, 255, 0.9)', 'rgba(17, 26, 51, 0.9)')(props),
-        },
-      }),
-      ghost: (props: any) => ({
-        bg: 'transparent',
-        color: mode('text.secondary.light', 'text.secondary.dark')(props),
-        _hover: {
-          bg: mode('rgba(27, 42, 74, 0.08)', 'rgba(0, 191, 255, 0.12)')(props),
-        },
-      }),
-      outline: (props: any) => ({
-        bg: 'transparent',
-        border: '2px solid',
-        borderColor: `${props.colorScheme}.500`,
-        color: `${props.colorScheme}.500`,
-        _hover: {
-          bg: `${props.colorScheme}.50`,
-        },
-      }),
-      'outline-secondary': () => ({
-        bg: 'transparent',
-        border: '2px solid',
-        borderColor: 'gray.500',
-        color: 'gray.500',
-        _hover: {
-          bg: 'gray.50',
-        },
-      }),
+      fontWeight: 600,
+      letterSpacing: '-0.01em',
+      borderRadius: 'md',
+      minH: '44px', // WCAG/HIG tap target — never render a primary control smaller
+      transition: 'all 0.18s cubic-bezier(0.4, 0, 0.2, 1)',
+      _focusVisible: focusRing,
+      _hover: { transform: 'translateY(-1px)', _disabled: { transform: 'none' } },
+      _active: { transform: 'translateY(0) scale(0.985)' },
     },
     sizes: {
-      sm: {
-        h: '36px',
-        minH: '36px',
-        px: 4,
-        py: 0,
-        fontSize: 'xs',
-        lineHeight: 1,
-      },
-      md: {
-        h: { base: '48px', md: '44px' },
-        minH: { base: '48px', md: '44px' },
-        px: 6,
-        py: 0,
-        fontSize: 'sm',
-        lineHeight: 1,
-      },
-      lg: {
-        h: '52px',
-        minH: '52px',
-        px: 8,
-        py: 0,
-        fontSize: 'md',
-        lineHeight: 1,
-      },
-      xl: {
-        h: '60px',
-        minH: '60px',
-        px: 10,
-        py: 0,
-        fontSize: 'lg',
-        lineHeight: 1,
-      },
+      xl: { h: '56px', minW: '56px', fontSize: 'lg', px: 8 },
+      lg: { h: '48px', minW: '48px', fontSize: 'md', px: 7 },
+      md: { h: '44px', minW: '44px', fontSize: 'sm', px: 5 },
+      sm: { h: '36px', minW: '36px', fontSize: 'sm', px: 4 },
+      xs: { h: '30px', minW: '30px', fontSize: 'xs', px: 3 },
     },
-  },
-  Menu: {
-    baseStyle: {
-      list: {
-        zIndex: 'popover',
-        position: 'absolute',
-        minW: '220px',
-        py: 2,
-        borderRadius: 'xl',
-        border: '2px solid',
-        borderColor: 'accent.200',
-        bg: 'white',
-        boxShadow: 'xl',
+    variants: {
+      // Ink solid — primary action. colorScheme brand/gray both resolve to ink;
+      // in dark mode the solid flips to white-on-ink (inverse) for contrast.
+      solid: (props: Record<string, any>) => {
+        const c = props.colorScheme;
+        if (c === 'brand' || c === 'gray') {
+          return {
+            bg: mode('brand.500', 'neutral.0')(props),
+            color: mode('white', 'brand.700')(props),
+            _hover: {
+              bg: mode('brand.600', 'neutral.100')(props),
+              boxShadow: '0 8px 20px -6px rgba(107, 110, 242, 0.45)',
+              _disabled: { bg: mode('brand.500', 'neutral.0')(props) },
+            },
+            _active: { bg: mode('brand.700', 'neutral.200')(props) },
+          };
+        }
+        // accent.500 is reserved for text/decoration; white-text fills use 600+
+        const base = c === 'accent' ? 600 : 500;
+        return {
+          bg: `${c}.${base}`,
+          color: 'white',
+          _hover: {
+            bg: `${c}.${base + 100}`,
+            boxShadow: '0 8px 20px -6px rgba(107, 110, 242, 0.45)',
+            _disabled: { bg: `${c}.${base}` },
+          },
+          _active: { bg: `${c}.${base + 200}` },
+        };
       },
-      item: {
-        borderRadius: 'md',
+      // Alias used across the app; identical to ink solid.
+      primary: (props: Record<string, any>) => ({
+        bg: mode('brand.500', 'neutral.0')(props),
+        color: mode('white', 'brand.700')(props),
         _hover: {
-          bg: 'brand.50',
+          bg: mode('brand.600', 'neutral.100')(props),
+          boxShadow: '0 8px 20px -6px rgba(107, 110, 242, 0.45)',
+          _disabled: { bg: mode('brand.500', 'neutral.0')(props) },
         },
-        _focus: {
-          bg: 'brand.50',
+        _active: { bg: mode('brand.700', 'neutral.200')(props) },
+      }),
+      // Iris subtle — secondary emphasis.
+      secondary: (props: Record<string, any>) => ({
+        bg: mode('accent.50', 'rgba(107, 110, 242, 0.16)')(props),
+        color: mode('accent.700', 'accent.200')(props),
+        _hover: {
+          bg: mode('accent.100', 'rgba(107, 110, 242, 0.24)')(props),
         },
+        _active: {
+          bg: mode('accent.200', 'rgba(107, 110, 242, 0.32)')(props),
+        },
+      }),
+      success: {
+        bg: 'success.500',
+        color: 'white',
+        _hover: {
+          bg: 'success.600',
+          boxShadow: '0 8px 20px -6px rgba(16, 185, 129, 0.45)',
+          _disabled: { bg: 'success.500' },
+        },
+        _active: { bg: 'success.700' },
       },
-    },
-  },
-  Card: {
-    baseStyle: (props: any) => ({
-      container: {
-        bg: mode('bg.surface.light', 'bg.surface.dark')(props),
+      outline: (props: Record<string, any>) => ({
+        border: '1px solid',
+        borderColor: mode('neutral.300', 'whiteAlpha.300')(props),
+        color: 'text-primary',
+        bg: 'transparent',
+        _hover: {
+          bg: 'interactive-hover',
+          borderColor: mode('brand.400', 'whiteAlpha.400')(props),
+        },
+        _active: { bg: 'interactive-active' },
+      }),
+      'outline-secondary': (props: Record<string, any>) => ({
+        border: '1px solid',
+        borderColor: mode('accent.300', 'accent.700')(props),
+        color: mode('accent.600', 'accent.300')(props),
+        bg: 'transparent',
+        _hover: {
+          bg: mode('accent.50', 'rgba(107, 110, 242, 0.16)')(props),
+          borderColor: mode('accent.500', 'accent.500')(props),
+        },
+        _active: {
+          bg: mode('accent.100', 'rgba(107, 110, 242, 0.24)')(props),
+        },
+      }),
+      ghost: {
+        color: 'text-secondary',
+        _hover: { bg: 'interactive-hover', color: 'text-primary' },
+        _active: { bg: 'interactive-active' },
+      },
+      glass: (props: Record<string, any>) => ({
+        bg: 'bg-glass',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
-        borderRadius: '24px',
         border: '1px solid',
-        borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(0, 191, 255, 0.06)')(props),
-        boxShadow: mode(shadows.md, shadows['md-dark'])(props),
-        overflow: 'hidden',
-        transition: 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1)',
+        borderColor: mode('rgba(9, 10, 15, 0.08)', 'whiteAlpha.200')(props),
+        color: 'text-primary',
         _hover: {
-          transform: 'translateY(-8px) scale(1.02)',
-          boxShadow: mode(shadows.xl, shadows['xl-dark'])(props),
+          bg: mode('rgba(255, 255, 255, 0.9)', 'rgba(18, 20, 28, 0.9)')(props),
+          boxShadow: 'md',
         },
+      }),
+      // Signature button — ink→iris gradient with an asymmetric corner.
+      asymmetric: (_props: Record<string, any>) => ({
+        bgGradient: 'linear(to-r, brand.500, accent.600)',
+        color: 'white',
+        borderRadius: '12px 12px 12px 2px',
+        _hover: {
+          boxShadow: '0 8px 24px rgba(107, 110, 242, 0.45)',
+          transform: 'translateY(-1px)',
+          _disabled: { transform: 'none' },
+        },
+        _active: { transform: 'translateY(0)' },
+      }),
+      link: {
+        color: 'interactive-accent',
+        fontWeight: 600,
+        _hover: { textDecoration: 'underline', textUnderlineOffset: '3px' },
+      },
+    },
+    defaultProps: {
+      variant: 'solid',
+      size: 'md',
+      colorScheme: 'gray',
+    },
+  },
+
+  Card: {
+    baseStyle: (_props: Record<string, any>) => ({
+      container: {
+        bg: 'bg-surface',
+        border: '1px solid',
+        borderColor: 'border-subtle',
+        borderRadius: 'xl',
+        transition:
+          'box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease',
+        _hover: { transform: 'translateY(-2px)', borderColor: 'border-default' },
       },
     }),
     variants: {
-      primary: () => ({
+      elevated: {
         container: {
-          borderLeft: '4px solid',
-          borderLeftColor: 'brand.500',
+          boxShadow: 'sm',
+          _hover: { boxShadow: 'lg', transform: 'translateY(-2px)' },
         },
-      }),
-      secondary: () => ({
+      },
+      outline: {
+        container: { boxShadow: 'none', borderColor: 'border-default' },
+      },
+      filled: {
+        container: { bg: 'chakra-subtle-bg', border: 'none' },
+      },
+      glass: {
         container: {
-          borderLeft: '4px solid',
-          borderLeftColor: 'gray.500',
+          bg: 'bg-glass',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderColor: 'border-subtle',
+          boxShadow: 'md',
         },
-      }),
-      success: () => ({
+      },
+      primary: {
         container: {
-          borderLeft: '4px solid',
-          borderLeftColor: 'green.500',
+          borderLeft: '3px solid',
+          borderLeftColor: 'accent.500',
+          boxShadow: 'sm',
         },
-      }),
-      glass: (props: any) => ({
+      },
+      secondary: {
         container: {
-          bg: mode('bg.glass.light', 'bg.glass.dark')(props),
+          borderLeft: '3px solid',
+          borderLeftColor: 'signal.500',
+          boxShadow: 'sm',
         },
-      }),
+      },
+      success: {
+        container: {
+          borderLeft: '3px solid',
+          borderLeftColor: 'success.500',
+          boxShadow: 'sm',
+        },
+      },
+    },
+    defaultProps: {
+      variant: 'elevated',
+      size: 'md',
     },
   },
+
   Heading: {
-    baseStyle: (props: any) => ({
-      fontFamily: 'heading',
-      fontWeight: '700',
-      letterSpacing: '-0.02em',
-      lineHeight: '1.2',
-      color: mode('text.primary.light', 'text.primary.dark')(props),
-    }),
-  },
-  Text: {
-    baseStyle: (props: any) => ({
-      color: mode('text.secondary.light', 'text.secondary.dark')(props),
-      lineHeight: '1.6',
-    }),
-  },
-  Input: {
     baseStyle: {
-      field: {
-        borderRadius: '12px',
-        minH: '44px',
-        transition: 'all 0.3s ease',
-        _focusVisible: {
-          outline: '3px solid rgba(0, 191, 255, 0.5)',
-          outlineOffset: '2px',
-        },
-      },
+      fontWeight: 700,
+      letterSpacing: '-0.02em',
+      color: 'text-primary',
     },
+  },
+
+  Text: {
+    baseStyle: {
+      color: 'text-primary',
+    },
+  },
+
+  Link: {
+    baseStyle: {
+      color: 'interactive-accent',
+      fontWeight: 500,
+      transition: 'color 0.15s ease',
+      _hover: {
+        textDecoration: 'underline',
+        textUnderlineOffset: '3px',
+      },
+      _focusVisible: focusRing,
+    },
+  },
+
+  Input: {
     variants: {
-      glass: (props: any) => ({
+      outline: (props: Record<string, any>) => ({
         field: {
-          bg: mode('bg.glass.light', 'bg.glass.dark')(props),
+          bg: 'bg-surface',
+          borderColor: mode('neutral.300', 'whiteAlpha.300')(props),
+          borderRadius: 'md',
+          _hover: { borderColor: mode('neutral.400', 'whiteAlpha.400')(props) },
+          _placeholder: { color: 'text-tertiary' },
+          _focusVisible: {
+            borderColor: 'accent.500',
+            boxShadow: '0 0 0 1px var(--chakra-colors-accent-500)',
+          },
+        },
+      }),
+      glass: (props: Record<string, any>) => ({
+        field: {
+          bg: 'bg-glass',
           backdropFilter: 'blur(12px)',
           WebkitBackdropFilter: 'blur(12px)',
           border: '1px solid',
-          borderColor: mode('rgba(0, 0, 0, 0.06)', 'rgba(0, 191, 255, 0.06)')(props),
+          borderColor: mode('rgba(9, 10, 15, 0.08)', 'whiteAlpha.200')(props),
+          borderRadius: 'md',
+          _placeholder: { color: 'text-tertiary' },
+          _focusVisible: {
+            borderColor: 'accent.500',
+            boxShadow: '0 0 0 1px var(--chakra-colors-accent-500)',
+          },
+        },
+      }),
+    },
+    defaultProps: { size: 'md', variant: 'outline' },
+  },
+
+  Select: {
+    variants: {
+      outline: (props: Record<string, any>) => ({
+        field: {
+          bg: 'bg-surface',
+          borderColor: mode('neutral.300', 'whiteAlpha.300')(props),
+          borderRadius: 'md',
+          _hover: { borderColor: mode('neutral.400', 'whiteAlpha.400')(props) },
+          _focusVisible: {
+            borderColor: 'accent.500',
+            boxShadow: '0 0 0 1px var(--chakra-colors-accent-500)',
+          },
         },
       }),
     },
   },
-  Container: {
-    baseStyle: {
-      maxW: '1200px',
-      px: { base: 4, md: 6, lg: 8 },
+
+  Textarea: {
+    variants: {
+      outline: (props: Record<string, any>) => ({
+        bg: 'bg-surface',
+        borderColor: mode('neutral.300', 'whiteAlpha.300')(props),
+        borderRadius: 'md',
+        _hover: { borderColor: mode('neutral.400', 'whiteAlpha.400')(props) },
+        _placeholder: { color: 'text-tertiary' },
+        _focusVisible: {
+          borderColor: 'accent.500',
+          boxShadow: '0 0 0 1px var(--chakra-colors-accent-500)',
+        },
+      }),
     },
+  },
+
+  Badge: {
+    baseStyle: {
+      borderRadius: 'full',
+      fontWeight: 600,
+      textTransform: 'none',
+      letterSpacing: '0',
+      px: 2.5,
+      py: 0.5,
+    },
+    defaultProps: {
+      variant: 'subtle',
+      colorScheme: 'gray',
+    },
+  },
+
+  Tag: {
+    baseStyle: {
+      container: { borderRadius: 'full', fontWeight: 500 },
+    },
+    defaultProps: {
+      size: 'md',
+      variant: 'subtle',
+      colorScheme: 'gray',
+    },
+  },
+
+  Menu: {
+    baseStyle: {
+      list: {
+        bg: 'bg-elevated',
+        border: '1px solid',
+        borderColor: 'border-subtle',
+        borderRadius: 'lg',
+        boxShadow: 'lg',
+        py: 2,
+        overflow: 'hidden',
+      },
+      item: {
+        bg: 'transparent',
+        fontSize: 'sm',
+        px: 3,
+        py: 2,
+        _hover: { bg: 'interactive-hover' },
+        _focus: { bg: 'interactive-hover' },
+      },
+    },
+  },
+
+  Modal: {
+    baseStyle: {
+      dialog: {
+        bg: 'bg-elevated',
+        borderRadius: 'xl',
+        boxShadow: 'xl',
+      },
+      header: { fontFamily: 'heading', letterSpacing: '-0.01em' },
+    },
+  },
+
+  Drawer: {
+    baseStyle: {
+      dialog: { bg: 'bg-elevated' },
+    },
+    defaultProps: { size: 'xs' },
+  },
+
+  Popover: {
+    baseStyle: {
+      content: {
+        bg: 'bg-elevated',
+        border: '1px solid',
+        borderColor: 'border-subtle',
+        borderRadius: 'lg',
+        boxShadow: 'lg',
+        _focusVisible: { outline: 'none', boxShadow: 'lg' },
+      },
+    },
+  },
+
+  Tooltip: {
+    baseStyle: {
+      bg: 'brand.600',
+      color: 'white',
+      borderRadius: 'md',
+      fontSize: 'xs',
+      fontWeight: 500,
+      px: 3,
+      py: 1.5,
+    },
+  },
+
+  Table: {
+    variants: {
+      simple: {
+        th: {
+          color: 'text-tertiary',
+          fontFamily: 'body',
+          fontWeight: 600,
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+          fontSize: 'xs',
+          borderColor: 'border-subtle',
+        },
+        td: { borderColor: 'border-subtle' },
+      },
+    },
+    defaultProps: { variant: 'simple', size: 'md', colorScheme: 'gray' },
+  },
+
+  Tabs: {
+    variants: {
+      line: {
+        tab: {
+          fontWeight: 500,
+          color: 'text-secondary',
+          _selected: { color: 'interactive-accent', borderColor: 'interactive-accent' },
+          _hover: { color: 'text-primary' },
+        },
+      },
+    },
+    defaultProps: { size: 'md', variant: 'line', colorScheme: 'accent' },
+  },
+
+  FormLabel: {
+    baseStyle: {
+      fontSize: 'sm',
+      fontWeight: 600,
+      color: 'text-secondary',
+      mb: 1.5,
+    },
+  },
+
+  Checkbox: {
+    defaultProps: { size: 'md', colorScheme: 'accent' },
+  },
+
+  Radio: {
+    defaultProps: { size: 'md', colorScheme: 'accent' },
+  },
+
+  Switch: {
+    defaultProps: { size: 'md', colorScheme: 'accent' },
+  },
+
+  Progress: {
+    baseStyle: {
+      track: { borderRadius: 'full' },
+    },
+    defaultProps: { size: 'md', colorScheme: 'accent' },
+  },
+
+  Slider: {
+    defaultProps: { size: 'md', colorScheme: 'accent' },
+  },
+
+  Stepper: {
+    defaultProps: { size: 'md', colorScheme: 'accent' },
+  },
+
+  Alert: {
+    baseStyle: {
+      container: { borderRadius: 'lg' },
+    },
+    defaultProps: { variant: 'subtle', colorScheme: 'blue' },
+  },
+
+  Divider: {
+    baseStyle: { borderColor: 'border-subtle', opacity: 1 },
+    defaultProps: { variant: 'solid' },
+  },
+
+  Skeleton: {
+    defaultProps: {
+      startColor: 'neutral.100',
+      endColor: 'neutral.200',
+    },
+  },
+
+  Stat: {
+    baseStyle: {
+      number: {
+        fontFamily: 'heading',
+        fontWeight: 700,
+        letterSpacing: '-0.02em',
+      },
+      label: { color: 'text-secondary', fontWeight: 500 },
+    },
+    defaultProps: { size: 'md' },
+  },
+
+  Container: {
     sizes: {
       sm: { maxW: '640px' },
       md: { maxW: '768px' },
       lg: { maxW: '1024px' },
       xl: { maxW: '1280px' },
-      '2xl': { maxW: '1536px' },
-      '3xl': { maxW: '1920px' },
-      '4xl': { maxW: '2560px' },
+      '2xl': { maxW: '1440px' },
+      '3xl': { maxW: '1600px' },
+      '4xl': { maxW: '1800px' },
       full: { maxW: '100%' },
-      responsive: { 
-        maxW: { 
-          base: 'container.sm', 
-          md: 'container.md', 
-          lg: 'container.lg', 
-          xl: 'container.xl', 
-          '2xl': '90%' 
-        } 
+      responsive: {
+        maxW: { base: '100%', md: '90%', xl: '1280px' },
+        px: { base: 4, md: 6, lg: 8 },
       },
+    },
+  },
+
+  SkipLink: {
+    baseStyle: {
+      position: 'absolute',
+      top: '-48px',
+      left: 4,
+      zIndex: 10000,
+      bg: 'brand.600',
+      color: 'signal.300',
+      px: 4,
+      py: 2,
+      borderRadius: 'md',
+      fontWeight: 600,
+      transition: 'top 0.15s ease',
+      _focus: { top: 4 },
     },
   },
 };
 
 const styles = {
-  global: (props: any) => ({
+  global: (props: Record<string, any>) => ({
+    html: {
+      bg: 'bg-base',
+    },
     body: {
-      bg: mode('bg.base.light', 'bg.base.dark')(props),
-      color: mode('text.primary.light', 'text.primary.dark')(props),
-      fontFamily: 'body',
-      lineHeight: '1.6',
+      bg: 'bg-base',
+      color: 'text-primary',
+      fontFeatureSettings: `'cv11', 'ss01'`,
       WebkitFontSmoothing: 'antialiased',
       MozOsxFontSmoothing: 'grayscale',
+      boxSizing: 'border-box',
       transition: 'background-color 0.3s ease, color 0.3s ease',
     },
-    '*': {
-      boxSizing: 'border-box',
+    '::selection': {
+      bg: mode('accent.200', 'accent.700')(props),
+      color: mode('brand.700', 'white')(props),
     },
-    'h1, h2, h3, h4, h5, h6': {
-      fontFamily: 'heading',
-      fontWeight: '700',
-      letterSpacing: '-0.02em',
-      lineHeight: '1.2',
+    '*::-webkit-scrollbar': {
+      width: '10px',
+      height: '10px',
     },
-    h1: {
-      fontSize: { base: '2rem', md: '3rem', lg: '3.5rem' },
+    '*::-webkit-scrollbar-track': {
+      bg: 'transparent',
     },
-    h2: {
-      fontSize: { base: '1.5rem', md: '2rem', lg: '2.5rem' },
+    '*::-webkit-scrollbar-thumb': {
+      bg: mode('rgba(9, 10, 15, 0.18)', 'rgba(255, 255, 255, 0.18)')(props),
+      borderRadius: 'full',
+      border: '2px solid transparent',
+      backgroundClip: 'content-box',
     },
-    h3: {
-      fontSize: { base: '1.25rem', md: '1.5rem', lg: '1.875rem' },
+    '.full-width-site': {
+      width: '100%',
     },
-    // Focus management for accessibility
     '.skip-link': {
       position: 'absolute',
-      top: '-40px',
-      left: '6px',
-      bg: 'brand.500',
-      color: 'white',
-      p: 2,
-      textDecoration: 'none',
-      borderRadius: 'sm',
+      top: '-48px',
+      left: '16px',
       zIndex: 10000,
+      background: 'var(--chakra-colors-brand-600)',
+      color: 'var(--chakra-colors-signal-300)',
+      padding: '8px 16px',
+      borderRadius: '10px',
+      fontWeight: 600,
       transition: 'top 0.15s ease',
-      _focus: {
-        top: '6px',
-      },
+    },
+    '.skip-link:focus': {
+      top: '16px',
     },
   }),
 };
 
 const config: ThemeConfig = {
-  initialColorMode: 'light',
   useSystemColorMode: true,
+  initialColorMode: 'light',
+  cssVarPrefix: 'chakra',
 };
 
 const semanticTokens = {
   colors: {
-    // Base backgrounds
-    'bg-base': {
-      default: '#F8FAFF',
-      _dark: '#0A0A0B',
-    },
-    'bg-surface': {
-      default: 'rgba(255, 255, 255, 0.8)',
-      _dark: 'rgba(17, 26, 51, 0.8)',
-    },
-    'bg-elevated': {
-      default: 'rgba(255, 255, 255, 0.95)',
-      _dark: 'rgba(22, 34, 64, 0.95)',
-    },
-    'bg-glass': {
-      default: 'rgba(255, 255, 255, 0.7)',
-      _dark: 'rgba(17, 26, 51, 0.7)',
-    },
-    // Dark mode surface variants using lighter navy shades
-    'bg-surface-raised': {
-      default: 'white',
-      _dark: '#162240',
-    },
-    'bg-surface-overlay': {
-      default: 'gray.50',
-      _dark: '#111A33',
-    },
-    // Text colors
-    'text-primary': {
-      default: 'rgba(0, 0, 0, 0.92)',
-      _dark: 'rgba(255, 255, 255, 0.92)',
-    },
-    'text-secondary': {
-      default: 'rgba(0, 0, 0, 0.64)',
-      _dark: 'rgba(255, 255, 255, 0.64)',
-    },
-    'text-tertiary': {
-      default: 'rgba(0, 0, 0, 0.38)',
-      _dark: 'rgba(255, 255, 255, 0.38)',
-    },
-    // Interactive elements - brighter cyan in dark mode
-    'interactive-accent': {
-      default: 'accent.500',
-      _dark: 'accent.300',
-    },
-    'interactive-hover': {
-      default: 'rgba(27, 42, 74, 0.08)',
-      _dark: 'rgba(0, 191, 255, 0.12)',
-    },
-    // Border colors - cyan-tinted in dark mode
+    'chakra-body-bg': { default: 'bg.base.light', _dark: 'bg.base.dark' },
+    'chakra-body-text': { default: 'text.primary.light', _dark: 'text.primary.dark' },
+    'chakra-border-color': { default: 'border-default', _dark: 'border-default' },
+    'chakra-inverse-text': { default: 'white', _dark: 'brand.700' },
+    'chakra-subtle-bg': { default: 'brand.50', _dark: 'whiteAlpha.100' },
+    'chakra-subtle-text': { default: 'text.secondary.light', _dark: 'text.secondary.dark' },
+    'chakra-placeholder-color': { default: 'text.tertiary.light', _dark: 'text.tertiary.dark' },
+
+    'bg-base': { default: '#FAFAFB', _dark: '#0B0C11' },
+    'bg-surface': { default: 'bg.surface.light', _dark: 'bg.surface.dark' },
+    'bg-elevated': { default: 'bg.elevated.light', _dark: 'bg.elevated.dark' },
+    'bg-glass': { default: 'bg.glass.light', _dark: 'bg.glass.dark' },
+    'bg-surface-raised': { default: 'bg.raised.light', _dark: 'bg.raised.dark' },
+    'bg-surface-overlay': { default: 'bg.overlay.light', _dark: 'bg.overlay.dark' },
+
+    'text-primary': { default: 'text.primary.light', _dark: 'text.primary.dark' },
+    'text-secondary': { default: 'text.secondary.light', _dark: 'text.secondary.dark' },
+    'text-tertiary': { default: 'text.tertiary.light', _dark: 'text.tertiary.dark' },
+
+    'interactive-accent': { default: 'accent.600', _dark: 'accent.300' },
+    'interactive-hover': { default: 'interactive.hover.light', _dark: 'interactive.hover.dark' },
+
     'border-subtle': {
-      default: 'rgba(0, 0, 0, 0.06)',
-      _dark: 'rgba(0, 191, 255, 0.06)',
+      default: 'rgba(9, 10, 15, 0.08)',
+      _dark: 'rgba(255, 255, 255, 0.08)',
     },
     'border-default': {
-      default: 'rgba(0, 0, 0, 0.12)',
-      _dark: 'rgba(0, 191, 255, 0.12)',
+      default: 'rgba(9, 10, 15, 0.14)',
+      _dark: 'rgba(255, 255, 255, 0.14)',
+    },
+    'interactive-active': {
+      default: 'interactive.active.light',
+      _dark: 'interactive.active.dark',
     },
   },
 };
 
 export const theme = extendTheme({
-  config,
   colors,
   fonts,
+  radii,
   shadows,
-  semanticTokens,
   components,
   styles,
+  config,
+  semanticTokens,
   breakpoints: {
     base: '0px',
     sm: '480px',
@@ -562,14 +853,6 @@ export const theme = extendTheme({
     16: '64px',
     20: '80px',
     24: '96px',
-  },
-  radii: {
-    sm: '8px',
-    md: '12px',
-    lg: '16px',
-    xl: '24px',
-    '2xl': '32px',
-    full: '9999px',
   },
   zIndices: {
     hide: -1,

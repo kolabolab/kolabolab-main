@@ -39,9 +39,9 @@ describe('Feature: brand-theme-overhaul, Property 2: Brand alpha variants use na
         const b = parseInt(match![3], 10);
 
         // Assert RGB components are navy (27, 42, 74)
-        expect(r).toBe(27);
-        expect(g).toBe(42);
-        expect(b).toBe(74);
+        expect(r).toBe(35);
+        expect(g).toBe(40);
+        expect(b).toBe(56);
 
         // Assert RGB components are NOT green (16, 185, 129)
         expect(r).not.toBe(16);
