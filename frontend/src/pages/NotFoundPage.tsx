@@ -46,7 +46,7 @@ const NotFoundPage: React.FC = () => {
                   transform="translate(-50%, -50%)"
                   className="float-animation"
                 >
-                  <Icon as={FiMapPin} boxSize={16} color="brand.500" />
+                  <Icon as={FiMapPin} boxSize={16} color="interactive-accent" />
                 </Box>
               </Box>
               
@@ -86,7 +86,7 @@ const NotFoundPage: React.FC = () => {
                       bg="rgba(24, 144, 255, 0.1)"
                       className="float-animation"
                     >
-                      <Icon as={FiHome} w={8} h={8} color="brand.500" />
+                      <Icon as={FiHome} w={8} h={8} color="interactive-accent" />
                     </Box>
                     <Heading size="md">Return Home</Heading>
                     <Text fontSize="sm" opacity={0.8}>

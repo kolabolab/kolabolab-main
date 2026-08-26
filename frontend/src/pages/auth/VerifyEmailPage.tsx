@@ -110,9 +110,9 @@ const VerifyEmailPage: React.FC = () => {
                   
                   {verificationStatus === 'loading' && (
                     <>
-                      <Spinner size="xl" color="brand.500" thickness="4px" />
+                      <Spinner size="xl" color="interactive-accent" thickness="4px" />
                       <Heading size="lg">Verifying Your Email</Heading>
-                      <Text color="gray.600">
+                      <Text color="text-secondary">
                         Please wait while we verify your email address...
                       </Text>
                     </>
@@ -124,7 +124,7 @@ const VerifyEmailPage: React.FC = () => {
                       <Heading size="lg" color="green.600">
                         Email Verified Successfully!
                       </Heading>
-                      <Text color="gray.600" fontSize="lg">
+                      <Text color="text-secondary" fontSize="lg">
                         Your account is now active. You'll be redirected to sign in shortly.
                       </Text>
                       <Alert status="success" borderRadius="md">
@@ -148,7 +148,7 @@ const VerifyEmailPage: React.FC = () => {
                       <Heading size="lg" color="red.600">
                         Verification Failed
                       </Heading>
-                      <Text color="gray.600" fontSize="lg">
+                      <Text color="text-secondary" fontSize="lg">
                         {errorMessage}
                       </Text>
                       <Alert status="error" borderRadius="md">

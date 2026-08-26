@@ -26,7 +26,7 @@ export const EmptyStateStartups: React.FC<EmptyStateStartupsProps> = ({ onCreate
           <Text fontSize="lg" fontWeight="semibold" color={useColorModeValue('gray.700', 'gray.200')}>
             No startups yet
           </Text>
-          <Text fontSize="md" color="gray.500" maxW="sm">
+          <Text fontSize="md" color="text-tertiary" maxW="sm">
             Launch your entrepreneurial journey by creating your first startup on KolaboLab.
           </Text>
         </VStack>

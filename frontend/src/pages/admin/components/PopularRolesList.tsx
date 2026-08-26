@@ -22,7 +22,7 @@ const PopularRolesList: React.FC<PopularRolesListProps> = ({ roles }) => {
     return (
       <Box>
         <Heading size="sm" mb={3}>Popular Roles</Heading>
-        <Text color="gray.500" fontSize="sm">No role data available</Text>
+        <Text color="text-tertiary" fontSize="sm">No role data available</Text>
       </Box>
     );
   }

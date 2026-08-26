@@ -48,7 +48,8 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({
   const iconColor = useColorModeValue('gray.400', 'gray.500');
   const selectedIconColor = useColorModeValue('brand.500', 'accent.300');
   const titleColor = useColorModeValue('gray.700', 'gray.200');
-  const descColor = useColorModeValue('gray.500', 'gray.400');
+  // gray.500 measured 4.47:1 on the selected-card background — just under AA.
+  const descColor = useColorModeValue('gray.600', 'gray.300');
 
   const handleToggle = (roleId: string) => {
     if (disabled) return;

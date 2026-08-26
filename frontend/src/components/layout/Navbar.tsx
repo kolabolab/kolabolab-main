@@ -327,13 +327,13 @@ export const Navbar: React.FC = React.memo(() => {
                             </Badge>
                           )}
                         </VStack>
-                        <Icon as={FiChevronDown} w={4} h={4} color="gray.500" />
+                        <Icon as={FiChevronDown} w={4} h={4} color="text-tertiary" />
                       </HStack>
                     </MenuButton>
                     
                     <Portal>
                       <MenuList
-                        bg="white"
+                        bg="bg-surface"
                         border="2px solid"
                         borderColor="brand.100"
                         borderRadius="xl"
@@ -352,10 +352,10 @@ export const Navbar: React.FC = React.memo(() => {
                       </div>
                       {/* User Info Header */}
                       <Box px={3} py={2} borderBottom="1px solid" borderColor="gray.100" mb={2}>
-                        <Text fontWeight="600" fontSize="sm" color="gray.900">
+                        <Text fontWeight="600" fontSize="sm" color="text-primary">
                           {user?.firstName} {user?.lastName}
                         </Text>
-                        <Text fontSize="xs" color="gray.500">
+                        <Text fontSize="xs" color="text-tertiary">
                           User Menu
                         </Text>
                       </Box>

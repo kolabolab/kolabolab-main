@@ -621,6 +621,23 @@ const components = {
           _hover: { color: 'text-primary' },
         },
       },
+      // Chakra's default soft-rounded tab colour is gray.600, which measured
+      // 2.59:1 on the dark surface. Drive it from semantic tokens instead.
+      'soft-rounded': (props: Record<string, any>) => ({
+        tab: {
+          fontWeight: 600,
+          borderRadius: 'full',
+          color: 'text-secondary',
+          _hover: { color: 'text-primary', bg: 'interactive-hover' },
+          // Selected pill inverts the same way solid buttons do: ink-on-light in
+          // light mode, light-on-ink in dark. (chakra-inverse-text alone gave
+          // ink text on an ink pill in dark mode = 1.21:1.)
+          _selected: {
+            bg: mode('brand.500', 'neutral.0')(props),
+            color: mode('white', 'brand.700')(props),
+          },
+        },
+      }),
     },
     defaultProps: { size: 'md', variant: 'line', colorScheme: 'accent' },
   },

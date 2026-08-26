@@ -96,11 +96,21 @@ const AUDIT = () => {
   return out.sort((a, b) => a.ratio - b.ratio);
 };
 
+const authed = process.argv.includes('--auth');
+const seed = authed
+  ? JSON.parse((await import('node:fs')).readFileSync('gan-harness/auth-seed.json', 'utf8'))
+  : null;
+
 const browser = await chromium.launch();
 let total = 0;
 for (const p of targets) {
   const ctx = await browser.newContext({ colorScheme: dark ? 'dark' : 'light' });
   if (dark) await ctx.addInitScript(() => window.localStorage.setItem('chakra-ui-color-mode', 'dark'));
+  if (seed) {
+    await ctx.addInitScript((s) => {
+      window.localStorage.setItem(s.storageKey, JSON.stringify(s.storageValue));
+    }, seed);
+  }
   const page = await ctx.newPage();
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(BASE + p, { waitUntil: 'networkidle' }).catch(() => {});

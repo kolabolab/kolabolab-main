@@ -102,7 +102,7 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onReset }) => {
         <Collapse in={isOpen}>
           <Box
             p={4}
-            bg="gray.50"
+            bg="chakra-subtle-bg"
             borderRadius="md"
             border="1px solid"
             borderColor="gray.200"

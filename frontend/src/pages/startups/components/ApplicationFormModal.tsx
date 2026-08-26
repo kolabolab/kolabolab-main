@@ -114,7 +114,7 @@ const ApplicationFormModal: React.FC<ApplicationFormModalProps> = ({
                 ) : (
                   <FormHelperText>&nbsp;</FormHelperText>
                 )}
-                <Text fontSize="sm" color="gray.500">
+                <Text fontSize="sm" color="text-tertiary">
                   {messageLength}/1000
                 </Text>
               </HStack>

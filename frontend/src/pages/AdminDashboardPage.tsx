@@ -241,7 +241,7 @@ const AdminDashboardPage: React.FC = () => {
               <Heading size="xl" className="gradient-text">
                 Admin Dashboard
               </Heading>
-              <Text color="gray.600" fontSize="lg" mt={2}>
+              <Text color="text-secondary" fontSize="lg" mt={2}>
                 Manage platform startups and monitor activity
               </Text>
             </Box>
@@ -253,7 +253,7 @@ const AdminDashboardPage: React.FC = () => {
               </Heading>
               {statsLoading ? (
                 <Box display="flex" justifyContent="center" py={8}>
-                  <Spinner size="lg" color="brand.500" />
+                  <Spinner size="lg" color="interactive-accent" />
                 </Box>
               ) : stats ? (
                 <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
@@ -301,10 +301,10 @@ const AdminDashboardPage: React.FC = () => {
                 </Heading>
                 {pendingLoading ? (
                   <Box display="flex" justifyContent="center" py={6}>
-                    <Spinner size="md" color="brand.500" />
+                    <Spinner size="md" color="interactive-accent" />
                   </Box>
                 ) : pendingStartups.length === 0 ? (
-                  <Text color="gray.500" textAlign="center" py={6}>
+                  <Text color="text-tertiary" textAlign="center" py={6}>
                     No startups pending approval
                   </Text>
                 ) : (
@@ -323,7 +323,7 @@ const AdminDashboardPage: React.FC = () => {
                         {pendingStartups.map((startup) => (
                           <Tr key={startup.id}>
                             <Td fontWeight="medium">
-                              <Link as={RouterLink} to={`/startups/${startup.id}`} color="brand.500" _hover={{ textDecoration: 'underline' }}>
+                              <Link as={RouterLink} to={`/startups/${startup.id}`} color="interactive-accent" _hover={{ textDecoration: 'underline' }}>
                                 {startup.name}
                               </Link>
                             </Td>
@@ -374,10 +374,10 @@ const AdminDashboardPage: React.FC = () => {
                 </Heading>
                 {pendingLoading ? (
                   <Box display="flex" justifyContent="center" py={6}>
-                    <Spinner size="md" color="brand.500" />
+                    <Spinner size="md" color="interactive-accent" />
                   </Box>
                 ) : allStartups.length === 0 ? (
-                  <Text color="gray.500" textAlign="center" py={6}>
+                  <Text color="text-tertiary" textAlign="center" py={6}>
                     No startups on the platform
                   </Text>
                 ) : (
@@ -396,7 +396,7 @@ const AdminDashboardPage: React.FC = () => {
                         {allStartups.map((startup) => (
                           <Tr key={startup.id}>
                             <Td fontWeight="medium">
-                              <Link as={RouterLink} to={`/startups/${startup.id}`} color="brand.500" _hover={{ textDecoration: 'underline' }}>
+                              <Link as={RouterLink} to={`/startups/${startup.id}`} color="interactive-accent" _hover={{ textDecoration: 'underline' }}>
                                 {startup.name}
                               </Link>
                             </Td>
@@ -444,7 +444,7 @@ const AdminDashboardPage: React.FC = () => {
                   All Users
                 </Heading>
                 {allUsers.length === 0 ? (
-                  <Text color="gray.500" textAlign="center" py={6}>
+                  <Text color="text-tertiary" textAlign="center" py={6}>
                     No users on the platform
                   </Text>
                 ) : (

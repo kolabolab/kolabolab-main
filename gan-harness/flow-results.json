@@ -1,0 +1,100 @@
+[
+  {
+    "n": 1,
+    "name": "landing loads and shows primary CTA",
+    "ok": true,
+    "detail": "h1: \"The introduction shouldn’t depend on who you a…\"",
+    "errors": []
+  },
+  {
+    "n": 2,
+    "name": "role switcher changes the hero copy",
+    "ok": true,
+    "detail": "copy swapped",
+    "errors": []
+  },
+  {
+    "n": 3,
+    "name": "navigate to login",
+    "ok": true,
+    "detail": "form present",
+    "errors": []
+  },
+  {
+    "n": 4,
+    "name": "login with real credentials lands in the app",
+    "ok": true,
+    "detail": "landed on /dashboard",
+    "errors": []
+  },
+  {
+    "n": 5,
+    "name": "dashboard shows real startup data (not empty/error)",
+    "ok": true,
+    "detail": "rendered: Kesa Health, Lumen Transit, Sona Studio",
+    "errors": []
+  },
+  {
+    "n": 6,
+    "name": "nav: Search",
+    "ok": true,
+    "detail": "h1: \"Find your next opportunity\"",
+    "errors": []
+  },
+  {
+    "n": 7,
+    "name": "nav: Collaborations",
+    "ok": true,
+    "detail": "h1: \"Collaborations\"",
+    "errors": []
+  },
+  {
+    "n": 8,
+    "name": "nav: Investments",
+    "ok": true,
+    "detail": "h1: \"Investments\"",
+    "errors": []
+  },
+  {
+    "n": 9,
+    "name": "nav: Startups",
+    "ok": true,
+    "detail": "h1: \"Browse startups\"",
+    "errors": []
+  },
+  {
+    "n": 10,
+    "name": "search returns results for a real query",
+    "ok": true,
+    "detail": "2 results",
+    "errors": []
+  },
+  {
+    "n": 11,
+    "name": "open a startup detail page from its list",
+    "ok": true,
+    "detail": "opened \"LifeSync\"",
+    "errors": []
+  },
+  {
+    "n": 12,
+    "name": "create-startup form renders and validates",
+    "ok": true,
+    "detail": "10 fields; empty-submit blocked",
+    "errors": []
+  },
+  {
+    "n": 13,
+    "name": "profile edit toggles into an editable form",
+    "ok": true,
+    "detail": "5 editable field(s)",
+    "errors": []
+  },
+  {
+    "n": 14,
+    "name": "logout returns to a signed-out state",
+    "ok": true,
+    "detail": "signed out",
+    "errors": []
+  }
+]

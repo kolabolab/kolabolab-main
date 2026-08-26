@@ -46,7 +46,7 @@ const RouteLoader = () => (
         <Box position="relative">
           <Spinner 
             size="xl" 
-            color="brand.500" 
+            color="interactive-accent" 
             thickness="4px"
             className="float-animation"
           />

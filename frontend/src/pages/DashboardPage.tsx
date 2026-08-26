@@ -191,7 +191,7 @@ const DashboardPage: React.FC = () => {
             {/* Stats Grid */}
             {statsLoading ? (
               <Box display="flex" justifyContent="center" py={8}>
-                <Spinner size="lg" color="brand.500" />
+                <Spinner size="lg" color="interactive-accent" />
               </Box>
             ) : statsError ? (
               <ErrorState error={statsError.message} onRetry={refetchStats} />
@@ -281,7 +281,7 @@ const DashboardPage: React.FC = () => {
                 <Heading size="md" mb={4}>My Startups</Heading>
                 {startupsLoading ? (
                   <Box display="flex" justifyContent="center" py={6}>
-                    <Spinner size="md" color="brand.500" />
+                    <Spinner size="md" color="interactive-accent" />
                   </Box>
                 ) : startupsError ? (
                   <ErrorState error={startupsError.message} onRetry={refetchStartups} />
@@ -305,8 +305,8 @@ const DashboardPage: React.FC = () => {
                       >
                         <HStack justify="space-between">
                           <VStack align="start" spacing={0}>
-                            <Text fontWeight="medium" color="brand.700">{startup.name}</Text>
-                            <Text fontSize="sm" color="gray.500">{startup.stage}</Text>
+                            <Text fontWeight="medium" color="text-primary">{startup.name}</Text>
+                            <Text fontSize="sm" color="text-tertiary">{startup.stage}</Text>
                           </VStack>
                           <HStack spacing={3}>
                             <Text fontSize="sm" fontWeight="medium">
@@ -368,11 +368,11 @@ const DashboardPage: React.FC = () => {
                 <Heading size="md" mb={4}>My Applications</Heading>
                 {applicationsLoading ? (
                   <Box display="flex" justifyContent="center" py={6}>
-                    <Spinner size="md" color="brand.500" />
+                    <Spinner size="md" color="interactive-accent" />
                   </Box>
                 ) : !myApplicationsData?.applications?.length ? (
                   <VStack spacing={3} py={6}>
-                    <Text color="gray.500" textAlign="center">
+                    <Text color="text-tertiary" textAlign="center">
                       You haven't submitted any applications yet. Browse startups to find opportunities.
                     </Text>
                     <Button
@@ -397,7 +397,7 @@ const DashboardPage: React.FC = () => {
                         <HStack justify="space-between">
                           <VStack align="start" spacing={0}>
                             <Text fontWeight="medium">{application.startupName}</Text>
-                            <Text fontSize="sm" color="gray.500">{application.roleTitle}</Text>
+                            <Text fontSize="sm" color="text-tertiary">{application.roleTitle}</Text>
                           </VStack>
                           <Badge
                             colorScheme={
@@ -422,7 +422,7 @@ const DashboardPage: React.FC = () => {
             <Card bg={cardBg} id="investment-overview">
               <CardBody>
                 <Heading size="md" mb={4}>Investment Overview</Heading>
-                <Text color="gray.500">Investment tracking coming soon. Browse startups to discover opportunities.</Text>
+                <Text color="text-tertiary">Investment tracking coming soon. Browse startups to discover opportunities.</Text>
                 <Button mt={4} as={RouterLink} to="/startups" colorScheme="brand" variant="outline" size="sm">
                   Browse Startups
                 </Button>
@@ -447,7 +447,7 @@ const DashboardPage: React.FC = () => {
                 <Heading size="md" mb={4}>Recent Activity</Heading>
                 {activitiesLoading ? (
                   <Box display="flex" justifyContent="center" py={6}>
-                    <Spinner size="md" color="brand.500" />
+                    <Spinner size="md" color="interactive-accent" />
                   </Box>
                 ) : activitiesError ? (
                   <ErrorState error={activitiesError.message} onRetry={refetchActivities} />
@@ -459,7 +459,7 @@ const DashboardPage: React.FC = () => {
                       <Box key={activity.id} p={3} borderRadius="md" bg={activityBg}>
                         <HStack justify="space-between">
                           <Text>{activity.message}</Text>
-                          <Text fontSize="sm" color="gray.500">{activity.timestamp}</Text>
+                          <Text fontSize="sm" color="text-tertiary">{activity.timestamp}</Text>
                         </HStack>
                       </Box>
                     ))}

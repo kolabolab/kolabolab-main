@@ -29,6 +29,7 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { PageHeader } from '../../components/layout/PageHeader';
 import {
   useReceivedApplications,
   useUpdateApplicationStatus,
@@ -107,14 +108,11 @@ const ReceivedApplicationsPage: React.FC = () => {
         <Container maxW={{ base: '7xl', '2xl': '90%' }} py={8}>
           <VStack spacing={8} align="stretch">
             {/* Page Header */}
-            <Box>
-              <Heading size="xl" className="gradient-text">
-                Received Applications
-              </Heading>
-              <Text color="gray.600" fontSize="lg" mt={2}>
-                Review and manage applications for your startup roles
-              </Text>
-            </Box>
+            <PageHeader
+              eyebrow="Applications"
+              title="Received applications"
+              lede="People who applied to roles on your startups."
+            />
 
             {/* Filter Controls */}
             <Card bg={cardBg}>
@@ -161,7 +159,7 @@ const ReceivedApplicationsPage: React.FC = () => {
               <CardBody>
                 {isLoading ? (
                   <Box display="flex" justifyContent="center" py={8}>
-                    <Spinner size="lg" color="brand.500" />
+                    <Spinner size="lg" color="interactive-accent" />
                   </Box>
                 ) : isError ? (
                   <VStack spacing={4} py={8}>
@@ -178,10 +176,10 @@ const ReceivedApplicationsPage: React.FC = () => {
                   </VStack>
                 ) : !data?.applications || data.applications.length === 0 ? (
                   <VStack spacing={4} py={12} textAlign="center">
-                    <Text fontSize="lg" color="gray.500">
+                    <Text fontSize="lg" color="text-tertiary">
                       No applications received yet
                     </Text>
-                    <Text color="gray.400" fontSize="sm">
+                    <Text color="text-tertiary" fontSize="sm">
                       Applications from candidates will appear here once they
                       apply to your startup roles.
                     </Text>
@@ -208,7 +206,7 @@ const ReceivedApplicationsPage: React.FC = () => {
                                 <ChakraLink
                                   as={Link}
                                   to={`/users/${application.applicantId}`}
-                                  color="brand.500"
+                                  color="interactive-accent"
                                   _hover={{ textDecoration: 'underline' }}
                                 >
                                   {application.applicantName}
@@ -238,7 +236,7 @@ const ReceivedApplicationsPage: React.FC = () => {
                                     )}
                                   </Wrap>
                                 ) : (
-                                  <Text fontSize="sm" color="gray.400">
+                                  <Text fontSize="sm" color="text-tertiary">
                                     —
                                   </Text>
                                 )}
@@ -287,7 +285,7 @@ const ReceivedApplicationsPage: React.FC = () => {
                                     </Button>
                                   </HStack>
                                 ) : (
-                                  <Text fontSize="sm" color="gray.400">
+                                  <Text fontSize="sm" color="text-tertiary">
                                     —
                                   </Text>
                                 )}
@@ -310,7 +308,7 @@ const ReceivedApplicationsPage: React.FC = () => {
                         >
                           Previous
                         </Button>
-                        <Text fontSize="sm" color="gray.600">
+                        <Text fontSize="sm" color="text-secondary">
                           Page {page} of {totalPages}
                         </Text>
                         <Button

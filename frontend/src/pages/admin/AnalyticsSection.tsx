@@ -50,7 +50,7 @@ const AnalyticsSection: React.FC = () => {
       <Box>
         <Heading size="md" mb={4}>Analytics</Heading>
         <Box display="flex" justifyContent="center" py={8}>
-          <Spinner size="lg" color="brand.500" />
+          <Spinner size="lg" color="interactive-accent" />
         </Box>
       </Box>
     );

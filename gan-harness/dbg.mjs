@@ -1,0 +1,15 @@
+import { chromium } from '@playwright/test';
+const b = await chromium.launch(); const p = await (await b.newContext({viewport:{width:1440,height:900}})).newPage();
+await p.goto('http://localhost:3000/', { waitUntil: 'networkidle' });
+const paras = await p.locator('p').all();
+console.log('paragraph count:', paras.length);
+for (let i=0;i<Math.min(4,paras.length);i++) console.log(` p[${i}]:`, (await paras[i].innerText()).slice(0,70));
+const btn = p.getByRole('button', { name: /I back builders/i });
+console.log('button matches:', await btn.count());
+const before = await paras[0].innerText();
+await btn.first().click(); await p.waitForTimeout(600);
+const after = await p.locator('p').first().innerText();
+console.log('before:', before.slice(0,60));
+console.log('after :', after.slice(0,60));
+console.log('CHANGED:', before !== after);
+await b.close();

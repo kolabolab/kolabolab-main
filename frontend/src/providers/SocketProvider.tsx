@@ -16,7 +16,10 @@ interface SocketProviderProps {
   children: ReactNode
 }
 
-const SOCKET_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:3001'
+// Only connect when a realtime endpoint is actually configured. This used to
+// default to ws://localhost:3001; with no server there, socket.io retried
+// forever and logged a connect_error on EVERY page of the app.
+const SOCKET_URL = import.meta.env.VITE_WS_URL as string | undefined
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null)
@@ -24,12 +27,15 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const { user, tokens } = useAuth()
 
   useEffect(() => {
-    if (user && tokens) {
+    if (user && tokens && SOCKET_URL) {
       const newSocket = io(SOCKET_URL, {
         auth: {
           token: tokens.accessToken,
         },
         autoConnect: true,
+        // bounded backoff instead of an endless retry storm
+        reconnectionAttempts: 3,
+        reconnectionDelay: 1500,
       })
 
       newSocket.on('connect', () => {
@@ -43,7 +49,10 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       })
 
       newSocket.on('connect_error', (error) => {
-        console.error('Socket connection error:', error)
+        // Realtime is optional; degrade quietly instead of erroring per page.
+        if (import.meta.env.DEV) {
+          console.warn('Socket unavailable:', (error as Error)?.message ?? error)
+        }
         setIsConnected(false)
       })
 

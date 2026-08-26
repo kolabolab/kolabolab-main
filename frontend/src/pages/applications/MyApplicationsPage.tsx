@@ -14,6 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { Link as RouterLink } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import { PageHeader } from '../../components/layout/PageHeader'
 import { useMyApplications } from '../../hooks/useApplications'
 import { ErrorState } from '../../components/ErrorState'
 import type { ApplicationStatus } from '../../types/applications'
@@ -58,13 +59,15 @@ const MyApplicationsPage: React.FC = () => {
       <Box minH="100vh" bg={bgColor}>
         <Container maxW="6xl" py={8}>
           <VStack spacing={8} align="stretch">
-            <Heading size="xl" className="gradient-text">
-              My Applications
-            </Heading>
+            <PageHeader
+              eyebrow="Applications"
+              title="My applications"
+              lede="Roles you've applied for, and where each one stands."
+            />
 
             {isLoading ? (
               <Box display="flex" justifyContent="center" py={12}>
-                <Spinner size="lg" color="brand.500" />
+                <Spinner size="lg" color="interactive-accent" />
               </Box>
             ) : isError ? (
               <ErrorState
@@ -75,10 +78,10 @@ const MyApplicationsPage: React.FC = () => {
               <Card bg={cardBg}>
                 <CardBody>
                   <VStack spacing={4} py={8} textAlign="center">
-                    <Text fontSize="lg" color="gray.500">
+                    <Text fontSize="lg" color="text-tertiary">
                       You haven't submitted any applications yet
                     </Text>
-                    <Text fontSize="sm" color="gray.400">
+                    <Text fontSize="sm" color="text-tertiary">
                       Browse startups and apply to roles that interest you.
                     </Text>
                   </VStack>
@@ -95,15 +98,15 @@ const MyApplicationsPage: React.FC = () => {
                             as={RouterLink}
                             to={`/startups/${application.startupId}`}
                             fontWeight="bold"
-                            color="brand.600"
+                            color="interactive-accent"
                             _hover={{ textDecoration: 'underline', color: 'brand.700' }}
                           >
                             {application.startupName}
                           </Text>
-                          <Text fontSize="md" color="gray.700">
+                          <Text fontSize="md" color="text-secondary">
                             {application.roleTitle}
                           </Text>
-                          <Text fontSize="sm" color="gray.500">
+                          <Text fontSize="sm" color="text-tertiary">
                             Submitted {formatDate(application.createdAt)}
                           </Text>
                         </VStack>

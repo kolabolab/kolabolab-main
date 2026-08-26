@@ -127,7 +127,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
           </Text>
           <Text
             fontSize="sm"
-            color="gray.600"
+            color="text-secondary"
             noOfLines={2}
           >
             {notification.message}
@@ -135,7 +135,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
         </VStack>
         <Text
           fontSize="xs"
-          color="gray.500"
+          color="text-tertiary"
           flexShrink={0}
           whiteSpace="nowrap"
         >

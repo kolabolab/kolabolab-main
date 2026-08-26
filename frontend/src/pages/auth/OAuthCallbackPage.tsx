@@ -94,11 +94,11 @@ const OAuthCallbackPage: React.FC = () => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      bg="gray.50"
+      bg="chakra-subtle-bg"
     >
       <VStack spacing={4}>
-        <Spinner size="xl" color="brand.500" thickness="4px" />
-        <Text fontSize="lg" color="gray.600">
+        <Spinner size="xl" color="interactive-accent" thickness="4px" />
+        <Text fontSize="lg" color="text-secondary">
           Completing your sign in...
         </Text>
       </VStack>
