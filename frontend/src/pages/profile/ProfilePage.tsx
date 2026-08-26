@@ -12,6 +12,8 @@ import {
   FormControl,
   FormLabel,
   Input,
+  InputGroup,
+  InputRightElement,
   Textarea,
   Button,
   Avatar,
@@ -25,8 +27,9 @@ import {
   Alert,
   AlertIcon,
 } from '@chakra-ui/react';
-import { FiCamera, FiSave, FiUser, FiMail, FiBriefcase, FiMapPin, FiExternalLink } from 'react-icons/fi';
+import { FiCamera, FiSave, FiUser, FiMail, FiExternalLink } from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
+import { PageHeader } from '../../components/layout/PageHeader';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { RoleSelector } from '../../components/RoleSelector';
@@ -140,19 +143,16 @@ const ProfilePage: React.FC = () => {
     setIsEditing(false);
   };
 
-  const handleAvatarChange = () => {
-    // For demo purposes, cycle through some preset avatars
-    const avatars = [
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
-      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
-    ];
-    
-    const currentIndex = avatars.indexOf(formData.avatar);
-    const nextIndex = (currentIndex + 1) % avatars.length;
-    handleInputChange('avatar', avatars[nextIndex]);
+  // Avatar is a user-supplied image URL persisted with the rest of the profile.
+  // This previously cycled through five hardcoded Unsplash photos of real
+  // strangers ("for demo purposes"), which assigned a stock face to the account.
+  const handleAvatarPromptChange = () => {
+    const next = window.prompt(
+      'Paste an image URL for your avatar (leave blank to remove):',
+      formData.avatar || ''
+    );
+    if (next === null) return; // cancelled
+    handleInputChange('avatar', next.trim());
   };
 
   const handleRoleChange = (newRoles: string[]) => {
@@ -208,10 +208,11 @@ const ProfilePage: React.FC = () => {
             
             {/* Header */}
             <Box>
-              <Heading size="xl" mb={2}>Profile Settings</Heading>
-              <Text color="gray.600">
-                Manage your personal information and preferences
-              </Text>
+              <PageHeader
+                eyebrow="Account"
+                title="Profile settings"
+                lede="Your public identity on KolaboLab, and the roles you operate under."
+              />
               {user?.id && (
                 <Button
                   as={Link}
@@ -284,7 +285,7 @@ const ProfilePage: React.FC = () => {
                             colorScheme="brand"
                             aria-label="Change avatar"
                             icon={<FiCamera />}
-                            onClick={handleAvatarChange}
+                            onClick={handleAvatarPromptChange}
                           />
                         )}
                       </Avatar>
@@ -294,7 +295,7 @@ const ProfilePage: React.FC = () => {
                       <Heading size="lg">
                         {formData.firstName} {formData.lastName}
                       </Heading>
-                      <Text color="gray.600">@{formData.username}</Text>
+                      <Text color="text-secondary">@{formData.username}</Text>
                       <HStack spacing={2}>
                         {user?.roles?.map((role) => (
                           <Badge 
@@ -319,7 +320,7 @@ const ProfilePage: React.FC = () => {
                         value={formData.firstName}
                         onChange={(e) => handleInputChange('firstName', e.target.value)}
                         isReadOnly={!isEditing}
-                        bg={isEditing ? 'white' : 'gray.50'}
+                        bg={isEditing ? 'bg-surface' : 'chakra-subtle-bg'}
                       />
                     </FormControl>
 
@@ -329,7 +330,7 @@ const ProfilePage: React.FC = () => {
                         value={formData.lastName}
                         onChange={(e) => handleInputChange('lastName', e.target.value)}
                         isReadOnly={!isEditing}
-                        bg={isEditing ? 'white' : 'gray.50'}
+                        bg={isEditing ? 'bg-surface' : 'chakra-subtle-bg'}
                       />
                     </FormControl>
 
@@ -339,19 +340,19 @@ const ProfilePage: React.FC = () => {
                         value={formData.username}
                         onChange={(e) => handleInputChange('username', e.target.value)}
                         isReadOnly={!isEditing}
-                        bg={isEditing ? 'white' : 'gray.50'}
+                        bg={isEditing ? 'bg-surface' : 'chakra-subtle-bg'}
                       />
                     </FormControl>
 
                     <FormControl>
                       <FormLabel>Email</FormLabel>
-                      <Input
-                        value={user?.email}
-                        isReadOnly={true}
-                        bg="gray.50"
-                        rightElement={<FiMail />}
-                      />
-                      <Text fontSize="sm" color="gray.500" mt={1}>
+                      <InputGroup>
+                        <Input value={user?.email} isReadOnly bg="chakra-subtle-bg" />
+                        <InputRightElement pointerEvents="none" color="text-tertiary">
+                          <FiMail aria-hidden="true" />
+                        </InputRightElement>
+                      </InputGroup>
+                      <Text fontSize="sm" color="text-tertiary" mt={1}>
                         Email cannot be changed
                       </Text>
                     </FormControl>
@@ -362,7 +363,7 @@ const ProfilePage: React.FC = () => {
                         value={formData.company}
                         onChange={(e) => handleInputChange('company', e.target.value)}
                         isReadOnly={!isEditing}
-                        bg={isEditing ? 'white' : 'gray.50'}
+                        bg={isEditing ? 'bg-surface' : 'chakra-subtle-bg'}
                         placeholder="Your company name"
                       />
                     </FormControl>
@@ -373,7 +374,7 @@ const ProfilePage: React.FC = () => {
                         value={formData.location}
                         onChange={(e) => handleInputChange('location', e.target.value)}
                         isReadOnly={!isEditing}
-                        bg={isEditing ? 'white' : 'gray.50'}
+                        bg={isEditing ? 'bg-surface' : 'chakra-subtle-bg'}
                         placeholder="City, Country"
                       />
                     </FormControl>
@@ -385,7 +386,7 @@ const ProfilePage: React.FC = () => {
                       value={formData.bio}
                       onChange={(e) => handleInputChange('bio', e.target.value)}
                       isReadOnly={!isEditing}
-                      bg={isEditing ? 'white' : 'gray.50'}
+                      bg={isEditing ? 'bg-surface' : 'chakra-subtle-bg'}
                       placeholder="Tell us about yourself..."
                       rows={4}
                     />
@@ -424,7 +425,7 @@ const ProfilePage: React.FC = () => {
               </CardHeader>
               <CardBody>
                 <VStack spacing={4} align="stretch">
-                  <Text color="gray.600">
+                  <Text color="text-secondary">
                     Select the roles that describe how you use KolaboLab. At least one role must remain selected.
                   </Text>
                   <RoleSelector
@@ -455,12 +456,12 @@ const ProfilePage: React.FC = () => {
                   
                   <VStack align="start" spacing={2}>
                     <Text fontWeight="semibold">Member Since</Text>
-                    <Text color="gray.600">January 2024</Text>
+                    <Text color="text-secondary">January 2024</Text>
                   </VStack>
                   
                   <VStack align="start" spacing={2}>
                     <Text fontWeight="semibold">User ID</Text>
-                    <Text color="gray.600" fontFamily="mono">{user?.id}</Text>
+                    <Text color="text-secondary" fontFamily="mono">{user?.id}</Text>
                   </VStack>
                 </SimpleGrid>
               </CardBody>

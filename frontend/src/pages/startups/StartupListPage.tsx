@@ -36,6 +36,7 @@ import {
   FiArrowRight,
 } from 'react-icons/fi';
 import { Helmet } from 'react-helmet-async';
+import { PageHeader } from '../../components/layout/PageHeader';
 import { useStartupSearch, StartupSearchResult } from '../../hooks/useStartupSearch';
 import FilterPanel from './components/FilterPanel';
 
@@ -100,13 +101,13 @@ const StartupCard: React.FC<{ startup: StartupSearchResult }> = ({ startup }) =>
             <Box
               boxSize="60px"
               borderRadius="lg"
-              bg="gray.100"
+              bg="chakra-subtle-bg"
               display="flex"
               alignItems="center"
               justifyContent="center"
               flexShrink={0}
             >
-              <Text fontSize="xl" fontWeight="bold" color="gray.400">
+              <Text fontSize="xl" fontWeight="bold" color="text-tertiary">
                 {startup.name.slice(0, 2).toUpperCase()}
               </Text>
             </Box>
@@ -119,7 +120,7 @@ const StartupCard: React.FC<{ startup: StartupSearchResult }> = ({ startup }) =>
                   {startup.stage}
                 </Badge>
                 {startup.industry && (
-                  <Text fontSize="sm" color="gray.500">
+                  <Text fontSize="sm" color="text-tertiary">
                     {startup.industry}
                   </Text>
                 )}
@@ -151,7 +152,7 @@ const StartupCard: React.FC<{ startup: StartupSearchResult }> = ({ startup }) =>
           {/* Looking For */}
           {roleLabels.length > 0 && (
             <Box>
-              <Text fontSize="xs" fontWeight="semibold" color="gray.600" mb={2}>
+              <Text fontSize="xs" fontWeight="semibold" color="text-secondary" mb={2}>
                 Looking for:
               </Text>
               <HStack spacing={1} flexWrap="wrap">
@@ -170,7 +171,7 @@ const StartupCard: React.FC<{ startup: StartupSearchResult }> = ({ startup }) =>
           )}
 
           {/* Stats */}
-          <HStack spacing={4} fontSize="xs" color="gray.500">
+          <HStack spacing={4} fontSize="xs" color="text-tertiary">
             {startup.location && (
               <HStack spacing={1}>
                 <Icon as={FiMapPin} />
@@ -258,24 +259,14 @@ const StartupListPage: React.FC = () => {
 
       <Box>
         {/* Hero Section */}
-        <Box className="primary-context" py={20}>
+        <Box className="primary-context" py={{ base: 8, md: 12 }}>
           <Container maxW="6xl">
-            <VStack spacing={8} textAlign="center">
-              <Heading
-                as="h1"
-                fontSize={{ base: '3xl', md: '4xl', lg: '5xl' }}
-                fontWeight="700"
-                maxW="4xl"
-              >
-                Discover Innovative{' '}
-                <Text as="span" className="gradient-text">
-                  Startups
-                </Text>
-              </Heading>
-              <Text fontSize="xl" maxW="3xl" opacity={0.8}>
-                Explore cutting-edge companies building the future of technology with social impact.
-                Connect with startups that match your interests and expertise.
-              </Text>
+            <VStack spacing={8} align="stretch">
+              <PageHeader
+                eyebrow="Ventures"
+                title="Browse startups"
+                lede="Every venture answers the same structured questions — filter by what actually matters to you."
+              />
 
               {/* Filter Panel */}
               <FilterPanel
@@ -313,7 +304,7 @@ const StartupListPage: React.FC = () => {
             <VStack spacing={12} align="stretch">
               {/* Results Summary */}
               <Flex justify="space-between" align="center" flexWrap="wrap" gap={4}>
-                <Text color="gray.600">
+                <Text color="text-secondary">
                   {total} startup{total !== 1 ? 's' : ''} found
                   {filters.q && ` for "${filters.q}"`}
                 </Text>
@@ -331,12 +322,12 @@ const StartupListPage: React.FC = () => {
               {/* No Results */}
               {results.length === 0 && !error && (
                 <VStack spacing={6} py={12} textAlign="center">
-                  <Icon as={FiTrendingUp} w={12} h={12} color="gray.400" />
+                  <Icon as={FiTrendingUp} w={12} h={12} color="text-tertiary" />
                   <VStack spacing={2}>
-                    <Heading size="lg" color="gray.600">
+                    <Heading size="lg" color="text-secondary">
                       No startups found
                     </Heading>
-                    <Text color="gray.500">
+                    <Text color="text-tertiary">
                       Try adjusting your search criteria or browse all startups.
                     </Text>
                   </VStack>
@@ -357,7 +348,7 @@ const StartupListPage: React.FC = () => {
                   <Heading size="lg">
                     Ready to Launch Your Startup?
                   </Heading>
-                  <Text color="gray.600">
+                  <Text color="text-secondary">
                     Join our platform and connect with collaborators and investors who share your vision.
                   </Text>
                   <HStack spacing={4}>

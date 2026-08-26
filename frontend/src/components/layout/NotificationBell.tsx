@@ -29,7 +29,7 @@ export const NotificationBell: React.FC = () => {
         borderRadius="lg"
         onClick={() => navigate('/notifications')}
         _hover={{
-          bg: 'rgba(27, 42, 74, 0.08)',
+          bg: 'interactive-hover',
           transform: 'translateY(-1px)',
         }}
         transition="all 0.2s"

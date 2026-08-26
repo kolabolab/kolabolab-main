@@ -79,7 +79,7 @@ const UpdateFeed: React.FC<UpdateFeedProps> = ({ startupId, isCreator }) => {
       )}
 
       {updates.length === 0 ? (
-        <Text color="gray.500" textAlign="center" py={6}>
+        <Text color="text-tertiary" textAlign="center" py={6}>
           No updates yet.{isCreator ? ' Share your first progress update!' : ''}
         </Text>
       ) : (

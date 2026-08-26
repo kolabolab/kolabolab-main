@@ -13,7 +13,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ title, data, color })
     return (
       <Box>
         <Heading size="sm" mb={3}>{title}</Heading>
-        <Text color="gray.500" fontSize="sm">No data available</Text>
+        <Text color="text-tertiary" fontSize="sm">No data available</Text>
       </Box>
     );
   }
@@ -26,7 +26,7 @@ const TimeSeriesChart: React.FC<TimeSeriesChartProps> = ({ title, data, color })
       <VStack spacing={2} align="stretch">
         {data.map((point) => (
           <HStack key={point.period} spacing={3}>
-            <Text fontSize="xs" minW="80px" color="gray.600" flexShrink={0}>
+            <Text fontSize="xs" minW="80px" color="text-secondary" flexShrink={0}>
               {point.period}
             </Text>
             <Box flex={1} position="relative">

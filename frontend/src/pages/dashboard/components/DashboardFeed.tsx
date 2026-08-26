@@ -45,7 +45,7 @@ const DashboardFeed: React.FC = () => {
 
   if (updates.length === 0) {
     return (
-      <Text color="gray.500" textAlign="center" py={4}>
+      <Text color="text-tertiary" textAlign="center" py={4}>
         No recent updates from your startups.
       </Text>
     )
@@ -74,7 +74,7 @@ const DashboardFeed: React.FC = () => {
                     {update.startupName}
                   </Badge>
                 </HStack>
-                <Text fontSize="xs" color="gray.500">
+                <Text fontSize="xs" color="text-tertiary">
                   {formatRelativeTime(update.createdAt)}
                 </Text>
               </Box>

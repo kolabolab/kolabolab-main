@@ -11,6 +11,7 @@ import {
   MenuItem,
   MenuDivider,
   useDisclosure,
+  useColorModeValue,
   Avatar,
   Text,
   Link as ChakraLink,
@@ -40,7 +41,7 @@ const NavLink = ({ children, to, variant = 'default' }: {
     switch (variant) {
       case 'startup': return 'rgba(255, 149, 0, 0.08)';
       case 'investor': return 'rgba(82, 196, 26, 0.08)';
-      default: return 'rgba(27, 42, 74, 0.08)';
+      default: return 'interactive-hover';
     }
   };
 
@@ -78,6 +79,9 @@ export const Navbar: React.FC = React.memo(() => {
   const { user, isAuthenticated, clearAuth } = useAuth()
   const navigate = useNavigate()
   const [logoError, setLogoError] = useState(false)
+  // The mark's primary form is ink, which disappears on the dark navbar, so the
+  // dark surface gets a variant with that form lifted to paper.
+  const logoSrc = useColorModeValue('/kolabolab-logo.png', '/kolabolab-logo-dark.png')
   
   // No custom dropdown state needed - using Chakra UI Menu
 
@@ -156,39 +160,63 @@ export const Navbar: React.FC = React.memo(() => {
                 as={RouterLink}
                 to="/"
                 flexShrink={0}
+                display="flex"
+                alignItems="center"
+                h="44px"
                 _hover={{ textDecoration: 'none' }}
               >
                 {logoError ? (
                   <Text
+                    as="span"
                     fontSize={{ base: "lg", md: "xl" }}
                     fontWeight="800"
                     className="gradient-text"
                     fontFamily="heading"
                     lineHeight="1"
                     whiteSpace="nowrap"
+                    display="block"
+                    mb={0}
                   >
                     KolaboLab
                   </Text>
                 ) : (
-                  <Image
-                    src="/kolabolab-logo.png"
-                    alt="KolaboLab - Connect, Collaborate, Grow"
-                    height={{ base: "72px", md: "96px" }}
-                    maxH={{ base: "72px", md: "96px" }}
-                    objectFit="contain"
-                    mixBlendMode="multiply"
-                    onError={() => setLogoError(true)}
-                  />
+                  <HStack spacing={2.5} align="center">
+                    <Image
+                      src={logoSrc}
+                      alt="KolaboLab - Connect, Collaborate, Grow"
+                      height={{ base: "26px", md: "30px" }}
+                      maxH={{ base: "26px", md: "30px" }}
+                      objectFit="contain"
+                      display="block"
+                      onError={() => setLogoError(true)}
+                    />
+                    <Text
+                      as="span"
+                      fontSize={{ base: "lg", md: "xl" }}
+                      fontWeight="800"
+                      fontFamily="heading"
+                      letterSpacing="-0.02em"
+                      lineHeight="1"
+                      whiteSpace="nowrap"
+                      display={{ base: 'none', sm: 'block' }}
+                      className="gradient-text"
+                    >
+                      KolaboLab
+                    </Text>
+                  </HStack>
                 )}
               </ChakraLink>
 
               {/* Desktop Navigation */}
               <HStack
                 as="nav"
-                spacing={1}
+                spacing={{ lg: 0, xl: 1 }}
                 display={{ base: 'none', md: 'none', lg: 'flex' }}
               className="responsive-nav base-hidden md-hidden lg-flex"
-                flexShrink={0}
+                flexShrink={1}
+                minW="0"
+                overflow="visible"
+                sx={{ '& a': { px: { lg: 2, xl: 3 } } }}
                 role="navigation"
                 aria-label="Main navigation"
               >
@@ -220,12 +248,24 @@ export const Navbar: React.FC = React.memo(() => {
                     variant="startup"
                     size="md"
                     leftIcon={<AddIcon />}
-                    display={{ base: 'none', md: 'none', xl: 'flex' }}
+                    display={{ base: 'none', md: 'none', '2xl': 'flex' }}
                   className="responsive-button base-hidden md-hidden xl-flex"
                     whiteSpace="nowrap"
                   >
                     Create Startup
                   </Button>
+                  {/* Compact form between xl and 2xl, where the full label
+                      collided with the nav links for multi-role users. */}
+                  <IconButton
+                    as={RouterLink}
+                    to="/create-startup"
+                    variant="startup"
+                    size="md"
+                    aria-label="Create Startup"
+                    title="Create Startup"
+                    icon={<AddIcon />}
+                    display={{ base: 'none', xl: 'flex', '2xl': 'none' }}
+                  />
 
                   {/* Notification Bell */}
                   <Box display={{ base: 'none', md: 'flex' }}>
@@ -244,7 +284,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       _hover={{
                         textDecoration: 'none',
-                        bg: 'rgba(27, 42, 74, 0.08)',
+                        bg: 'interactive-hover',
                       }}
                       aria-label="Messages"
                     >
@@ -267,11 +307,11 @@ export const Navbar: React.FC = React.memo(() => {
                       alignItems="center"
                       justifyContent="center"
                       _hover={{
-                        bg: 'rgba(27, 42, 74, 0.08)',
+                        bg: 'interactive-hover',
                         transform: 'translateY(-1px)',
                       }}
                       _active={{
-                        bg: 'rgba(27, 42, 74, 0.12)',
+                        bg: 'interactive-active',
                       }}
                       transition="all 0.2s"
                       aria-label={`${user?.firstName} ${user?.lastName} user menu`}
@@ -302,13 +342,13 @@ export const Navbar: React.FC = React.memo(() => {
                             </Badge>
                           )}
                         </VStack>
-                        <Icon as={FiChevronDown} w={4} h={4} color="gray.500" />
+                        <Icon as={FiChevronDown} w={4} h={4} color="text-tertiary" />
                       </HStack>
                     </MenuButton>
                     
                     <Portal>
                       <MenuList
-                        bg="white"
+                        bg="bg-surface"
                         border="2px solid"
                         borderColor="brand.100"
                         borderRadius="xl"
@@ -327,10 +367,10 @@ export const Navbar: React.FC = React.memo(() => {
                       </div>
                       {/* User Info Header */}
                       <Box px={3} py={2} borderBottom="1px solid" borderColor="gray.100" mb={2}>
-                        <Text fontWeight="600" fontSize="sm" color="gray.900">
+                        <Text fontWeight="600" fontSize="sm" color="text-primary">
                           {user?.firstName} {user?.lastName}
                         </Text>
-                        <Text fontSize="xs" color="gray.500">
+                        <Text fontSize="xs" color="text-tertiary">
                           User Menu
                         </Text>
                       </Box>
@@ -436,9 +476,10 @@ export const Navbar: React.FC = React.memo(() => {
                     <Image
                       src="/kolabolab-logo.png"
                       alt="KolaboLab - Connect, Collaborate, Grow"
-                      height="72px"
-                      maxH="72px"
+                      height="32px"
+                      maxH="32px"
                       objectFit="contain"
+                      display="block"
                       onError={() => setLogoError(true)}
                     />
                   )}
@@ -467,7 +508,7 @@ export const Navbar: React.FC = React.memo(() => {
                   className="startup-context"
                 >
                   <HStack>
-                    <Text>🚀</Text>
+                    <Text aria-hidden="true">🚀</Text>
                     <Text>Startups</Text>
                   </HStack>
                 </ChakraLink>
@@ -481,11 +522,11 @@ export const Navbar: React.FC = React.memo(() => {
                   rounded="lg"
                   minH="48px"
                   fontWeight="500"
-                  _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                  _hover={{ bg: "interactive-hover" }}
                   onClick={onClose}
                 >
                   <HStack>
-                    <Text>🔍</Text>
+                    <Text aria-hidden="true">🔍</Text>
                     <Text>Search</Text>
                   </HStack>
                 </ChakraLink>
@@ -575,7 +616,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       minH="48px"
                       fontWeight="500"
-                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      _hover={{ bg: "interactive-hover" }}
                       onClick={onClose}
                     >
                       <HStack>
@@ -593,7 +634,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       minH="48px"
                       fontWeight="500"
-                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      _hover={{ bg: "interactive-hover" }}
                       onClick={onClose}
                     >
                       <HStack>
@@ -611,7 +652,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       minH="48px"
                       fontWeight="500"
-                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      _hover={{ bg: "interactive-hover" }}
                       onClick={onClose}
                     >
                       <HStack>
@@ -630,7 +671,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       minH="48px"
                       fontWeight="500"
-                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      _hover={{ bg: "interactive-hover" }}
                       onClick={onClose}
                     >
                       <HStack>
@@ -670,7 +711,7 @@ export const Navbar: React.FC = React.memo(() => {
                         rounded="lg"
                         minH="48px"
                         fontWeight="500"
-                        _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                        _hover={{ bg: "interactive-hover" }}
                         onClick={onClose}
                       >
                         <HStack>

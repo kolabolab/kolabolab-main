@@ -108,6 +108,16 @@ screenshots/
 *.png
 *.jpg
 *.jpeg
+# ...but static product assets MUST ship. The globs above are meant for test
+# screenshots (those dirs are already ignored wholesale). They silently kept
+# frontend/public/kolabolab-logo.png out of the repo, so the navbar shipped
+# pointing at an asset that did not exist.
+!frontend/public/**/*.png
+!frontend/public/**/*.jpg
+!frontend/public/**/*.jpeg
+!frontend/public/*.png
+!frontend/public/*.jpg
+!frontend/public/*.jpeg
 coverage/
 .nyc_output/
 junit.xml
@@ -123,3 +133,7 @@ test-output/
 # Cloudflare
 .wrangler/
 backend/node_modules
+# GAN design harness artifacts (screenshots, auth seed, symlink)
+gan-harness/shots/
+gan-harness/node_modules
+gan-harness/auth-seed.json

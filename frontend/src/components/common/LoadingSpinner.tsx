@@ -15,7 +15,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = React.memo(({
       justify="center" 
       align="center" 
       minH="100vh" 
-      bg="gray.50"
+      bg="chakra-subtle-bg"
       role="status"
       aria-live="polite"
       aria-label={message}
@@ -23,12 +23,12 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = React.memo(({
       <VStack spacing={4}>
         <Spinner 
           size={size} 
-          color="brand.500" 
+          color="interactive-accent" 
           thickness="4px"
           speed="0.65s"
         />
         <Text 
-          color="gray.600" 
+          color="text-secondary" 
           fontSize="lg"
           fontWeight="medium"
         >

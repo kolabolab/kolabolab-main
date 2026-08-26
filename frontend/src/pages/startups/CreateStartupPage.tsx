@@ -41,6 +41,7 @@ import {
   FiCalendar
 } from 'react-icons/fi'
 import { Helmet } from 'react-helmet-async'
+import { PageHeader } from '../../components/layout/PageHeader'
 import { RoleDetailState, RoleExpansionPanel } from '@/components/RoleExpansionPanel'
 import { validateDescription, validateSkill, parseSkills, serializeRoles } from '@/utils/roleSerializer'
 import { RichRole } from '@/types/roles'
@@ -366,8 +367,8 @@ const CreateStartupPage: React.FC = () => {
                     _hover={{ borderColor: 'brand.400' }}
                   >
                     <VStack spacing={2}>
-                      <Icon as={FiUpload} w={6} h={6} color="gray.400" />
-                      <Text fontSize="sm" color="gray.500">Upload Logo</Text>
+                      <Icon as={FiUpload} w={6} h={6} color="text-tertiary" />
+                      <Text fontSize="sm" color="text-tertiary">Upload Logo</Text>
                     </VStack>
                     <Input
                       type="file"
@@ -933,12 +934,12 @@ const CreateStartupPage: React.FC = () => {
                 {formData.pitchDeck ? (
                   <VStack spacing={2}>
                     <Icon as={FiCheck} w={6} h={6} color="green.500" />
-                    <Text fontSize="sm" color="gray.700">{formData.pitchDeck.name}</Text>
+                    <Text fontSize="sm" color="text-secondary">{formData.pitchDeck.name}</Text>
                   </VStack>
                 ) : (
                   <VStack spacing={2}>
-                    <Icon as={FiUpload} w={6} h={6} color="gray.400" />
-                    <Text fontSize="sm" color="gray.500">Upload Pitch Deck (PDF)</Text>
+                    <Icon as={FiUpload} w={6} h={6} color="text-tertiary" />
+                    <Text fontSize="sm" color="text-tertiary">Upload Pitch Deck (PDF)</Text>
                   </VStack>
                 )}
                 <Input
@@ -983,18 +984,18 @@ const CreateStartupPage: React.FC = () => {
                     )}
                     <VStack align="start" spacing={2} flex={1}>
                       <Heading size="lg">{formData.name}</Heading>
-                      <Text color="gray.600">{formData.tagline}</Text>
+                      <Text color="text-secondary">{formData.tagline}</Text>
                       <HStack spacing={4} fontSize="sm">
                         <HStack spacing={1}>
-                          <Icon as={FiMapPin} color="gray.400" />
+                          <Icon as={FiMapPin} color="text-tertiary" />
                           <Text>{formData.location}</Text>
                         </HStack>
                         <HStack spacing={1}>
-                          <Icon as={FiUsers} color="gray.400" />
+                          <Icon as={FiUsers} color="text-tertiary" />
                           <Text>{formData.teamSize} team members</Text>
                         </HStack>
                         <HStack spacing={1}>
-                          <Icon as={FiCalendar} color="gray.400" />
+                          <Icon as={FiCalendar} color="text-tertiary" />
                           <Text>Founded {new Date(formData.foundedDate).getFullYear()}</Text>
                         </HStack>
                       </HStack>
@@ -1072,14 +1073,13 @@ const CreateStartupPage: React.FC = () => {
         <Container maxW="4xl">
           <VStack spacing={8}>
             {/* Header */}
-            <VStack spacing={4} textAlign="center">
-              <Heading size="xl" className="gradient-text">
-                Create Your Startup Profile
-              </Heading>
-              <Text color="gray.600" fontSize="lg" maxW="2xl">
-                Share your innovative startup with our community of entrepreneurs, collaborators, and investors
-              </Text>
-            </VStack>
+            <Box w="full">
+              <PageHeader
+                eyebrow="New venture"
+                title="Create your startup profile"
+                lede="The same structured questions every venture answers, so collaborators and investors compare like with like."
+              />
+            </Box>
 
             {/* Progress Bar */}
             <Card className="glass-panel" w="full">
@@ -1087,7 +1087,7 @@ const CreateStartupPage: React.FC = () => {
                 <VStack spacing={4}>
                   <HStack justify="space-between" w="full">
                     <Text fontWeight="semibold">Step {step} of {totalSteps}</Text>
-                    <Text fontSize="sm" color="gray.600">{stepNames[step - 1]}</Text>
+                    <Text fontSize="sm" color="text-secondary">{stepNames[step - 1]}</Text>
                   </HStack>
                   <Progress
                     value={(step / totalSteps) * 100}
@@ -1096,12 +1096,12 @@ const CreateStartupPage: React.FC = () => {
                     borderRadius="full"
                     w="full"
                   />
-                  <HStack justify="space-between" w="full" fontSize="xs" color="gray.500">
+                  <HStack justify="space-between" w="full" fontSize="xs" color="text-tertiary">
                     {stepNames.map((name, index) => (
                       <Text
                         key={name}
                         fontWeight={step === index + 1 ? 'bold' : 'normal'}
-                        color={step > index ? 'brand.500' : 'gray.500'}
+                        color={step > index ? 'interactive-accent' : 'text-tertiary'}
                       >
                         {name}
                       </Text>

@@ -39,7 +39,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ events }) => {
     return (
       <Box>
         <Heading size="sm" mb={3}>Recent Activity</Heading>
-        <Text color="gray.500" fontSize="sm">No recent activity</Text>
+        <Text color="text-tertiary" fontSize="sm">No recent activity</Text>
       </Box>
     );
   }
@@ -64,7 +64,7 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ events }) => {
               <Text fontSize="sm" flex={1} noOfLines={1}>
                 {event.description}
               </Text>
-              <Text fontSize="xs" color="gray.500" flexShrink={0}>
+              <Text fontSize="xs" color="text-tertiary" flexShrink={0}>
                 {formatRelativeTime(event.timestamp)}
               </Text>
             </HStack>

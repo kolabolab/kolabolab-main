@@ -87,8 +87,12 @@ apiClient.interceptors.request.use(
     // Add request cancellation
     const requestKey = createRequestKey(config)
     
-    // Cancel previous request with same key if exists
-    if (pendingRequests.has(requestKey)) {
+    // Only supersede when the caller explicitly opts in (e.g. type-ahead search).
+    // Previously EVERY duplicate key cancelled the in-flight request, so React
+    // StrictMode's double-invoked effects cancelled their own first request and
+    // the dashboard rendered "Failed to load data / Request cancelled".
+    const supersede = (config as AxiosRequestConfig & { supersede?: boolean }).supersede === true
+    if (supersede && pendingRequests.has(requestKey)) {
       const existingRequest = pendingRequests.get(requestKey)
       existingRequest?.cancel('Request superseded by newer request')
     }
@@ -122,7 +126,12 @@ apiClient.interceptors.response.use(
     
     // Handle request cancellation
     if (axios.isCancel(error)) {
-      return Promise.reject(new Error('Request cancelled'))
+      // Flagged so UI can ignore supersede-cancellations instead of rendering
+      // them as a hard failure.
+      const cancelled = new Error('Request cancelled') as APIError & { isCancelled: boolean }
+      cancelled.code = 'ERR_CANCELED'
+      cancelled.isCancelled = true
+      return Promise.reject(cancelled)
     }
     
     // Handle 401 Unauthorized with token refresh

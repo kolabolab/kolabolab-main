@@ -47,7 +47,7 @@ const UpdateCard: React.FC<UpdateCardProps> = ({ update, isCreator, onDelete }) 
             <Text fontWeight="semibold" fontSize="sm">
               {update.authorName}
             </Text>
-            <Text fontSize="xs" color="gray.500">
+            <Text fontSize="xs" color="text-tertiary">
               {formatRelativeTime(update.createdAt)}
             </Text>
           </Box>

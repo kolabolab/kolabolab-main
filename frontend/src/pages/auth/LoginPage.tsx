@@ -218,7 +218,7 @@ const LoginPage: React.FC = () => {
               >
                 Welcome Back
               </Heading>
-              <Text color="gray.600" fontSize="lg">
+              <Text color="text-secondary" fontSize="lg">
                 Sign in to continue your startup journey
               </Text>
             </VStack>
@@ -277,7 +277,7 @@ const LoginPage: React.FC = () => {
                   {/* Divider */}
                   <HStack w="full">
                     <Divider />
-                    <Text color="gray.500" fontSize="sm" whiteSpace="nowrap">
+                    <Text color="text-tertiary" fontSize="sm" whiteSpace="nowrap">
                       Or continue with email
                     </Text>
                     <Divider />
@@ -291,7 +291,7 @@ const LoginPage: React.FC = () => {
                         <FormLabel>Email Address</FormLabel>
                         <InputGroup>
                           <InputLeftElement>
-                            <Icon as={FiMail} color="gray.400" />
+                            <Icon as={FiMail} color="text-tertiary" />
                           </InputLeftElement>
                           <Input
                             type="email"
@@ -310,7 +310,7 @@ const LoginPage: React.FC = () => {
                         <FormLabel>Password</FormLabel>
                         <InputGroup>
                           <InputLeftElement>
-                            <Icon as={FiLock} color="gray.400" />
+                            <Icon as={FiLock} color="text-tertiary" />
                           </InputLeftElement>
                           <Input
                             type={showPassword ? 'text' : 'password'}
@@ -326,7 +326,7 @@ const LoginPage: React.FC = () => {
                               size="sm"
                               onClick={() => setShowPassword(!showPassword)}
                             >
-                              <Icon as={showPassword ? FiEyeOff : FiEye} color="gray.400" />
+                              <Icon as={showPassword ? FiEyeOff : FiEye} color="text-tertiary" />
                             </Button>
                           </InputRightElement>
                         </InputGroup>
@@ -338,7 +338,7 @@ const LoginPage: React.FC = () => {
                         <Link 
                           as={RouterLink} 
                           to="/forgot-password" 
-                          color="brand.500"
+                          color="interactive-accent"
                           fontSize="sm"
                           _hover={{ textDecoration: 'underline' }}
                         >
@@ -363,13 +363,13 @@ const LoginPage: React.FC = () => {
 
                   {/* Sign Up Link */}
                   <HStack spacing={2}>
-                    <Text color="gray.600" fontSize="sm">
+                    <Text color="text-secondary" fontSize="sm">
                       Don't have an account?
                     </Text>
                     <Link 
                       as={RouterLink} 
                       to="/register" 
-                      color="brand.500"
+                      color="interactive-accent"
                       fontWeight="semibold"
                       fontSize="sm"
                       _hover={{ textDecoration: 'underline' }}
@@ -382,13 +382,13 @@ const LoginPage: React.FC = () => {
             </Card>
 
             {/* Help Text */}
-            <Text color="gray.500" fontSize="sm" textAlign="center" maxW="md">
+            <Text color="text-tertiary" fontSize="sm" textAlign="center" maxW="md">
               By signing in, you agree to our{' '}
-              <Link color="brand.500" _hover={{ textDecoration: 'underline' }}>
+              <Link color="interactive-accent" _hover={{ textDecoration: 'underline' }}>
                 Terms of Service
               </Link>
               {' '}and{' '}
-              <Link color="brand.500" _hover={{ textDecoration: 'underline' }}>
+              <Link color="interactive-accent" _hover={{ textDecoration: 'underline' }}>
                 Privacy Policy
               </Link>
             </Text>

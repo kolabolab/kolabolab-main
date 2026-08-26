@@ -46,7 +46,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn }) => {
         maxW="70%"
       >
         {!isOwn && (
-          <Text fontSize="xs" color="gray.500" fontWeight="medium" px={1}>
+          <Text fontSize="xs" color="text-tertiary" fontWeight="medium" px={1}>
             {message.senderName}
           </Text>
         )}

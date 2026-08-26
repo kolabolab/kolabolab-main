@@ -15,6 +15,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react'
 import { Helmet } from 'react-helmet-async'
+import { PageHeader } from '../../components/layout/PageHeader'
 import { useNavigate } from 'react-router-dom'
 import { useConversations } from '../../hooks/useMessages'
 import type { ConversationListItem } from '../../types/messages'
@@ -59,25 +60,22 @@ const ConversationsListPage: React.FC = () => {
         <Container maxW={{ base: '7xl', '2xl': '90%' }} py={8}>
           <VStack spacing={8} align="stretch">
             {/* Page Header */}
-            <Box>
-              <Heading size="xl" className="gradient-text">
-                Messages
-              </Heading>
-              <Text color="gray.600" fontSize="lg" mt={2}>
-                Your conversations
-              </Text>
-            </Box>
+            <PageHeader
+              eyebrow="Inbox"
+              title="Messages"
+              lede="Conversations with founders, collaborators and investors."
+            />
 
             {/* Conversations List */}
             <Card bg={cardBg}>
               <CardBody>
                 {isLoading ? (
                   <Box display="flex" justifyContent="center" py={8}>
-                    <Spinner size="lg" color="brand.500" />
+                    <Spinner size="lg" color="interactive-accent" />
                   </Box>
                 ) : isError ? (
                   <VStack spacing={4} py={8}>
-                    <Text color="red.500">
+                    <Text color="text-error">
                       Failed to load conversations. Please try again.
                     </Text>
                     <Button
@@ -90,7 +88,7 @@ const ConversationsListPage: React.FC = () => {
                   </VStack>
                 ) : conversations.length === 0 ? (
                   <VStack spacing={4} py={12} textAlign="center">
-                    <Text fontSize="lg" color="gray.500">
+                    <Text fontSize="lg" color="text-tertiary">
                       No conversations yet. Connect with others to start messaging.
                     </Text>
                   </VStack>
@@ -159,14 +157,14 @@ const ConversationItem: React.FC<ConversationItemProps> = ({ conversation, hover
             >
               {conversation.participantName}
             </Text>
-            <Text fontSize="xs" color="gray.500" flexShrink={0} whiteSpace="nowrap">
+            <Text fontSize="xs" color="text-tertiary" flexShrink={0} whiteSpace="nowrap">
               {formatRelativeTime(conversation.lastActivityAt)}
             </Text>
           </HStack>
           <HStack spacing={2} w="full" justify="space-between">
             <Text
               fontSize="sm"
-              color="gray.600"
+              color="text-secondary"
               noOfLines={1}
               flex={1}
             >

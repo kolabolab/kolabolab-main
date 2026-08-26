@@ -86,17 +86,17 @@ const VerifyEmailSentPage: React.FC = () => {
               <CardBody p={8} textAlign="center">
                 <VStack spacing={6}>
                   
-                  <Icon as={FiMail} boxSize={16} color="brand.500" />
+                  <Icon as={FiMail} boxSize={16} color="interactive-accent" />
                   
-                  <Heading size="lg" color="brand.600">
+                  <Heading size="lg" color="interactive-accent">
                     Check Your Email
                   </Heading>
                   
-                  <Text color="gray.600" fontSize="lg" lineHeight="tall">
+                  <Text color="text-secondary" fontSize="lg" lineHeight="tall">
                     We've sent a verification link to:
                   </Text>
                   
-                  <Text fontWeight="bold" fontSize="lg" color="brand.600">
+                  <Text fontWeight="bold" fontSize="lg" color="interactive-accent">
                     {email}
                   </Text>
                   
@@ -111,7 +111,7 @@ const VerifyEmailSentPage: React.FC = () => {
                   </Alert>
                   
                   <VStack spacing={4} w="full">
-                    <Text color="gray.600" fontSize="sm">
+                    <Text color="text-secondary" fontSize="sm">
                       Didn't receive the email? Check your spam folder or:
                     </Text>
                     
@@ -126,9 +126,9 @@ const VerifyEmailSentPage: React.FC = () => {
                     </Button>
                   </VStack>
                   
-                  <Text fontSize="sm" color="gray.500">
+                  <Text fontSize="sm" color="text-tertiary">
                     Need help?{' '}
-                    <Link color="brand.500" href="mailto:support@kolabolab.com">
+                    <Link color="interactive-accent" href="mailto:support@kolabolab.com">
                       Contact Support
                     </Link>
                   </Text>

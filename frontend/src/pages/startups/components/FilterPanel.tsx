@@ -78,7 +78,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         {/* Search Input */}
         <InputGroup size="lg">
           <InputLeftElement>
-            <Icon as={FiSearch} color="gray.400" aria-hidden="true" />
+            <Icon as={FiSearch} color="text-tertiary" aria-hidden="true" />
           </InputLeftElement>
           <Input
             placeholder="Search startups, technologies, or industries..."
@@ -90,7 +90,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             aria-label="Search startups"
             _focus={{
               borderColor: 'brand.500',
-              boxShadow: '0 0 0 1px var(--primary-navy, #1B2A4A)',
+              boxShadow: '0 0 0 1px var(--brand-ink, #232838)',
             }}
           />
           {filters.q && (
@@ -115,8 +115,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           align="center"
         >
           <HStack spacing={2}>
-            <Icon as={FiFilter} color="gray.500" aria-hidden="true" />
-            <Text fontSize="sm" color="gray.600">
+            <Icon as={FiFilter} color="text-tertiary" aria-hidden="true" />
+            <Text fontSize="sm" color="text-secondary">
               Filters:
             </Text>
             {hasActiveFilters && (
@@ -181,7 +181,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             <VStack spacing={4} align="stretch">
               {/* Stage Multi-Select */}
               <Box>
-                <Text fontSize="sm" fontWeight="semibold" mb={2} color="gray.600">
+                <Text fontSize="sm" fontWeight="semibold" mb={2} color="text-secondary">
                   Stage
                 </Text>
                 <CheckboxGroup
@@ -202,7 +202,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
               {/* Role Type Multi-Select */}
               <Box>
-                <Text fontSize="sm" fontWeight="semibold" mb={2} color="gray.600">
+                <Text fontSize="sm" fontWeight="semibold" mb={2} color="text-secondary">
                   Role Type
                 </Text>
                 <CheckboxGroup
@@ -223,7 +223,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
               {/* Skills Input */}
               <Box>
-                <Text fontSize="sm" fontWeight="semibold" mb={2} color="gray.600">
+                <Text fontSize="sm" fontWeight="semibold" mb={2} color="text-secondary">
                   Skills (comma-separated)
                 </Text>
                 <Input
@@ -245,7 +245,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </Collapse>
 
         {/* Result Count */}
-        <Text fontSize="sm" color="gray.500" textAlign="center">
+        <Text fontSize="sm" color="text-tertiary" textAlign="center">
           {loading ? 'Searching...' : `${total} startup${total !== 1 ? 's' : ''} found`}
         </Text>
       </VStack>

@@ -17,7 +17,18 @@ import { FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi'
 
 export const Footer: React.FC = React.memo(() => {
   return (
-    <Box bg={useColorModeValue('brand.900', 'gray.900')} color="gray.400" mt="auto">
+    /* This surface is dark in BOTH colour modes, so links cannot use the
+       light-mode interactive-accent (accent.600 = 3.21:1 here). accent.300
+       gives 9.24:1. */
+    <Box
+      bg={useColorModeValue('brand.900', 'gray.900')}
+      color="gray.400"
+      mt="auto"
+      sx={{
+        a: { color: 'accent.300' },
+        'a:hover': { color: 'white' },
+      }}
+    >
       <Container maxW="6xl" py={10}>
         <SimpleGrid columns={{ base: 2, md: 4 }} spacing={8} mb={8}>
           <VStack align="start" spacing={2}>
@@ -64,10 +75,10 @@ export const Footer: React.FC = React.memo(() => {
           pt={6}
           gap={2}
         >
-          <Text fontSize="xs" color="gray.500">
+          <Text fontSize="xs" color="gray.400">
             © {new Date().getFullYear()} KolaboLab. All rights reserved.
           </Text>
-          <Text fontSize="xs" color="gray.500">
+          <Text fontSize="xs" color="gray.400">
             Connect · Collaborate · Grow
           </Text>
         </Flex>

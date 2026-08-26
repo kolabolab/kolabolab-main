@@ -59,6 +59,7 @@ import {
   FiX
 } from 'react-icons/fi'
 import { Helmet } from 'react-helmet-async'
+import { PageHeader } from '../components/layout/PageHeader'
 
 interface SearchFilters {
   query: string;
@@ -208,14 +209,11 @@ const SearchPage: React.FC = () => {
         <Container maxW={{ base: "7xl", "2xl": "90%", "3xl": "85%" }}>
           <VStack spacing={8} align="stretch">
             {/* Header */}
-            <VStack spacing={4} textAlign="center">
-              <Heading size="xl" className="gradient-text">
-                Discover Your Next Opportunity
-              </Heading>
-              <Text color="gray.600" fontSize="lg" maxW="2xl">
-                Search through thousands of startups, talented individuals, and exciting opportunities
-              </Text>
-            </VStack>
+            <PageHeader
+              eyebrow="Discover"
+              title="Find your next opportunity"
+              lede="Search ventures, people and open roles across the platform."
+            />
 
             {/* Search Bar */}
             <Card className="glass-panel">
@@ -223,7 +221,7 @@ const SearchPage: React.FC = () => {
                 <VStack spacing={4}>
                   <InputGroup size="lg">
                     <InputLeftElement>
-                      <Icon as={FiSearch} color="gray.400" />
+                      <Icon as={FiSearch} color="text-tertiary" />
                     </InputLeftElement>
                     <Input
                       placeholder="Search startups, people, skills, or opportunities..."
@@ -279,7 +277,7 @@ const SearchPage: React.FC = () => {
             {/* Active Filters */}
             {activeFilters.length > 0 && (
               <HStack spacing={2} flexWrap="wrap">
-                <Text fontSize="sm" color="gray.600">Active filters:</Text>
+                <Text fontSize="sm" color="text-secondary">Active filters:</Text>
                 {activeFilters.map((filter) => (
                   <Badge key={filter} colorScheme="brand" px={3} py={1}>
                     {filter}
@@ -301,7 +299,7 @@ const SearchPage: React.FC = () => {
             {/* Results */}
             <Box>
               <HStack justify="space-between" mb={6}>
-                <Text color="gray.600">
+                <Text color="text-secondary">
                   {loading ? 'Searching...' : `${results.filter((r) => {
                     if (filters.type === 'all') return true;
                     if (filters.type === 'startups') return r.type === 'startup';
@@ -311,7 +309,7 @@ const SearchPage: React.FC = () => {
                   }).length} results found`}
                 </Text>
                 <HStack spacing={2}>
-                  <Text fontSize="sm" color="gray.500">Sort by:</Text>
+                  <Text fontSize="sm" color="text-tertiary">Sort by:</Text>
                   <Select size="sm" maxW="140px" defaultValue="relevance">
                     <option value="relevance">Relevance</option>
                     <option value="recent">Most Recent</option>
@@ -399,12 +397,12 @@ const SearchPage: React.FC = () => {
                                 >
                                   {result.title}
                                 </Link>
-                                <Text color="gray.600" fontSize="sm">
+                                <Text color="text-secondary" fontSize="sm">
                                   {result.subtitle}
                                 </Text>
                                 <HStack spacing={1}>
-                                  <Icon as={FiMapPin} color="gray.400" w={3} h={3} />
-                                  <Text fontSize="sm" color="gray.500">
+                                  <Icon as={FiMapPin} color="text-tertiary" w={3} h={3} />
+                                  <Text fontSize="sm" color="text-tertiary">
                                     {result.location}
                                   </Text>
                                 </HStack>
@@ -412,7 +410,7 @@ const SearchPage: React.FC = () => {
                             </VStack>
                           </HStack>
 
-                          <Text fontSize="sm" color="gray.700" noOfLines={2}>
+                          <Text fontSize="sm" color="text-secondary" noOfLines={2}>
                             {result.description}
                           </Text>
 
@@ -423,7 +421,7 @@ const SearchPage: React.FC = () => {
                               </Badge>
                             ))}
                             {result.tags.length > 4 && (
-                              <Text fontSize="xs" color="gray.500">
+                              <Text fontSize="xs" color="text-tertiary">
                                 +{result.tags.length - 4} more
                               </Text>
                             )}
@@ -436,8 +434,8 @@ const SearchPage: React.FC = () => {
                                 {result.metrics.views && (
                                   <VStack spacing={1}>
                                     <HStack spacing={1}>
-                                      <Icon as={FiEye} color="gray.400" w={3} h={3} />
-                                      <Text color="gray.500">Views</Text>
+                                      <Icon as={FiEye} color="text-tertiary" w={3} h={3} />
+                                      <Text color="text-tertiary">Views</Text>
                                     </HStack>
                                     <Text fontWeight="semibold">{result.metrics.views}</Text>
                                   </VStack>
@@ -445,8 +443,8 @@ const SearchPage: React.FC = () => {
                                 {result.metrics.followers && (
                                   <VStack spacing={1}>
                                     <HStack spacing={1}>
-                                      <Icon as={FiHeart} color="gray.400" w={3} h={3} />
-                                      <Text color="gray.500">Followers</Text>
+                                      <Icon as={FiHeart} color="text-tertiary" w={3} h={3} />
+                                      <Text color="text-tertiary">Followers</Text>
                                     </HStack>
                                     <Text fontWeight="semibold">{result.metrics.followers}</Text>
                                   </VStack>
@@ -454,8 +452,8 @@ const SearchPage: React.FC = () => {
                                 {result.metrics.funding && (
                                   <VStack spacing={1}>
                                     <HStack spacing={1}>
-                                      <Icon as={FiDollarSign} color="gray.400" w={3} h={3} />
-                                      <Text color="gray.500">Funding</Text>
+                                      <Icon as={FiDollarSign} color="text-tertiary" w={3} h={3} />
+                                      <Text color="text-tertiary">Funding</Text>
                                     </HStack>
                                     <Text fontWeight="semibold">{result.metrics.funding}</Text>
                                   </VStack>
@@ -463,8 +461,8 @@ const SearchPage: React.FC = () => {
                                 {result.metrics.stage && (
                                   <VStack spacing={1}>
                                     <HStack spacing={1}>
-                                      <Icon as={FiTrendingUp} color="gray.400" w={3} h={3} />
-                                      <Text color="gray.500">Stage</Text>
+                                      <Icon as={FiTrendingUp} color="text-tertiary" w={3} h={3} />
+                                      <Text color="text-tertiary">Stage</Text>
                                     </HStack>
                                     <Text fontWeight="semibold">{result.metrics.stage}</Text>
                                   </VStack>
@@ -472,8 +470,8 @@ const SearchPage: React.FC = () => {
                                 {result.metrics.teamSize && (
                                   <VStack spacing={1}>
                                     <HStack spacing={1}>
-                                      <Icon as={FiUsers} color="gray.400" w={3} h={3} />
-                                      <Text color="gray.500">Team</Text>
+                                      <Icon as={FiUsers} color="text-tertiary" w={3} h={3} />
+                                      <Text color="text-tertiary">Team</Text>
                                     </HStack>
                                     <Text fontWeight="semibold">{result.metrics.teamSize}</Text>
                                   </VStack>
@@ -481,8 +479,8 @@ const SearchPage: React.FC = () => {
                                 {result.metrics.experience && (
                                   <VStack spacing={1}>
                                     <HStack spacing={1}>
-                                      <Icon as={FiAward} color="gray.400" w={3} h={3} />
-                                      <Text color="gray.500">Experience</Text>
+                                      <Icon as={FiAward} color="text-tertiary" w={3} h={3} />
+                                      <Text color="text-tertiary">Experience</Text>
                                     </HStack>
                                     <Text fontWeight="semibold">{result.metrics.experience}</Text>
                                   </VStack>
@@ -499,9 +497,9 @@ const SearchPage: React.FC = () => {
                 <Card className="glass-panel">
                   <CardBody p={12} textAlign="center">
                     <VStack spacing={4}>
-                      <Icon as={FiSearch} w={12} h={12} color="gray.400" />
-                      <Heading size="md" color="gray.500">No results found</Heading>
-                      <Text color="gray.600" maxW="md">
+                      <Icon as={FiSearch} w={12} h={12} color="text-tertiary" />
+                      <Heading size="md" color="text-tertiary">No results found</Heading>
+                      <Text color="text-secondary" maxW="md">
                         Try adjusting your search terms or filters to find what you're looking for.
                       </Text>
                       <Button onClick={clearAllFilters} variant="outline" colorScheme="brand">
@@ -529,7 +527,7 @@ const SearchPage: React.FC = () => {
                   <FormLabel>Location</FormLabel>
                   <InputGroup>
                     <InputLeftElement>
-                      <Icon as={FiMapPin} color="gray.400" />
+                      <Icon as={FiMapPin} color="text-tertiary" />
                     </InputLeftElement>
                     <Input
                       placeholder="City, State, or Country"

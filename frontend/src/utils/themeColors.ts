@@ -2,29 +2,29 @@
 // Use these instead of hardcoded rgba values for consistency
 
 export const themeColors = {
-  // Brand colors with alpha variants (Navy)
+  // Brand colors with alpha variants (Ink)
   brand: {
-    primary: '#1B2A4A',
+    primary: '#232838',
     primaryAlpha: {
-      5: 'rgba(27, 42, 74, 0.05)',
-      8: 'rgba(27, 42, 74, 0.08)',
-      10: 'rgba(27, 42, 74, 0.1)',
-      12: 'rgba(27, 42, 74, 0.12)',
-      20: 'rgba(27, 42, 74, 0.2)',
-      25: 'rgba(27, 42, 74, 0.25)',
+      5: 'rgba(35, 40, 56, 0.05)',
+      8: 'rgba(35, 40, 56, 0.08)',
+      10: 'rgba(35, 40, 56, 0.1)',
+      12: 'rgba(35, 40, 56, 0.12)',
+      20: 'rgba(35, 40, 56, 0.2)',
+      25: 'rgba(35, 40, 56, 0.25)',
     },
   },
 
-  // Accent colors (Cyan)
+  // Accent colors (Iris)
   accent: {
-    primary: '#00BFFF',
+    primary: '#6B6EF2',
     primaryAlpha: {
-      5: 'rgba(0, 191, 255, 0.05)',
-      8: 'rgba(0, 191, 255, 0.08)',
-      10: 'rgba(0, 191, 255, 0.1)',
-      12: 'rgba(0, 191, 255, 0.12)',
-      20: 'rgba(0, 191, 255, 0.2)',
-      25: 'rgba(0, 191, 255, 0.25)',
+      5: 'rgba(107, 110, 242, 0.05)',
+      8: 'rgba(107, 110, 242, 0.08)',
+      10: 'rgba(107, 110, 242, 0.1)',
+      12: 'rgba(107, 110, 242, 0.12)',
+      20: 'rgba(107, 110, 242, 0.2)',
+      25: 'rgba(107, 110, 242, 0.25)',
     },
   },
 
@@ -115,7 +115,7 @@ export const themeColors = {
 
   // Gradients
   gradients: {
-    brand: 'linear-gradient(135deg, #1B2A4A 0%, #00BFFF 100%)',
+    brand: 'linear-gradient(135deg, #232838 0%, #6B6EF2 100%)',
     success: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
     secondary: 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)',
     support: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',

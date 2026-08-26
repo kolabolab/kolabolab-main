@@ -8,25 +8,25 @@ import { theme } from './index';
  */
 
 /**
- * Property 1: Brand color token resolves to navy palette
+ * Property 1: Brand color token resolves to ink palette
  * Validates: Requirements 1.4, 9.2
  *
  * For any valid shade level in the Chakra UI `brand` color scheme,
- * the resolved hex value SHALL correspond to the navy palette and
+ * the resolved hex value SHALL correspond to the ink palette and
  * NOT contain any green palette value.
  */
-describe('Feature: brand-theme-overhaul, Property 1: Brand color token resolves to navy palette', () => {
-  const navyPalette: Record<number, string> = {
-    50: '#E8EBF0',
-    100: '#C5CCD9',
-    200: '#9FADBF',
-    300: '#7A8EA6',
-    400: '#5E7793',
-    500: '#1B2A4A',
-    600: '#162240',
-    700: '#111A33',
-    800: '#0C1226',
-    900: '#070B19',
+describe('Feature: brand-theme-overhaul, Property 1: Brand color token resolves to ink palette', () => {
+  const inkPalette: Record<number, string> = {
+    50: '#F5F6F8',
+    100: '#EBECF0',
+    200: '#D6D8E0',
+    300: '#B3B7C4',
+    400: '#838BA1',
+    500: '#232838',
+    600: '#1B1F2C',
+    700: '#151822',
+    800: '#0F1119',
+    900: '#090A0F',
   };
 
   const greenPaletteValues = [
@@ -44,14 +44,14 @@ describe('Feature: brand-theme-overhaul, Property 1: Brand color token resolves 
 
   const shadeArbitrary = fc.constantFrom(50, 100, 200, 300, 400, 500, 600, 700, 800, 900);
 
-  it('brand color token resolves to navy palette and not green palette', () => {
+  it('brand color token resolves to ink palette and not green palette', () => {
     fc.assert(
       fc.property(shadeArbitrary, (shade) => {
         const brandColors = (theme.colors as any).brand;
         const value = brandColors[shade];
 
-        // Assert it matches the expected navy palette value
-        expect(value).toBe(navyPalette[shade]);
+        // Assert it matches the expected ink palette value
+        expect(value).toBe(inkPalette[shade]);
 
         // Assert it does NOT match any green palette value
         const upperValue = value.toUpperCase();
@@ -116,8 +116,8 @@ describe('Feature: brand-theme-overhaul, Property 3: Text-to-background contrast
 
   const WCAG_AA_MIN = 4.5;
 
-  const lightBackground = '#F8FAFF';
-  const darkBackground = '#0A0A0B';
+  const lightBackground = '#FAFAFB';
+  const darkBackground = '#0B0C11';
 
   // Navy shades brand.500–brand.900 (dark text on light background)
   const navyTextShades = fc.constantFrom(500, 600, 700, 800, 900);

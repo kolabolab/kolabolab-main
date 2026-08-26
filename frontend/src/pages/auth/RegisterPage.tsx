@@ -177,7 +177,7 @@ const RegisterPage: React.FC = () => {
               <Heading size="xl" className="gradient-text">
                 Join KolaboLab
               </Heading>
-              <Text color="gray.600" fontSize="lg">
+              <Text color="text-secondary" fontSize="lg">
                 Start your startup collaboration journey today
               </Text>
             </VStack>
@@ -195,7 +195,7 @@ const RegisterPage: React.FC = () => {
                   
                   {/* Social Signup Buttons */}
                   <VStack spacing={4} w="full">
-                    <Text color="gray.600" fontSize="sm" textAlign="center">
+                    <Text color="text-secondary" fontSize="sm" textAlign="center">
                       Sign up with your social account
                     </Text>
                     
@@ -212,7 +212,7 @@ const RegisterPage: React.FC = () => {
                         onClick={() => handleSocialSignup('GitHub')}
                         _hover={{ bg: 'blue.50', borderColor: 'blue.400' }}
                         borderColor="blue.300"
-                        color="blue.600"
+                        color="interactive-accent"
                       >
                         GitHub
                       </Button>
@@ -229,7 +229,7 @@ const RegisterPage: React.FC = () => {
                         onClick={() => handleSocialSignup('LinkedIn')}
                         _hover={{ bg: 'blue.50', borderColor: '#0077B5' }}
                         borderColor="blue.300"
-                        color="blue.600"
+                        color="interactive-accent"
                       >
                         LinkedIn
                       </Button>
@@ -246,7 +246,7 @@ const RegisterPage: React.FC = () => {
                         onClick={() => handleSocialSignup('Google')}
                         _hover={{ bg: 'blue.50', borderColor: '#DB4437' }}
                         borderColor="blue.300"
-                        color="blue.600"
+                        color="interactive-accent"
                       >
                         Google
                       </Button>
@@ -256,7 +256,7 @@ const RegisterPage: React.FC = () => {
                   {/* Divider */}
                   <HStack w="full">
                     <Divider />
-                    <Text fontSize="sm" color="gray.500" px={3} whiteSpace="nowrap">
+                    <Text fontSize="sm" color="text-tertiary" px={3} whiteSpace="nowrap">
                       Or sign up with email
                     </Text>
                     <Divider />
@@ -350,11 +350,11 @@ const RegisterPage: React.FC = () => {
                         colorScheme="brand"
                       >
                         I have read and accepted the{' '}
-                        <Link color="brand.500" href="/terms" target="_blank" textDecoration="underline">
+                        <Link color="interactive-accent" href="/terms" target="_blank" textDecoration="underline">
                           Terms of Volunteering
                         </Link>{' '}
                         and{' '}
-                        <Link color="brand.500" href="/privacy" target="_blank" textDecoration="underline">
+                        <Link color="interactive-accent" href="/privacy" target="_blank" textDecoration="underline">
                           Privacy Policy
                         </Link>
                       </Checkbox>
@@ -372,9 +372,9 @@ const RegisterPage: React.FC = () => {
                       Create Account
                     </Button>
 
-                    <Text textAlign="center" color="gray.600">
+                    <Text textAlign="center" color="text-secondary">
                       Already have an account?{' '}
-                      <Link as={RouterLink} to="/login" color="brand.500" fontWeight="semibold">
+                      <Link as={RouterLink} to="/login" color="interactive-accent" fontWeight="semibold">
                         Sign in here
                       </Link>
                     </Text>

@@ -69,7 +69,7 @@ const UserProfilePage: React.FC = () => {
   if (isLoading) {
     return (
       <Box minH="100vh" bg={bgColor} display="flex" alignItems="center" justifyContent="center">
-        <Spinner size="xl" color="brand.500" />
+        <Spinner size="xl" color="interactive-accent" />
       </Box>
     );
   }
@@ -80,10 +80,10 @@ const UserProfilePage: React.FC = () => {
       <Box minH="100vh" bg={bgColor}>
         <Container maxW="4xl" py={16} textAlign="center">
           <VStack spacing={4}>
-            <Heading size="lg" color="gray.600">
+            <Heading size="lg" color="text-secondary">
               {is404 ? 'User not found' : 'Something went wrong'}
             </Heading>
-            <Text color="gray.500">
+            <Text color="text-tertiary">
               {is404
                 ? 'The profile you are looking for does not exist.'
                 : 'Failed to load profile. Please try again later.'}
@@ -149,7 +149,7 @@ const UserProfilePage: React.FC = () => {
                     )}
 
                     {profile.bio && (
-                      <Text color="gray.600" mt={2}>
+                      <Text color="text-secondary" mt={2}>
                         {profile.bio}
                       </Text>
                     )}
@@ -158,7 +158,7 @@ const UserProfilePage: React.FC = () => {
                       <ChakraLink
                         href={profile.linkedinUrl}
                         isExternal
-                        color="brand.500"
+                        color="interactive-accent"
                         fontSize="sm"
                         display="flex"
                         alignItems="center"
@@ -168,7 +168,7 @@ const UserProfilePage: React.FC = () => {
                       </ChakraLink>
                     )}
 
-                    <Text fontSize="xs" color="gray.400">
+                    <Text fontSize="xs" color="text-tertiary">
                       Member since {new Date(profile.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
                     </Text>
                   </VStack>
@@ -199,7 +199,7 @@ const UserProfilePage: React.FC = () => {
               <Card bg={cardBg}>
                 <CardBody>
                   <Heading size="sm" mb={3}>Experience</Heading>
-                  <Text color="gray.600" whiteSpace="pre-wrap">
+                  <Text color="text-secondary" whiteSpace="pre-wrap">
                     {profile.experience}
                   </Text>
                 </CardBody>

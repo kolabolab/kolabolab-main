@@ -25,7 +25,7 @@ export const StartupInvolvementList: React.FC<StartupInvolvementListProps> = ({ 
     return (
       <Box>
         <Heading size="sm" mb={3}>Startup Involvement</Heading>
-        <Text color="gray.500" fontSize="sm">
+        <Text color="text-tertiary" fontSize="sm">
           No startup involvement yet.
         </Text>
       </Box>
@@ -38,7 +38,7 @@ export const StartupInvolvementList: React.FC<StartupInvolvementListProps> = ({ 
       <VStack spacing={3} align="stretch">
         {hasCreated && (
           <Box>
-            <Text fontSize="xs" fontWeight="semibold" color="gray.500" textTransform="uppercase" mb={2}>
+            <Text fontSize="xs" fontWeight="semibold" color="text-tertiary" textTransform="uppercase" mb={2}>
               Founded
             </Text>
             <VStack spacing={2} align="stretch">
@@ -51,7 +51,7 @@ export const StartupInvolvementList: React.FC<StartupInvolvementListProps> = ({ 
                         to={`/startups/${startup.id}`}
                         fontWeight="medium"
                         fontSize="sm"
-                        color="brand.500"
+                        color="interactive-accent"
                         _hover={{ textDecoration: 'underline' }}
                       >
                         {startup.name}
@@ -78,7 +78,7 @@ export const StartupInvolvementList: React.FC<StartupInvolvementListProps> = ({ 
 
         {hasMemberships && (
           <Box>
-            <Text fontSize="xs" fontWeight="semibold" color="gray.500" textTransform="uppercase" mb={2}>
+            <Text fontSize="xs" fontWeight="semibold" color="text-tertiary" textTransform="uppercase" mb={2}>
               Team Member
             </Text>
             <VStack spacing={2} align="stretch">
@@ -91,7 +91,7 @@ export const StartupInvolvementList: React.FC<StartupInvolvementListProps> = ({ 
                         to={`/startups/${membership.id}`}
                         fontWeight="medium"
                         fontSize="sm"
-                        color="brand.500"
+                        color="interactive-accent"
                         _hover={{ textDecoration: 'underline' }}
                       >
                         {membership.name}

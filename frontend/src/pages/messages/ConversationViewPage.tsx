@@ -115,11 +115,11 @@ const ConversationViewPage: React.FC = () => {
           >
             {isLoading ? (
               <Box display="flex" justifyContent="center" alignItems="center" flex={1} py={8}>
-                <Spinner size="lg" color="brand.500" />
+                <Spinner size="lg" color="interactive-accent" />
               </Box>
             ) : isError ? (
               <VStack spacing={4} py={8} flex={1} justify="center">
-                <Text color="red.500">
+                <Text color="text-error">
                   Failed to load messages. Please try again.
                 </Text>
                 <Button
@@ -132,7 +132,7 @@ const ConversationViewPage: React.FC = () => {
               </VStack>
             ) : messages.length === 0 ? (
               <VStack spacing={4} py={12} flex={1} justify="center" textAlign="center">
-                <Text fontSize="lg" color="gray.500">
+                <Text fontSize="lg" color="text-tertiary">
                   No messages yet. Send the first message to start the conversation.
                 </Text>
               </VStack>

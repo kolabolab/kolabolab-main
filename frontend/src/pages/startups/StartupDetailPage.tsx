@@ -272,8 +272,8 @@ const StartupDetailPage: React.FC = () => {
       <Box py={20}>
         <Container maxW="6xl">
           <VStack spacing={6} textAlign="center">
-            <Heading size="lg" color="gray.500">Startup Not Found</Heading>
-            <Text color="gray.600">The startup you're looking for doesn't exist or has been removed.</Text>
+            <Heading size="lg" color="text-tertiary">Startup Not Found</Heading>
+            <Text color="text-secondary">The startup you're looking for doesn't exist or has been removed.</Text>
             <Button as={RouterLink} to="/startups" variant="solid" colorScheme="brand">
               Browse All Startups
             </Button>
@@ -292,22 +292,29 @@ const StartupDetailPage: React.FC = () => {
 
       <Box>
         {/* Hero Section */}
-        <Box position="relative" overflow="hidden">
-          <Image
-            src={startup.coverImage}
-            alt={`${startup.name} cover`}
-            w="full"
-            h="300px"
-            objectFit="cover"
-            filter="brightness(0.7)"
-          />
+        <Box position="relative" overflow="hidden" bgGradient="linear(to-br, brand.600, brand.800)">
+          {/* The API returns no cover image, so rendering <Image src=""> gave a
+              broken element over a grey void. Show the venture's own artwork
+              when it exists, otherwise a branded gradient that looks deliberate. */}
+          {startup.coverImage ? (
+            <Image
+              src={startup.coverImage}
+              alt={`${startup.name} cover`}
+              w="full"
+              h="300px"
+              objectFit="cover"
+              filter="brightness(0.7)"
+            />
+          ) : (
+            <Box w="full" h="300px" aria-hidden="true" />
+          )}
           <Box
             position="absolute"
             top={0}
             left={0}
             right={0}
             bottom={0}
-            bg="linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7))"
+            bg="linear-gradient(to bottom, rgba(9,10,15,0.35), rgba(9,10,15,0.75))"
           />
           <Container maxW="6xl" position="relative" zIndex={1}>
             <VStack spacing={6} align="start" py={12} color="white">
@@ -328,7 +335,7 @@ const StartupDetailPage: React.FC = () => {
                   boxSize="120px"
                   borderRadius="xl"
                   border="4px solid white"
-                  bg="white"
+                  bg="bg-surface"
                 />
                 <VStack align="start" spacing={3} flex={1}>
                   <HStack spacing={3}>
@@ -423,7 +430,7 @@ const StartupDetailPage: React.FC = () => {
                           <VStack spacing={4} align="stretch">
                             <Heading size="md">About {startup.name}</Heading>
                             <Text>{startup.description}</Text>
-                            <Text lineHeight="tall" color="gray.600">
+                            <Text lineHeight="tall" color="text-secondary">
                               {startup.longDescription}
                             </Text>
                           </VStack>
@@ -476,13 +483,13 @@ const StartupDetailPage: React.FC = () => {
                                   <Text fontWeight="bold" fontSize="lg">
                                     {startup.founder.name}
                                   </Text>
-                                  <Text color="gray.600">{startup.founder.role}</Text>
+                                  <Text color="text-secondary">{startup.founder.role}</Text>
                                 </VStack>
                                 <Text fontSize="sm">{startup.founder.bio}</Text>
                                 <HStack spacing={3}>
                                   <Link
                                     href={`mailto:${startup.founder.email}`}
-                                    color="brand.500"
+                                    color="interactive-accent"
                                     _hover={{ textDecoration: 'underline' }}
                                   >
                                     <HStack spacing={1}>
@@ -492,7 +499,7 @@ const StartupDetailPage: React.FC = () => {
                                   </Link>
                                   <Link
                                     href={`https://${startup.founder.linkedin}`}
-                                    color="blue.500"
+                                    color="interactive-accent"
                                     _hover={{ textDecoration: 'underline' }}
                                     isExternal
                                   >
@@ -521,7 +528,7 @@ const StartupDetailPage: React.FC = () => {
                                       <Avatar size="md" src={member.avatar} />
                                       <VStack align="start" spacing={1} flex={1}>
                                         <Text fontWeight="semibold">{member.name}</Text>
-                                        <Text fontSize="sm" color="gray.600">
+                                        <Text fontSize="sm" color="text-secondary">
                                           {member.role}
                                         </Text>
                                         <Text fontSize="sm">{member.bio}</Text>
@@ -571,10 +578,10 @@ const StartupDetailPage: React.FC = () => {
                                         {milestone.completed ? 'Completed' : 'Planned'}
                                       </Badge>
                                     </HStack>
-                                    <Text color="gray.600" fontSize="sm">
+                                    <Text color="text-secondary" fontSize="sm">
                                       {milestone.description}
                                     </Text>
-                                    <Text fontSize="xs" color="gray.500">
+                                    <Text fontSize="xs" color="text-tertiary">
                                       Target: {new Date(milestone.date).toLocaleDateString()}
                                     </Text>
                                   </VStack>
@@ -583,7 +590,7 @@ const StartupDetailPage: React.FC = () => {
                                   <Box
                                     w="2px"
                                     h={6}
-                                    bg="gray.200"
+                                    bg="chakra-subtle-bg"
                                     ml={2}
                                     mt={2}
                                   />
@@ -603,7 +610,7 @@ const StartupDetailPage: React.FC = () => {
                         <CardBody p={6}>
                           <VStack spacing={4} align="stretch">
                             <Heading size="md">Open Positions</Heading>
-                            <Text color="gray.600">
+                            <Text color="text-secondary">
                               Join our mission and help us build the future together.
                             </Text>
                           </VStack>
@@ -627,7 +634,7 @@ const StartupDetailPage: React.FC = () => {
                                     >
                                       {position.type.replace('-', ' ')}
                                     </Badge>
-                                    <Text fontSize="sm" color="gray.600">
+                                    <Text fontSize="sm" color="text-secondary">
                                       {position.commitment}
                                     </Text>
                                   </HStack>
@@ -725,7 +732,7 @@ const StartupDetailPage: React.FC = () => {
                         size="lg"
                         borderRadius="full"
                       />
-                      <Text fontSize="sm" color="gray.600" textAlign="center">
+                      <Text fontSize="sm" color="text-secondary" textAlign="center">
                         {startup.fundingProgress}% funded
                       </Text>
                     </VStack>
@@ -738,7 +745,7 @@ const StartupDetailPage: React.FC = () => {
                 <CardBody p={6}>
                   <VStack spacing={4} align="stretch">
                     <Heading size="md">Looking For</Heading>
-                    <Text fontSize="sm" color="gray.500">Click a role to see details and apply</Text>
+                    <Text fontSize="sm" color="text-tertiary">Click a role to see details and apply</Text>
                     <VStack spacing={2} align="stretch">
                       {startup.lookingFor.map((entry, idx) => {
                         const role = normalizeRole(entry);

@@ -108,7 +108,7 @@ export const Sidebar: React.FC = () => {
         {/* Role-based navigation */}
         {isEntrepreneur && (
           <>
-            <Text fontSize="xs" fontWeight="bold" color="gray.500" px={3} pt={2}>
+            <Text fontSize="xs" fontWeight="bold" color="text-tertiary" px={3} pt={2}>
               ENTREPRENEUR
             </Text>
             <SidebarLink to="/create-startup" icon={FiPlusCircle}>
@@ -122,7 +122,7 @@ export const Sidebar: React.FC = () => {
 
         {(isCollaborator || isEntrepreneur) && (
           <>
-            <Text fontSize="xs" fontWeight="bold" color="gray.500" px={3} pt={2}>
+            <Text fontSize="xs" fontWeight="bold" color="text-tertiary" px={3} pt={2}>
               COLLABORATION
             </Text>
             <SidebarLink to="/collaborations" icon={FiUsers} badge="3">
@@ -136,7 +136,7 @@ export const Sidebar: React.FC = () => {
 
         {isInvestor && (
           <>
-            <Text fontSize="xs" fontWeight="bold" color="gray.500" px={3} pt={2}>
+            <Text fontSize="xs" fontWeight="bold" color="text-tertiary" px={3} pt={2}>
               INVESTMENT
             </Text>
             <SidebarLink to="/investments" icon={FiDollarSign} badge="2">
@@ -151,7 +151,7 @@ export const Sidebar: React.FC = () => {
         <Divider my={2} />
 
         {/* Settings & Profile */}
-        <Text fontSize="xs" fontWeight="bold" color="gray.500" px={3} pt={2}>
+        <Text fontSize="xs" fontWeight="bold" color="text-tertiary" px={3} pt={2}>
           ACCOUNT
         </Text>
         <SidebarLink to="/profile" icon={FiUser}>
@@ -177,7 +177,7 @@ export const Sidebar: React.FC = () => {
           <Text fontSize="sm" fontWeight="bold">
             {user.firstName} {user.lastName}
           </Text>
-          <Text fontSize="xs" color="gray.500">
+          <Text fontSize="xs" color="text-tertiary">
             @{user.username}
           </Text>
           <Box>

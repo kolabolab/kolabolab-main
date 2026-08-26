@@ -108,13 +108,13 @@ const ApplicationFormModal: React.FC<ApplicationFormModalProps> = ({
               />
               <HStack justify="space-between" mt={1}>
                 {isMessageTooShort ? (
-                  <FormHelperText color="red.500">
+                  <FormHelperText color="text-error">
                     Minimum 10 characters required
                   </FormHelperText>
                 ) : (
                   <FormHelperText>&nbsp;</FormHelperText>
                 )}
-                <Text fontSize="sm" color="gray.500">
+                <Text fontSize="sm" color="text-tertiary">
                   {messageLength}/1000
                 </Text>
               </HStack>
