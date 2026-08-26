@@ -163,7 +163,7 @@ const ReceivedApplicationsPage: React.FC = () => {
                   </Box>
                 ) : isError ? (
                   <VStack spacing={4} py={8}>
-                    <Text color="red.500">
+                    <Text color="text-error">
                       Failed to load applications. Please try again.
                     </Text>
                     <Button

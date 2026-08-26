@@ -61,7 +61,7 @@ const AnalyticsSection: React.FC = () => {
       <Box>
         <Heading size="md" mb={4}>Analytics</Heading>
         <VStack spacing={4} py={8}>
-          <Text color="red.500">{error}</Text>
+          <Text color="text-error">{error}</Text>
           <Button onClick={fetchAnalytics} colorScheme="brand" size="sm">
             Retry
           </Button>

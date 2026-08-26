@@ -36,6 +36,7 @@ import {
 } from '@chakra-ui/react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import { PageHeader } from '../components/layout/PageHeader';
 import { adminAPI } from '../services/apiClient';
 import AnalyticsSection from './admin/AnalyticsSection';
 
@@ -63,6 +64,17 @@ const AdminDashboardPage: React.FC = () => {
   const [pendingStartups, setPendingStartups] = useState<PendingStartup[]>([]);
   const [allStartups, setAllStartups] = useState<PendingStartup[]>([]);
   const [allUsers, setAllUsers] = useState<any[]>([]);
+  // Chakra's toast `id` does not itself dedupe; StrictMode's double-invoked
+  // effects fired every error toast twice and they stacked over the cards.
+  const notifyOnce = useCallback(
+    (opts: Parameters<ReturnType<typeof useToast>>[0] & { id: string }) => {
+      if (!toastRef.current.isActive(opts.id)) toastRef.current(opts);
+    },
+    []
+  );
+  // Distinguishes "nothing here" from "we could not load it" — the page used to
+  // claim that nothing exists after a 403.
+  const [loadFailed, setLoadFailed] = useState<Record<string, boolean>>({});
   const [statsLoading, setStatsLoading] = useState(true);
   const [pendingLoading, setPendingLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
@@ -71,6 +83,8 @@ const AdminDashboardPage: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement>(null);
   const toast = useToast();
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
 
   const cardBg = useColorModeValue('white', 'gray.800');
   const bgColor = useColorModeValue('gray.50', 'gray.900');
@@ -81,7 +95,9 @@ const AdminDashboardPage: React.FC = () => {
       const data = await adminAPI.getStats();
       setStats(data);
     } catch {
-      toast({
+      setLoadFailed((f) => ({ ...f, stats: true }));
+      notifyOnce({
+        id: 'admin-failed-to-load-stats',
         title: 'Failed to load stats',
         status: 'error',
         duration: 3000,
@@ -98,7 +114,9 @@ const AdminDashboardPage: React.FC = () => {
       const data = await adminAPI.getPendingStartups();
       setPendingStartups(data);
     } catch {
-      toast({
+      setLoadFailed((f) => ({ ...f, pending: true }));
+      notifyOnce({
+        id: 'admin-failed-to-load-pending-startups',
         title: 'Failed to load pending startups',
         status: 'error',
         duration: 3000,
@@ -113,9 +131,15 @@ const AdminDashboardPage: React.FC = () => {
     fetchStats();
     fetchPendingStartups();
     // Fetch all startups
-    adminAPI.getAllStartups().then(setAllStartups).catch(() => {});
+    adminAPI
+      .getAllStartups()
+      .then(setAllStartups)
+      .catch(() => setLoadFailed((f) => ({ ...f, allStartups: true })));
     // Fetch all users
-    adminAPI.getUsers().then(setAllUsers).catch(() => {});
+    adminAPI
+      .getUsers()
+      .then(setAllUsers)
+      .catch(() => setLoadFailed((f) => ({ ...f, users: true })));
   }, [fetchStats, fetchPendingStartups]);
 
   const handleApprove = async (id: string) => {
@@ -123,6 +147,7 @@ const AdminDashboardPage: React.FC = () => {
     try {
       await adminAPI.approveStartup(id);
       toast({
+        id: 'admin-startup-approved',
         title: 'Startup approved',
         description: 'The startup is now visible to all users.',
         status: 'success',
@@ -132,7 +157,8 @@ const AdminDashboardPage: React.FC = () => {
       await fetchPendingStartups();
       await fetchStats();
     } catch {
-      toast({
+      notifyOnce({
+        id: 'admin-failed-to-approve-startup',
         title: 'Failed to approve startup',
         status: 'error',
         duration: 3000,
@@ -148,6 +174,7 @@ const AdminDashboardPage: React.FC = () => {
     try {
       await adminAPI.rejectStartup(id);
       toast({
+        id: 'admin-startup-rejected',
         title: 'Startup rejected',
         description: 'The startup has been rejected.',
         status: 'success',
@@ -157,7 +184,8 @@ const AdminDashboardPage: React.FC = () => {
       await fetchPendingStartups();
       await fetchStats();
     } catch {
-      toast({
+      notifyOnce({
+        id: 'admin-failed-to-reject-startup',
         title: 'Failed to reject startup',
         status: 'error',
         duration: 3000,
@@ -180,6 +208,7 @@ const AdminDashboardPage: React.FC = () => {
     try {
       await adminAPI.deleteStartup(deleteTarget.id);
       toast({
+        id: 'admin-startup-deleted',
         title: 'Startup deleted',
         description: `"${deleteTarget.name}" has been permanently deleted.`,
         status: 'success',
@@ -189,7 +218,8 @@ const AdminDashboardPage: React.FC = () => {
       await fetchPendingStartups();
       await fetchStats();
     } catch {
-      toast({
+      notifyOnce({
+        id: 'admin-failed-to-delete-startup',
         title: 'Failed to delete startup',
         status: 'error',
         duration: 3000,
@@ -238,12 +268,11 @@ const AdminDashboardPage: React.FC = () => {
           <VStack spacing={8} align="stretch">
             {/* Page Header */}
             <Box>
-              <Heading size="xl" className="gradient-text">
-                Admin Dashboard
-              </Heading>
-              <Text color="text-secondary" fontSize="lg" mt={2}>
-                Manage platform startups and monitor activity
-              </Text>
+            <PageHeader
+              eyebrow="Platform"
+              title="Admin dashboard"
+              lede="Approve ventures, monitor activity and manage platform members."
+            />
             </Box>
 
             {/* Platform Stats Section */}
@@ -255,7 +284,17 @@ const AdminDashboardPage: React.FC = () => {
                 <Box display="flex" justifyContent="center" py={8}>
                   <Spinner size="lg" color="interactive-accent" />
                 </Box>
-              ) : stats ? (
+              ) : !stats ? (
+                <Card bg={cardBg}>
+                  <CardBody>
+                    <Text color="text-secondary" textAlign="center" py={4} fontSize="sm">
+                      {loadFailed.stats
+                        ? 'Could not load platform stats — you may not have admin access.'
+                        : 'No platform stats available yet.'}
+                    </Text>
+                  </CardBody>
+                </Card>
+              ) : (
                 <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
                   <Card bg={cardBg}>
                     <CardBody>
@@ -287,7 +326,7 @@ const AdminDashboardPage: React.FC = () => {
                     </CardBody>
                   </Card>
                 </SimpleGrid>
-              ) : null}
+              )}
             </Box>
 
             {/* Analytics Section */}
@@ -378,7 +417,7 @@ const AdminDashboardPage: React.FC = () => {
                   </Box>
                 ) : allStartups.length === 0 ? (
                   <Text color="text-tertiary" textAlign="center" py={6}>
-                    No startups on the platform
+                    {loadFailed.allStartups ? 'Could not load startups — you may not have admin access.' : 'No startups on the platform'}
                   </Text>
                 ) : (
                   <TableContainer>
@@ -433,52 +472,52 @@ const AdminDashboardPage: React.FC = () => {
                 )}
               </CardBody>
             </Card>
+              {/* All Users Section */}
+              <Card bg={cardBg}>
+                <CardBody>
+                  <Heading size="md" mb={4}>
+                    All Users
+                  </Heading>
+                  {allUsers.length === 0 ? (
+                    <Text color="text-tertiary" textAlign="center" py={6}>
+                      No users on the platform
+                    </Text>
+                  ) : (
+                    <TableContainer>
+                      <Table variant="simple" size="sm">
+                        <Thead>
+                          <Tr>
+                            <Th>Name</Th>
+                            <Th>Email</Th>
+                            <Th>Roles</Th>
+                            <Th>Joined</Th>
+                          </Tr>
+                        </Thead>
+                        <Tbody>
+                          {allUsers.map((user: any) => (
+                            <Tr key={user.id}>
+                              <Td fontWeight="medium">{user.firstName} {user.lastName}</Td>
+                              <Td>{user.email}</Td>
+                              <Td>
+                                {(user.roles || []).map((role: string) => (
+                                  <Badge key={role} colorScheme={role === 'admin' ? 'red' : 'brand'} mr={1} size="sm">
+                                    {role}
+                                  </Badge>
+                                ))}
+                              </Td>
+                              <Td>{user.createdAt ? formatDate(user.createdAt) : 'N/A'}</Td>
+                            </Tr>
+                          ))}
+                        </Tbody>
+                      </Table>
+                    </TableContainer>
+                  )}
+                </CardBody>
+              </Card>
           </VStack>
         </Container>
       </Box>
 
-            {/* All Users Section */}
-            <Card bg={cardBg}>
-              <CardBody>
-                <Heading size="md" mb={4}>
-                  All Users
-                </Heading>
-                {allUsers.length === 0 ? (
-                  <Text color="text-tertiary" textAlign="center" py={6}>
-                    No users on the platform
-                  </Text>
-                ) : (
-                  <TableContainer>
-                    <Table variant="simple" size="sm">
-                      <Thead>
-                        <Tr>
-                          <Th>Name</Th>
-                          <Th>Email</Th>
-                          <Th>Roles</Th>
-                          <Th>Joined</Th>
-                        </Tr>
-                      </Thead>
-                      <Tbody>
-                        {allUsers.map((user: any) => (
-                          <Tr key={user.id}>
-                            <Td fontWeight="medium">{user.firstName} {user.lastName}</Td>
-                            <Td>{user.email}</Td>
-                            <Td>
-                              {(user.roles || []).map((role: string) => (
-                                <Badge key={role} colorScheme={role === 'admin' ? 'red' : 'brand'} mr={1} size="sm">
-                                  {role}
-                                </Badge>
-                              ))}
-                            </Td>
-                            <Td>{user.createdAt ? formatDate(user.createdAt) : 'N/A'}</Td>
-                          </Tr>
-                        ))}
-                      </Tbody>
-                    </Table>
-                  </TableContainer>
-                )}
-              </CardBody>
-            </Card>
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog

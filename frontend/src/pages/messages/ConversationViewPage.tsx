@@ -119,7 +119,7 @@ const ConversationViewPage: React.FC = () => {
               </Box>
             ) : isError ? (
               <VStack spacing={4} py={8} flex={1} justify="center">
-                <Text color="red.500">
+                <Text color="text-error">
                   Failed to load messages. Please try again.
                 </Text>
                 <Button

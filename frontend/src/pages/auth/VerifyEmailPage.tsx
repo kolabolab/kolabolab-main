@@ -144,7 +144,7 @@ const VerifyEmailPage: React.FC = () => {
 
                   {verificationStatus === 'error' && (
                     <>
-                      <Icon as={FiXCircle} boxSize={16} color="red.500" />
+                      <Icon as={FiXCircle} boxSize={16} color="text-error" />
                       <Heading size="lg" color="red.600">
                         Verification Failed
                       </Heading>

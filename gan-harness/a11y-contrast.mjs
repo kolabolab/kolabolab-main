@@ -98,7 +98,7 @@ const AUDIT = () => {
 
 const authed = process.argv.includes('--auth');
 const seed = authed
-  ? JSON.parse((await import('node:fs')).readFileSync('gan-harness/auth-seed.json', 'utf8'))
+  ? JSON.parse((await import('node:fs')).readFileSync(process.env.AUTH_SEED || 'gan-harness/auth-seed.json', 'utf8'))
   : null;
 
 const browser = await chromium.launch();

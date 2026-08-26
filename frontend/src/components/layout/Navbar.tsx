@@ -210,10 +210,13 @@ export const Navbar: React.FC = React.memo(() => {
               {/* Desktop Navigation */}
               <HStack
                 as="nav"
-                spacing={1}
+                spacing={{ lg: 0, xl: 1 }}
                 display={{ base: 'none', md: 'none', lg: 'flex' }}
               className="responsive-nav base-hidden md-hidden lg-flex"
-                flexShrink={0}
+                flexShrink={1}
+                minW="0"
+                overflow="visible"
+                sx={{ '& a': { px: { lg: 2, xl: 3 } } }}
                 role="navigation"
                 aria-label="Main navigation"
               >
@@ -245,12 +248,24 @@ export const Navbar: React.FC = React.memo(() => {
                     variant="startup"
                     size="md"
                     leftIcon={<AddIcon />}
-                    display={{ base: 'none', md: 'none', xl: 'flex' }}
+                    display={{ base: 'none', md: 'none', '2xl': 'flex' }}
                   className="responsive-button base-hidden md-hidden xl-flex"
                     whiteSpace="nowrap"
                   >
                     Create Startup
                   </Button>
+                  {/* Compact form between xl and 2xl, where the full label
+                      collided with the nav links for multi-role users. */}
+                  <IconButton
+                    as={RouterLink}
+                    to="/create-startup"
+                    variant="startup"
+                    size="md"
+                    aria-label="Create Startup"
+                    title="Create Startup"
+                    icon={<AddIcon />}
+                    display={{ base: 'none', xl: 'flex', '2xl': 'none' }}
+                  />
 
                   {/* Notification Bell */}
                   <Box display={{ base: 'none', md: 'flex' }}>

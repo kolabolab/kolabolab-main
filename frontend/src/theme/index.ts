@@ -824,6 +824,8 @@ const semanticTokens = {
     'text-tertiary': { default: 'text.tertiary.light', _dark: 'text.tertiary.dark' },
 
     'interactive-accent': { default: 'accent.600', _dark: 'accent.300' },
+    // red.500 as body text measured 3.95:1 (light) / 4.3:1 (dark) — under AA.
+    'text-error': { default: 'red.600', _dark: 'red.300' },
     'interactive-hover': { default: 'interactive.hover.light', _dark: 'interactive.hover.dark' },
 
     'border-subtle': {
