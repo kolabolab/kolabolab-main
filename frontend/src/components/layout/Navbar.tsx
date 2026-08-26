@@ -41,7 +41,7 @@ const NavLink = ({ children, to, variant = 'default' }: {
     switch (variant) {
       case 'startup': return 'rgba(255, 149, 0, 0.08)';
       case 'investor': return 'rgba(82, 196, 26, 0.08)';
-      default: return 'rgba(27, 42, 74, 0.08)';
+      default: return 'interactive-hover';
     }
   };
 
@@ -284,7 +284,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       _hover={{
                         textDecoration: 'none',
-                        bg: 'rgba(27, 42, 74, 0.08)',
+                        bg: 'interactive-hover',
                       }}
                       aria-label="Messages"
                     >
@@ -307,11 +307,11 @@ export const Navbar: React.FC = React.memo(() => {
                       alignItems="center"
                       justifyContent="center"
                       _hover={{
-                        bg: 'rgba(27, 42, 74, 0.08)',
+                        bg: 'interactive-hover',
                         transform: 'translateY(-1px)',
                       }}
                       _active={{
-                        bg: 'rgba(27, 42, 74, 0.12)',
+                        bg: 'interactive-active',
                       }}
                       transition="all 0.2s"
                       aria-label={`${user?.firstName} ${user?.lastName} user menu`}
@@ -508,7 +508,7 @@ export const Navbar: React.FC = React.memo(() => {
                   className="startup-context"
                 >
                   <HStack>
-                    <Text>🚀</Text>
+                    <Text aria-hidden="true">🚀</Text>
                     <Text>Startups</Text>
                   </HStack>
                 </ChakraLink>
@@ -522,11 +522,11 @@ export const Navbar: React.FC = React.memo(() => {
                   rounded="lg"
                   minH="48px"
                   fontWeight="500"
-                  _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                  _hover={{ bg: "interactive-hover" }}
                   onClick={onClose}
                 >
                   <HStack>
-                    <Text>🔍</Text>
+                    <Text aria-hidden="true">🔍</Text>
                     <Text>Search</Text>
                   </HStack>
                 </ChakraLink>
@@ -616,7 +616,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       minH="48px"
                       fontWeight="500"
-                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      _hover={{ bg: "interactive-hover" }}
                       onClick={onClose}
                     >
                       <HStack>
@@ -634,7 +634,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       minH="48px"
                       fontWeight="500"
-                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      _hover={{ bg: "interactive-hover" }}
                       onClick={onClose}
                     >
                       <HStack>
@@ -652,7 +652,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       minH="48px"
                       fontWeight="500"
-                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      _hover={{ bg: "interactive-hover" }}
                       onClick={onClose}
                     >
                       <HStack>
@@ -671,7 +671,7 @@ export const Navbar: React.FC = React.memo(() => {
                       rounded="lg"
                       minH="48px"
                       fontWeight="500"
-                      _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                      _hover={{ bg: "interactive-hover" }}
                       onClick={onClose}
                     >
                       <HStack>
@@ -711,7 +711,7 @@ export const Navbar: React.FC = React.memo(() => {
                         rounded="lg"
                         minH="48px"
                         fontWeight="500"
-                        _hover={{ bg: "rgba(27, 42, 74, 0.08)" }}
+                        _hover={{ bg: "interactive-hover" }}
                         onClick={onClose}
                       >
                         <HStack>

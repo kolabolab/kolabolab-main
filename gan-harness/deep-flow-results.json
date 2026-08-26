@@ -1,0 +1,90 @@
+[
+  {
+    "n": 1,
+    "name": "keyboard: skip-link is the first tab stop and works",
+    "ok": true,
+    "detail": "\"Skip to main content\" -> #main-content",
+    "errors": []
+  },
+  {
+    "n": 2,
+    "name": "keyboard: hero role switcher is operable and exposes state",
+    "ok": true,
+    "detail": "aria-pressed false->true; focus ring present",
+    "errors": []
+  },
+  {
+    "n": 3,
+    "name": "keyboard: can reach the primary CTA without a mouse",
+    "ok": true,
+    "detail": "reached \"Start your startup\"",
+    "errors": []
+  },
+  {
+    "n": 4,
+    "name": "login rejects a wrong password with a visible message",
+    "ok": true,
+    "detail": "error surfaced, stayed on /login",
+    "errors": [
+      "http 401 https://kolabolab-api-dev.beryour.workers.dev/auth/login",
+      "console: Failed to load resource: the server responded with a status of 401 ()",
+      "console: API Error: {url: /auth/login, method: post, status: 401, message: Request failed with status code 401, data: Object}"
+    ]
+  },
+  {
+    "n": 5,
+    "name": "register form validates a mismatched password confirmation",
+    "ok": true,
+    "detail": "mismatch flagged",
+    "errors": []
+  },
+  {
+    "n": 6,
+    "name": "mobile: drawer opens and navigates",
+    "ok": true,
+    "detail": "opened + navigated to /startups",
+    "errors": []
+  },
+  {
+    "n": 7,
+    "name": "mobile: dashboard has no horizontal overflow",
+    "ok": true,
+    "detail": "no overflow (390px = viewport)",
+    "errors": []
+  },
+  {
+    "n": 8,
+    "name": "refresh on an authed route keeps you signed in",
+    "ok": true,
+    "detail": "stayed on /dashboard with data",
+    "errors": []
+  },
+  {
+    "n": 9,
+    "name": "browser back/forward preserves app state",
+    "ok": true,
+    "detail": "back/forward both restored",
+    "errors": []
+  },
+  {
+    "n": 10,
+    "name": "deep-link to an authed route while signed out redirects to login",
+    "ok": true,
+    "detail": "redirected to /login",
+    "errors": []
+  },
+  {
+    "n": 11,
+    "name": "startup filters change the result set and the URL",
+    "ok": true,
+    "detail": "selected \"FinTech\"; url reflects filter; results changed",
+    "errors": []
+  },
+  {
+    "n": 12,
+    "name": "apply-to-role modal opens from a startup detail page",
+    "ok": true,
+    "detail": "dialog opened with 8 field(s)",
+    "errors": []
+  }
+]
